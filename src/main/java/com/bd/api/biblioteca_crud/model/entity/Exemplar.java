@@ -1,6 +1,7 @@
 package com.bd.api.biblioteca_crud.model.entity;
 
 import com.bd.api.biblioteca_crud.model.relationship.UsuarioEmprestimoExemplar;
+import com.bd.api.biblioteca_crud.model.valueobject.ExemplarId;
 import com.bd.api.biblioteca_crud.model.valueobject.StatusExemplar;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,12 +18,9 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Exemplar {
 
-    @Id
+    @EmbeddedId
     @EqualsAndHashCode.Include
-    @GeneratedValue(generator = "exemplar-id-generator")
-    @GenericGenerator(name = "exemplar-id-generator", strategy = "com.bd.api.biblioteca_crud.util.ExemplarIdGenerator")
-    @Column(length = 10, nullable = false, unique = true, updatable = false)
-    private String id;
+    private ExemplarId id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -39,5 +37,12 @@ public class Exemplar {
     @OneToMany(mappedBy = "exemplar", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UsuarioEmprestimoExemplar> emprestimos;
 
+    @PrePersist
+    public void gerarNumeroExemplar() {
+        if (id == null || id.getNumero_exemplar() == null) {
+            long proximo = (livro.getExemplares() == null) ? 1 : livro.getExemplares().size() + 1;
+            this.id = new ExemplarId(livro.getIsbn(), proximo);
+        }
+    }
 
 }

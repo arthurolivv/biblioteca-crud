@@ -34,8 +34,10 @@ public class UsuarioEmprestimoExemplar {
     @ManyToOne
     @JoinColumn(name = "fk_usuario_cpf")
     private Usuario usuario;
-
     @ManyToOne
-    @JoinColumn(name = "fk_exemplar_id")
+    @JoinColumns({
+            @JoinColumn(name = "fk_livro_isbn", referencedColumnName = "isbn"),
+            @JoinColumn(name = "fk_exemplar_numero_exemplar", referencedColumnName = "numero_exemplar")
+    })
     private Exemplar exemplar;
 }
