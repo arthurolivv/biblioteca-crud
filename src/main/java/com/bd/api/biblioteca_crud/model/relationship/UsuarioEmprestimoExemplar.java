@@ -23,21 +23,26 @@ public class UsuarioEmprestimoExemplar {
     @EqualsAndHashCode.Include
     private Long id;
 
+    @Column(nullable = false)
     private LocalDateTime data_emprestimo;
 
+    @Column(nullable = false)
     private LocalDateTime data_devolucao;
 
+    @Column(nullable = false)
     private LocalDateTime data_devolucao_prevista;
 
+    @Column(nullable = false)
     private String livro_isbn;
 
     @ManyToOne
-    @JoinColumn(name = "fk_usuario_cpf")
+    @JoinColumn(name = "fk_usuario_cpf", nullable = false)
     private Usuario usuario;
+
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "fk_livro_isbn", referencedColumnName = "isbn"),
-            @JoinColumn(name = "fk_exemplar_numero_exemplar", referencedColumnName = "numero_exemplar")
+            @JoinColumn(name = "fk_livro_isbn", referencedColumnName = "isbn", nullable = false),
+            @JoinColumn(name = "fk_exemplar_numero_exemplar", referencedColumnName = "numero_exemplar", nullable = false)
     })
     private Exemplar exemplar;
 }

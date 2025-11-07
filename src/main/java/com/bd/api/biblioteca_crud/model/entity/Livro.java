@@ -23,24 +23,31 @@ public class Livro {
     @Id
     private String isbn;
 
+    @Column(nullable = false)
     private String titulo;
 
+    @Column(nullable = false)
     private String ano_publicacao;
 
+    @Column(nullable = false)
     private Short disponiveis;
 
+    @Column(nullable = false)
     private Short quantidade;
 
+    @Column(nullable = false)
     private String sinopse;
 
+    @Column(nullable = false)
     private String idioma;
 
+    @Column(nullable = false)
     private String imagem_url;
 
-    @Column(name = "deleted")
+    @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false) //minimo 1 livro
     @JoinColumn(name = "fk_editora_razao_social", nullable = false)
     private Editora editora;
 

@@ -24,18 +24,21 @@ public class UsuarioReservaLivro {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private StatusReserva status;
 
+    @Column(nullable = false)
     private LocalDateTime data_reserva;
 
+    @Column(nullable = false)
     private Short posicao_fila;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_usuario_oplid")
+    @JoinColumn(name = "fk_usuario_oplid", nullable = false)
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_livro_isbn")
+    @JoinColumn(name = "fk_livro_isbn", nullable = false)
     private Livro livro;
 
 }

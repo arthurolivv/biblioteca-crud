@@ -22,11 +22,13 @@ public class Autor {
     @Column(name="id")
     private String oplid;
 
+    @Column(name = "nome", nullable = false)
     private String nome;
 
+    @Column(name = "nacionalidade", nullable = false)
     private String nacionalidade;
 
-    @Column(name = "deleted")
+    @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
 
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -35,5 +37,4 @@ public class Autor {
     public void softDelete() {
         this.deleted = true;
     }
-
 }

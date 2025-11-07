@@ -20,7 +20,7 @@ public class Categoria {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(name = "nome", nullable = false, length = 255)
+    @Column(nullable = false)
     private String nome;
 
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
