@@ -1,6 +1,7 @@
 package com.bd.api.biblioteca_crud.model.entity;
 
 import com.bd.api.biblioteca_crud.model.relationship.AutorEscreveLivro;
+import com.bd.api.biblioteca_crud.model.valueobject.Nacionalidade;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
@@ -19,14 +20,15 @@ public class Autor {
 
     @Id
     @EqualsAndHashCode.Include
-    @Column(name="id")
+    @Column(name="id", length = 255)
     private String oplid;
 
     @Column(name = "nome", nullable = false)
     private String nome;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "nacionalidade", nullable = false)
-    private String nacionalidade;
+    private Nacionalidade nacionalidade;
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;

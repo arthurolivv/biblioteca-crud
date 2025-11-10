@@ -3,6 +3,7 @@ package com.bd.api.biblioteca_crud.model.entity;
 import com.bd.api.biblioteca_crud.model.relationship.AutorEscreveLivro;
 import com.bd.api.biblioteca_crud.model.relationship.LivroPertenceCategoria;
 import com.bd.api.biblioteca_crud.model.relationship.UsuarioReservaLivro;
+import com.bd.api.biblioteca_crud.model.valueobject.Idioma;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
@@ -38,8 +39,9 @@ public class Livro {
     @Column(nullable = false)
     private String sinopse;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String idioma;
+    private Idioma idioma;
 
     @Column(nullable = false)
     private String imagem_url;

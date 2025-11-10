@@ -2,6 +2,7 @@ package com.bd.api.biblioteca_crud.model.entity;
 
 import com.bd.api.biblioteca_crud.model.relationship.UsuarioEmprestimoExemplar;
 import com.bd.api.biblioteca_crud.model.relationship.UsuarioReservaLivro;
+import com.bd.api.biblioteca_crud.model.valueobject.Endereco;
 import com.bd.api.biblioteca_crud.model.valueobject.Nome;
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,6 +41,9 @@ public class Usuario {
 
     @Column(nullable = false)
     private LocalDate data_nasc;
+
+    @Column
+    private Endereco endereco;
 
     @Column(name = "deleted")
     private boolean deleted = false;
