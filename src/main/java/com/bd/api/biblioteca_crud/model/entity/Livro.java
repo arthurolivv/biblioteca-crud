@@ -50,7 +50,7 @@ public class Livro {
     private boolean deleted = false;
 
     @ManyToOne(optional = false) //minimo 1 livro
-    @JoinColumn(name = "fk_editora_razao_social", nullable = false)
+    @JoinColumn(name = "fk_editora_cnpj", nullable = false)
     private Editora editora;
 
     @ManyToOne(optional = false) //minimo 1 livro

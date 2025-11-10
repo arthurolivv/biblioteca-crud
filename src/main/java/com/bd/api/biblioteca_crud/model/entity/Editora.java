@@ -18,9 +18,12 @@ import java.util.List;
 public class Editora {
 
     @Id
+    private String cnpj;
+
+    @Column(name = "razao_social", nullable = false)
     private String razao_social;
 
-    @Column(name = "deleted")
+    @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
 
     @OneToMany(mappedBy = "editora", cascade = CascadeType.ALL, orphanRemoval = true)

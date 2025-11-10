@@ -34,7 +34,7 @@ public class UsuarioReservaLivro {
     private Short posicao_fila;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_usuario_oplid", nullable = false)
+    @JoinColumn(name = "fk_usuario_cpf", nullable = false)
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)

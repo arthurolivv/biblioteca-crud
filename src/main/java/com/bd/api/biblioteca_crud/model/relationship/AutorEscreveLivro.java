@@ -21,7 +21,7 @@ public class AutorEscreveLivro {
 
     @ManyToOne
     @MapsId("oplid")
-    @JoinColumn(name = "fk_autor_oplid", nullable = false)
+    @JoinColumn(name = "fk_autor_id", nullable = false)
     private Autor autor;
 
     @ManyToOne

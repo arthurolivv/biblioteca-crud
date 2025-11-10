@@ -31,7 +31,7 @@ public class Exemplar {
     //se TRUE, então não pode ser emprestado. disponiveis = quantidade - quantidade de proprios
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_livro_oplid", nullable = false)
+    @JoinColumn(name = "fk_livro_isbn", nullable = false)
     private Livro livro;
 
     @OneToMany(mappedBy = "exemplar", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

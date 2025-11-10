@@ -36,6 +36,6 @@ public class EnderecoEditora {
     private String cep;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_editora_razao_social", nullable = false)
+    @JoinColumn(name = "fk_editora_cnpj", nullable = false)
     private Editora editora;
 }
