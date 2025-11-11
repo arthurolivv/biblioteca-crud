@@ -1,0 +1,28 @@
+package com.bd.api.biblioteca_crud.domain.categoria;
+
+import com.bd.api.biblioteca_crud.domain.livro.LivroPertenceCategoria;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.List;
+
+@Entity(name = "Categoria")
+@Table(name = "Categoria")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public class Categoria {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
+    private Long id;
+
+    @Column(nullable = false)
+    private String nome;
+
+    @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<LivroPertenceCategoria> livroPertenceCategoria;
+}

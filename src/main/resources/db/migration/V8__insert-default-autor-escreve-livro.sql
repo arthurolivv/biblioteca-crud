@@ -3,9 +3,9 @@
 
 -- Jane Austen (OL23919A)
 INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
-                                                                 ('OL23919A', '9780141439518'), -- Orgulho e Preconceito
-                                                                 ('OL23919A', '9780141439686'), -- Emma
-                                                                 ('OL23919A', '9780141439662'); -- Razão e Sensibilidade
+                                                                 ('OL23919A', '97807739518'), -- Orgulho e Preconceito
+                                                                 ('OL23919A', '97807739686'), -- Emma
+                                                                 ('OL23919A', '97807739662'); -- Razão e Sensibilidade
 
 -- George Orwell (OL2162280A)
 INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
@@ -44,18 +44,18 @@ INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
 
 -- Homer (OL22098A)
 INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
-                                                                 ('OL22098A', '9780140268867'), -- Odisseia
-                                                                 ('OL22098A', '9780140275360'); -- Ilíada
+                                                                 ('OL22098A', '978070268867'), -- Odisseia
+                                                                 ('OL22098A', '978070275360'); -- Ilíada
 
 -- Fyodor Dostoevsky (OL34185A)
 INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
-                                                                 ('OL34185A', '9780143058144'), -- Crime e Castigo
+                                                                 ('OL34185A', '97807305874'), -- Crime e Castigo
                                                                  ('OL34185A', '9780374528379'); -- Os Irmãos Karamazov
 
 -- Ray Bradbury (OL2162290A)
 INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
-                                                                 ('OL2162290A', '9781451673319'), -- Fahrenheit 451
-                                                                 ('OL2162290A', '9781451678192'); -- Crônicas Marcianas
+                                                                 ('OL2162290A', '978751673319'), -- Fahrenheit 451
+                                                                 ('OL2162290A', '978751678192'); -- Crônicas Marcianas
 
 -- Harper Lee (OL26321A)
 INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
@@ -64,12 +64,12 @@ INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
 
 -- Toni Morrison (OL139436A)
 INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
-                                                                 ('OL139436A', '9781400033416'), -- Amada
-                                                                 ('OL139436A', '9781400033423'); -- O Olho Mais Azul
+                                                                 ('OL139436A', '978700033416'), -- Amada
+                                                                 ('OL139436A', '978700033423'); -- O Olho Mais Azul
 
 -- William Golding (OL34186A)
 INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
-                                                                 ('OL34186A', '9780399501487'), -- O Senhor das Moscas
+                                                                 ('OL34186A', '978039950787'), -- O Senhor das Moscas
                                                                  ('OL34186A', '9780156027809'); -- Os Herdeiros
 
 -- William Shakespeare (OL2162300A)
@@ -95,12 +95,12 @@ INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
 
 -- Dante Alighieri (OL2162310A)
 INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
-                                                                 ('OL2162310A', '9780142437223'), -- Inferno
-                                                                 ('OL2162310A', '9780142437247'); -- Purgatório
+                                                                 ('OL2162310A', '978072437223'), -- Inferno
+                                                                 ('OL2162310A', '978072437247'); -- Purgatório
 
 -- Herman Melville (OL26323A)
 INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
-                                                                 ('OL26323A', '9780143105954'), -- Moby Dick
+                                                                 ('OL26323A', '978073105954'), -- Moby Dick
                                                                  ('OL26323A', '9780486264738'); -- Bartleby, o Escrivão
 
 -- Paulo Coelho (OL2162320A)
@@ -110,20 +110,20 @@ INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
 
 -- Charlotte Brontë (OL139438A)
 INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
-                                                                 ('OL139438A', '9780141441146'), -- Jane Eyre
+                                                                 ('OL139438A', '9780774176'), -- Jane Eyre
                                                                  ('OL139438A', '9780199536658'); -- Villette
 
 -- Mark Twain (OL34188A)
 INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
-                                                                 ('OL34188A', '9780143107323'), -- As Aventuras de Huckleberry Finn
-                                                                 ('OL34188A', '9780143039563'); -- As Aventuras de Tom Sawyer
+                                                                 ('OL34188A', '978073107323'), -- As Aventuras de Huckleberry Finn
+                                                                 ('OL34188A', '978073039563'); -- As Aventuras de Tom Sawyer
 
 -- Johann Wolfgang von Goethe (OL2162330A)
 INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
-                                                                 ('OL2162330A', '9780143106951'), -- Os Sofrimentos do Jovem Werther
-                                                                 ('OL2162330A', '9780140449013'); -- Fausto
+                                                                 ('OL2162330A', '978073106951'), -- Os Sofrimentos do Jovem Werther
+                                                                 ('OL2162330A', '978070449013'); -- Fausto
 
 -- Leo Tolstoy (OL26324A)
 INSERT INTO autor_escreve_livro (fk_autor_id, fk_livro_isbn) VALUES
-                                                                 ('OL26324A', '9780143035008'), -- Guerra e Paz
-                                                                 ('OL26324A', '9780143035002'); -- Anna Karenina
+                                                                 ('OL26324A', '978073035008'), -- Guerra e Paz
+                                                                 ('OL26324A', '978073035002'); -- Anna Karenina
