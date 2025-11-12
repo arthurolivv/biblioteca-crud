@@ -40,7 +40,7 @@ public class UsuarioEmprestimoExemplar {
     @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "fk_livro_isbn", referencedColumnName = "fk_livro_isbn", nullable = false),
-            @JoinColumn(name = "fk_exemplar_numero_exemplar", referencedColumnName = "numero_exemplar", nullable = false)
+            @JoinColumn(name = "fk_exemplar_codigo_exemplar", referencedColumnName = "codigo_exemplar", nullable = false)
     })
     private Exemplar exemplar;
 

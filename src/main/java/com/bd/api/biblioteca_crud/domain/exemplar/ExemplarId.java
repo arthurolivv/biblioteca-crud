@@ -14,6 +14,6 @@ public class ExemplarId {
 
     private String livro_isbn;
 
-    @Column(name = "numero_exemplar", nullable = false)
-    private Long numero_exemplar;
+    @Column(name = "codigo_exemplar", nullable = false)
+    private String codigo_exemplar;
 }

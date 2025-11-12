@@ -58,7 +58,7 @@ public class Livro {
     @JoinColumn(name = "fk_biblioteca_cnpj")
     private Biblioteca biblioteca;
 
-    @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<LivroPertenceCategoria> livroPertenceCategoria;
 
     @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

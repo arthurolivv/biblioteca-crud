@@ -56,10 +56,10 @@ create table endereco_editora (
 
 create table exemplar (
                           proprio boolean not null,
-                          numero_exemplar bigint not null,
+                          codigo_exemplar varchar(255) not null,
                           fk_livro_isbn varchar(255) not null,
                           status varchar(255) not null check (status in ('DISPONIVEL','EMPRESTADO','RESERVADO','MANUTENCAO')),
-                          primary key (numero_exemplar, fk_livro_isbn)
+                          primary key (codigo_exemplar, fk_livro_isbn)
 );
 
 create table livro (
@@ -107,7 +107,7 @@ create table usuario_emprestimo_exemplar (
                                              data_devolucao timestamp(6) not null,
                                              data_devolucao_prevista timestamp(6) not null,
                                              data_emprestimo timestamp(6) not null,
-                                             fk_exemplar_numero_exemplar bigint not null,
+                                             fk_exemplar_codigo_exemplar varchar(255) not null,
                                              num_emprestimo bigint not null,
                                              fk_livro_isbn varchar(255) not null,
                                              fk_usuario_cpf varchar(255) not null,
@@ -167,7 +167,7 @@ alter table if exists livro_pertence_categoria
 
 alter table if exists usuario_emprestimo_exemplar
     add constraint FKbvus1sqk682nhc7kin3clrsf4
-    foreign key (fk_exemplar_numero_exemplar, fk_livro_isbn)
+    foreign key (fk_exemplar_codigo_exemplar, fk_livro_isbn)
     references exemplar;
 
 alter table if exists usuario_emprestimo_exemplar

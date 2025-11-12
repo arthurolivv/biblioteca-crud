@@ -38,10 +38,11 @@ public class Exemplar {
     private List<UsuarioEmprestimoExemplar> emprestimos;
 
     @PrePersist
-    public void gerarNumeroExemplar() {
-        if (id == null || id.getNumero_exemplar() == null) {
+    public void gerarCodigoExemplar() {
+        if (id == null || id.getCodigo_exemplar() == null) {
             long proximo = (livro.getExemplares() == null) ? 1 : livro.getExemplares().size() + 1;
-            this.id = new ExemplarId(livro.getIsbn(), proximo);
+            String codigo_exemplar = "EX-" + proximo;
+            this.id = new ExemplarId(livro.getIsbn(), codigo_exemplar);
         }
     }
 
