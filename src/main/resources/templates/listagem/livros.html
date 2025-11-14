@@ -1,83 +1,22 @@
-<!--<!doctype html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="utf-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
-<!--    <title>Bootstrap demo</title>-->
-<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">-->
-<!--</head>-->
-<!--<body>-->
-<!--    <div class="container">-->
-
-<!--        <table class="table">-->
-<!--            <thead>-->
-<!--            <tr>-->
-<!--                <th>ISBN</th>-->
-<!--                <th>Capa</th>-->
-<!--                <th>Título</th>-->
-<!--                <th>Autor</th>-->
-<!--                <th>Categoria</th>-->
-<!--                <th>Idioma</th>-->
-<!--                <th>Ano de Publicação</th>-->
-<!--                <th>Cód. Exemplares</th>-->
-<!--                <th>Quantidade</th>-->
-<!--                <th>Quantidade Disponível</th>-->
-<!--                <th>Status</th>-->
-<!--            </tr>-->
-<!--            </thead>-->
-<!--            <tbody>-->
-<!--                <tr th:each="livro : ${livros}">-->
-<!--                    <td th:text="${livro.isbn}"></td>-->
-<!--                    <td> <img th:src="${livro.imagem_url}" alt="Capa do Livro" style="width: 50px;"></td>-->
-<!--                    <td th:text="${livro.titulo}"></td>-->
-<!--
-          <td>-->
-<!--                        <span th:each="rel, iterStat : ${livro.autorEscreveLivro}">-->
-<!--                            <span th:text="${rel.autor.nome}"></span>-->
-<!--                            <span th:if="${!iterStat.last}">, </span>-->
-<!--                        </span>-->
-<!--                    </td>-->
-<!--                    <td>-->
-<!--                        <span th:each="rel, iterStat : ${livro.livroPertenceCategoria}">-->
-<!--                            <span th:text="${rel.categoria.nome}"></span>-->
-<!--                            <span th:if="${!iterStat.last}">, </span>-->
-<!--                        </span>-->
-<!--                    </td>-->
-<!--                    <td th:text="${livro.idioma.name}"></td>-->
-<!--                    <td th:text="${livro.ano_publicacao}"></td>-->
-<!--                    <td>-->
-<!--                        <span th:each="rel, iterStat : ${livro.exemplares}">-->
-<!--                            <span th:text="${rel.id.codigo_exemplar}"></span>-->
-<!--                            <span th:if="${!iterStat.last}">, </span>-->
-<!--                        </span>-->
-<!--                    </td>-->
-<!--                    <td th:text="${livro.quantidade}"></td>-->
-<!--                    <td th:text="${livro.disponiveis}"></td>-->
-<!--                    <td th:unless="${livro.deleted}">Ativo</td>-->
-<!--                </tr>-->
-<!--            </tbody>-->
-<!--        </table>-->
-<!--    </div>-->
-
-<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>-->
-<!--</body>-->
-<!--</html>-->
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Gestão de Entregas</title>
+    <title>Biblioteca</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" th:href="@{/listagem/livros.css}">
+    <link rel="stylesheet" th:href="@{/listagem/css/livros.css}">
 </head>
 <body class="bg-light">
 <div class="container py-4">
 
     <header class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h3 class="fw-bold">Biblioteca</h3>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="bi bi-book-half" style="font-size: 2rem"></i>
+                <h3 class="fw-bold">Livros</h3>
+            </div>
             <p class="text-muted">Sistema de Gerenciamento de Biblioteca</p>
         </div>
         <button class="btn btn-dark">+ Adicionar Livro</button>
@@ -118,11 +57,9 @@
         </div>
 
         <div class="card shadow-sm">
-            <!-- Barra de filtro/pesquisa -->
-            <div class="card shadow-sm mb-3">
+            <div class="card shadow-sm mb-3" style="margin-top: 0.5rem">
                 <div class="card-header bg-white">
                     <div class="d-flex align-items-center gap-2">
-                        <!-- Ícone e título -->
                         <h6 class="mb-0 d-flex align-items-center gap-2">
                             <i class="bi bi-funnel text-secondary"></i>
                             <span>Filtro de Livros</span>
@@ -130,49 +67,75 @@
                     </div>
                 </div>
 
-                <div class="card-body py-3">
-                    <div class="row g-2 align-items-center">
-                        <!-- Campo de pesquisa -->
-                        <div class="col-md-6">
-                            <div class="input-group">
-                    <span class="input-group-text bg-light border-0">
-                        <i class="bi bi-search text-muted"></i>
-                    </span>
-                                <input type="text" class="form-control border-0 shadow-sm"
-                                       placeholder="Pesquisar por título, autor, categoria...">
+                <form th:action="@{/livros}" method="get" id="formFiltros">
+                    <div class="card-body py-3">
+                        <div class="row g-2 align-items-center">
+
+                            <!-- Barra de pesquisa -->
+                            <div class="col-md-5">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-0">
+                                        <i class="bi bi-search text-muted"></i>
+                                    </span>
+                                    <input type="text"
+                                           class="form-control border-0 shadow-sm"
+                                           name="busca"
+                                           th:value="${busca}"
+                                           placeholder="Pesquisar por ISBN, Título ou Autor...">
+                                </div>
+                            </div>
+
+                            <!-- Filtro de ordenação -->
+                            <div class="col-md-2">
+                                <select class="form-select shadow-sm"
+                                        name="ordem"
+                                        onchange="this.form.submit()">
+                                    <option th:value="'titulo_asc'"
+                                            th:text="'Título A-Z'"
+                                            th:selected="${ordem == 'titulo_asc'}" selected>
+                                    </option>
+                                    <option th:value="'titulo_desc'"
+                                            th:text="'Título Z-A'"
+                                            th:selected="${ordem == 'titulo_desc'}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Filtro de categoria -->
+                            <div class="col-md-3">
+                                <select class="form-select shadow-sm"
+                                        name="categoriaId"
+                                        onchange="this.form.submit()">
+                                    <option value="" th:selected="${categoriaId == null}" selected>Todas as Categorias
+                                    </option>
+                                    <option th:each="categoria : ${categorias}"
+                                            th:value="${categoria.id}"
+                                            th:text="${categoria.nome}"
+                                            th:selected="${categoriaId == categoria.id}">Ficção
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- Filtro de status -->
+                            <div class="col-md-2">
+                                <select name="status"
+                                        class="form-select shadow-sm"
+                                        onchange="this.form.submit()">
+                                    <option value="" th:selectec="${status == null}" selected>Todos os Status</option>
+                                    <option value="true" th:selected="${status == 'true'}">Ativo</option>
+                                    <option value="false" th:selected="${status == 'false'}">Inativo</option>
+                                </select>
                             </div>
                         </div>
-
-                        <!-- Dropdown de categoria -->
-                        <div class="col-md-3">
-                            <select class="form-select shadow-sm">
-                                <option selected style="font-weight: bold">Todas as Categorias</option>
-                                <option th:each="categoria : ${categorias}"
-                                        th:value="${categoria.id}"
-                                        th:text="${categoria.nome}">
-                                </option>
-                            </select>
-
-                        </div>
-
-                        <!-- Dropdown de status -->
-                        <div class="col-md-3">
-                            <select class="form-select shadow-sm">
-                                <option selected>Todos os Status</option>
-                                <option>Ativo</option>
-                                <option>Inativo</option>
-                            </select>
-                        </div>
                     </div>
-                </div>
+                </form>
             </div>
 
 
-            <div class="table-responsive">
-                <table class="table align-middle mb-0 table-sm">
-
-                    <thead class="table-light">
-                    <tr style="text-align: center; font-size: 15px; vertical-align: middle;">
+            <div class="table-responsive desktop-table">
+                <table class="table table-striped align-middle mb-0">
+                    <thead>
+                    <tr>
                         <th>#ISBN</th>
                         <th>Capa</th>
                         <th>Título</th>
@@ -187,42 +150,36 @@
                     </tr>
                     </thead>
 
-                    <tbody style="text-align: center; font-size: 15px; vertical-align: middle;">
+                    <tbody>
                     <tr th:each="livro : ${livros}">
-                        <td th:text="${livro.isbn}" style="font-weight: bold;">1212121</td>
+                        <td th:text="${livro.isbn}">1212121</td>
 
                         <td>
-                            <img th:if="${livro.imagem_url != null}" th:src="${livro.imagem_url}"
-                                 style="height: 80px; width: auto; border-radius: 4px;">
-                            <i th:unless="${livro.imagem_url != null}" class="bi bi-book-half" style="font-size: 2rem;"></i>
+                            <img th:if="${livro.imagem_url != null}" th:src="${livro.imagem_url}" alt="Capa"
+                                 class="book-cover">
+                            <i th:unless="${livro.imagem_url != null}" class="bi bi-book-half icon-cover"></i>
                         </td>
 
-                        <td th:text="${livro.titulo}" style="white-space: normal; word-break: break-word; max-width: 120px;"></td>
+                        <td th:text="${livro.titulo}"></td>
 
-                        <td style="word-break: break-word;max-width: 100px;">
-                            <span th:each="autorRel, iterStat : ${livro.autorEscreveLivro}">
-                                <span>- </span>
-                                <span th:text="${autorRel.autor.nome}" style="color: slateblue;"></span>
-                                <br th:if="${!iterStat.last}"/>
-                            </span>
+                        <td>
+                <span th:each="autorRel, iterStat : ${livro.autorEscreveLivro}">
+                    <span th:text="${autorRel.autor.nome}" class="text-primary"></span>
+                    <br th:if="${!iterStat.last}"/>
+                </span>
                         </td>
 
-                        <td style="word-break: break-word;text-align: left; justify-content: center">
-                            <span
-
-                                    th:each="categoriaRel, iterStat : ${livro.livroPertenceCategoria}">
-                                <span th:text="${categoriaRel.categoria.nome}"></span>
-                                                                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i></button>
-                                <br th:if="${!iterStat.last}"/>
-                            </span>
+                        <td>
+                            <div class="book-categories">
+                    <span class="badge bg-dark"
+                          th:each="categoriaRel : ${livro.livroPertenceCategoria}"
+                          th:text="${categoriaRel.categoria.nome}"></span>
+                            </div>
                         </td>
 
                         <td th:text="${livro.idioma.name}">PT-BR</td>
-
-                        <td th:text="${livro.ano_publicacao}">12-11-2025</td>
-
+                        <td th:text="${livro.ano_publicacao}">2025</td>
                         <td th:text="${livro.quantidade}">5</td>
-
                         <td th:text="${livro.disponiveis}">5</td>
 
                         <td>
@@ -230,8 +187,8 @@
                             <span th:unless="${!livro.deleted}" class="badge bg-danger">Inativo</span>
                         </td>
 
-                        <td class="text-center">
-                            <div class="btn-group" role="group">
+                        <td>
+                            <div class="action-buttons">
                                 <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i></button>
                                 <button class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></button>
                                 <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
@@ -241,11 +198,15 @@
                     </tbody>
                 </table>
             </div>
+
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+<script src="/listagem/js/livros.js"></script>
 </body>
 </html>
 

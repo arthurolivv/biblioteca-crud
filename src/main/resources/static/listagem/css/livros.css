@@ -1,0 +1,82 @@
+.desktop-table {
+    overflow-x: auto; /* permite rolar se passar do limite */
+}
+
+.table {
+    table-layout: fixed;
+    width: 1200px; /* força largura maior */
+    min-width: 1200px; /* evita encolher */
+    margin: 0 auto; /* centraliza */
+    font-size: 15px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+
+/* ===== Cabeçalho ===== */
+.table thead th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* ===== Colunas com largura igual ===== */
+.table th, .table td {
+    width: calc(100% / 11); /* divide igualmente pelas 11 colunas */
+    padding: 0.75rem 0.5rem;
+    word-wrap: break-word;
+    white-space: normal;
+    vertical-align: middle;
+}
+
+/* ===== Imagens e ícones ===== */
+.book-cover {
+    height: 80px;
+    width: auto;
+    border-radius: 4px;
+}
+
+.icon-cover {
+    font-size: 2rem;
+    color: #6c757d;
+}
+
+/* ===== Categorias ===== */
+.book-categories {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.book-categories .badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.6rem;
+}
+
+/* ===== Ações ===== */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0.3rem;
+}
+
+/* ===== Responsividade ===== */
+@media (max-width: 992px) {
+    .desktop-table {
+        overflow-x: auto; /* permite scroll apenas em telas menores */
+    }
+
+    .table {
+        table-layout: auto;
+        font-size: 13px;
+    }
+
+    .table th, .table td {
+        width: auto;
+    }
+
+    .btn {
+        padding: 0.25rem 0.4rem;
+    }
+}
