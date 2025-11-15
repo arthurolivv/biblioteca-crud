@@ -12,9 +12,4 @@ import java.util.List;
 public class LivroService {
 
     private LivroRepository livroRepository;
-
-//    public List<Livro> filtrar(String busca, String ordem, Long categoriaId, Boolean status) {
-//
-//        var livros = livroRepository.findAll();
-//    }
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -49,17 +50,24 @@ public class LivroController {
             livros = livroRepository.findByStatus(status);
         }
 
-//        List<Livro> livro = livroService.filtrar(busca, ordem, categoriaId, status);
-
         List<Categoria> categorias = categoriaRepository.findAll();
         model.addAttribute("livros", livros);
         model.addAttribute("categorias", categorias);
+
         model.addAttribute("categoriaId", categoriaId);
         model.addAttribute("ordenar", ordem);
         model.addAttribute("busca", busca);
         model.addAttribute("status", status);
+
         return "listagem/livros";
     }
+
+//    @GetMapping("/adicionar")
+//    public String(Livro livro) {
+//
+//
+//        return "adicionar/livros";
+//    }
 
     private List<Livro> ordenarLivros(String criterio) {
         switch (criterio) {

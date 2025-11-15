@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.time.Year;
 import java.util.List;
 
 @Entity(name = "Livro")
@@ -29,7 +30,7 @@ public class Livro {
     private String titulo;
 
     @Column(nullable = false)
-    private String ano_publicacao;
+    private Year ano_publicacao;
 
     @Column(nullable = false)
     private Short disponiveis;

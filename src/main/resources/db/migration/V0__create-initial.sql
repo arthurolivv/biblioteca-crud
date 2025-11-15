@@ -1,4 +1,3 @@
-
 create table autor (
                        deleted boolean not null,
                        id varchar(255) not null,
@@ -63,10 +62,10 @@ create table exemplar (
 );
 
 create table livro (
+                       ano_publicacao integer not null,
                        deleted boolean not null,
                        disponiveis smallint not null,
                        quantidade smallint not null,
-                       ano_publicacao varchar(255) not null,
                        fk_biblioteca_cnpj varchar(255) not null,
                        fk_editora_cnpj varchar(255) not null,
                        idioma varchar(255) not null check (idioma in ('ENGLISH','PORTUGUESE','PORTUGUESE_BRAZILIAN','SPANISH','FRENCH','GERMAN','ITALIAN','RUSSIAN','CHINESE','CHINESE_SIMPLIFIED','CHINESE_TRADITIONAL','JAPANESE','KOREAN','ARABIC','HINDI','DUTCH','POLISH','SWEDISH','NORWEGIAN','DANISH','FINNISH','GREEK','TURKISH','CZECH','HUNGARIAN','ROMANIAN','BULGARIAN','UKRAINIAN','CROATIAN','SERBIAN','SLOVAK','SLOVENIAN','LITHUANIAN','LATVIAN','ESTONIAN','IRISH','WELSH','ICELANDIC','MALTESE','THAI','VIETNAMESE','INDONESIAN','MALAY','TAGALOG','BENGALI','URDU','PUNJABI','TAMIL','TELUGU','MARATHI','GUJARATI','KANNADA','MALAYALAM','SINHALESE','BURMESE','KHMER','LAO','NEPALI','MONGOLIAN','HEBREW','PERSIAN','KURDISH','PASHTO','SWAHILI','HAUSA','YORUBA','IGBO','ZULU','XHOSA','AFRIKAANS','AMHARIC','SOMALI','SPANISH_MEXICAN','SPANISH_ARGENTINIAN','SPANISH_COLOMBIAN','ENGLISH_US','ENGLISH_UK','ENGLISH_AUSTRALIAN','ENGLISH_CANADIAN','FRENCH_CANADIAN','QUECHUA','GUARANI','AYMARA','NAHUATL','LATIN','ANCIENT_GREEK','SANSKRIT','ESPERANTO','BASQUE','CATALAN','GALICIAN','ALBANIAN','MACEDONIAN','BOSNIAN','ARMENIAN','GEORGIAN','AZERBAIJANI','KAZAKH','UZBEK','TAJIK','TURKMEN','KYRGYZ','BELARUSIAN','MALAGASY','MAORI','HAWAIIAN','SAMOAN','TONGAN','FIJIAN')),
@@ -107,8 +106,8 @@ create table usuario_emprestimo_exemplar (
                                              data_devolucao timestamp(6) not null,
                                              data_devolucao_prevista timestamp(6) not null,
                                              data_emprestimo timestamp(6) not null,
-                                             fk_exemplar_codigo_exemplar varchar(255) not null,
                                              num_emprestimo bigint not null,
+                                             fk_exemplar_codigo_exemplar varchar(255) not null,
                                              fk_livro_isbn varchar(255) not null,
                                              fk_usuario_cpf varchar(255) not null,
                                              livro_isbn varchar(255) not null,
@@ -166,7 +165,7 @@ alter table if exists livro_pertence_categoria
     references livro;
 
 alter table if exists usuario_emprestimo_exemplar
-    add constraint FKbvus1sqk682nhc7kin3clrsf4
+    add constraint FK1nqt60y07qmx7xnhape4t9pui
     foreign key (fk_exemplar_codigo_exemplar, fk_livro_isbn)
     references exemplar;
 

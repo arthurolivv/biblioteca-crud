@@ -19,7 +19,7 @@
             </div>
             <p class="text-muted">Sistema de Gerenciamento de Biblioteca</p>
         </div>
-        <button class="btn btn-dark">+ Adicionar Livro</button>
+        <button class="btn btn-dark">+ Cadastrar Livro</button>
     </header>
 
     <div class="row g-3 mb-3">
@@ -79,8 +79,6 @@
                                     </span>
                                     <input type="text"
                                            class="form-control border-0 shadow-sm"
-                                           name="busca"
-                                           th:value="${busca}"
                                            placeholder="Pesquisar por ISBN, Título ou Autor...">
                                 </div>
                             </div>
@@ -88,25 +86,20 @@
                             <!-- Filtro de ordenação -->
                             <div class="col-md-2">
                                 <select class="form-select shadow-sm"
-                                        name="ordem"
-                                        onchange="this.form.submit()">
-                                    <option th:value="'titulo_asc'"
-                                            th:text="'Título A-Z'"
-                                            th:selected="${ordem == 'titulo_asc'}" selected>
+                                >
+                                    <option
+                                            th:text="'Título A-Z'" selected>
                                     </option>
-                                    <option th:value="'titulo_desc'"
-                                            th:text="'Título Z-A'"
-                                            th:selected="${ordem == 'titulo_desc'}">
+                                    <option
+                                            th:text="'Título Z-A'">
                                     </option>
                                 </select>
                             </div>
 
                             <!-- Filtro de categoria -->
                             <div class="col-md-3">
-                                <select class="form-select shadow-sm"
-                                        name="categoriaId"
-                                        onchange="this.form.submit()">
-                                    <option value="" th:selected="${categoriaId == null}" selected>Todas as Categorias
+                                <select class="form-select shadow-sm">
+                                    <option value="" selected>Todas as Categorias
                                     </option>
                                     <option th:each="categoria : ${categorias}"
                                             th:value="${categoria.id}"
@@ -118,12 +111,11 @@
 
                             <!-- Filtro de status -->
                             <div class="col-md-2">
-                                <select name="status"
-                                        class="form-select shadow-sm"
-                                        onchange="this.form.submit()">
-                                    <option value="" th:selectec="${status == null}" selected>Todos os Status</option>
-                                    <option value="true" th:selected="${status == 'true'}">Ativo</option>
-                                    <option value="false" th:selected="${status == 'false'}">Inativo</option>
+                                <select
+                                        class="form-select shadow-sm">
+                                    <option selected>Todos os Status</option>
+                                    <option>Ativo</option>
+                                    <option>Inativo</option>
                                 </select>
                             </div>
                         </div>
@@ -152,7 +144,7 @@
 
                     <tbody>
                     <tr th:each="livro : ${livros}">
-                        <td th:text="${livro.isbn}">1212121</td>
+                        <td th:text="${livro.isbn}" style="font-weight: bold">1212121</td>
 
                         <td>
                             <img th:if="${livro.imagem_url != null}" th:src="${livro.imagem_url}" alt="Capa"
@@ -206,7 +198,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
-<script src="/listagem/js/livros.js"></script>
 </body>
 </html>
 
