@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Livro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" th:href="@{/livros/css/visualizar.css}">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <i class="bi bi-book-fill fs-3 me-2 text-primary"></i>
+            <div>
+                <strong style="font-size: 1.3rem;">Sistema Biblioteca</strong>
+                <p class="mb-0 text-muted" style="font-size: 0.85rem;">Gerenciamento de Acervo</p>
+            </div>
+        </a>
+        <a class="btn btn-dark" role="button" href="/livros">Voltar</a>
+
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container my-4" th:object="${livro}">
+    <div class="row">
+
+        <!-- Left Column - Book Cover -->
+        <div class="col-lg-4">
+            <div class="book-cover-section text-center">
+
+                <!-- Capa do Livro -->
+                <img
+                     alt="Capa do Livro"
+                     class="img-fluid rounded mb-3 shadow"
+                     th:src="*{imagem_url}">
+
+                <!-- Título Centralizado -->
+                <h1 class="book-title mb-4" th:text="*{titulo}"></h1>
+
+                <!-- Contadores -->
+                <div class="row mt-2 g-3 justify-content-center">
+                    <div class="col-6">
+                        <div class="availability-summary border rounded py-2 text-center w-100">
+                            <div class="availability-number fs-3 fw-bold" th:text="*{quantidade}"></div>
+                            <div style="font-size: 0.9rem; opacity: 0.9;">Total</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="availability-summary border rounded py-2 text-center w-100">
+                            <div class="availability-number fs-3 fw-bold" th:text="*{disponiveis}"></div>
+                            <div style="font-size: 0.9rem; opacity: 0.9;">Disponíveis</div>
+                        </div>
+                    </div>
+                </div>
+
+<!--                <button class="btn btn-primary-custom btn-custom w-100 mt-3">-->
+<!--                    <i class="bi bi-bookmark-plus me-2"></i>Reservar Livro-->
+<!--                </button>-->
+<!--                <button class="btn btn-outline-secondary btn-custom w-100 mt-2">-->
+<!--                    <i class="bi bi-pencil me-2"></i>Editar Informações-->
+<!--                </button>-->
+            </div>
+        </div>
+
+        <!-- Right Column - Informaçao do Livro -->
+        <div class="col-lg-8">
+            <!-- Titulo e infos -->
+            <div class="info-card">
+                <h1 class="book-title" th:text="*{titulo}"></h1>
+                <div class="book-meta">
+                    <div class="meta-item">
+                        <i class="bi bi-calendar3"></i>
+                        <span th:text="*{ano_publicacao}" ><strong>Ano:</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="bi bi-globe"></i>
+                        <span th:text="*{idioma}"><strong>Idioma:</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="bi bi-upc-scan"></i>
+                        <span th:text="*{isbn}"><strong>ISBN:</strong></span>
+                    </div>
+                </div>
+                <div class="meta-item">
+                    <i class="bi bi-building"></i>
+                    <span th:text="*{editora.razao_social}"><strong>Editora:</strong></span>
+                </div>
+                <div class="meta-item mt-2">
+                    <i class="bi bi-bank"></i>
+                    <span th:text="*{biblioteca.nome}"><strong>Biblioteca:</strong></span>
+                </div>
+            </div>
+
+            <!-- Synopsis -->
+            <div class="info-card">
+                <h3 class="card-title-custom">
+                    <i class="bi bi-file-text"></i>
+                    Sinopse
+                </h3>
+                <p class="synopsis-text" th:text="*{sinopse}">
+                </p>
+            </div>
+
+            <!-- Authors -->
+            <div class="info-card">
+                <h3 class="card-title-custom">
+                    <i class="bi bi-person-fill"></i>
+                    Autores
+                </h3>
+                <div class="author-item" th:each="aut : ${livro.autorEscreveLivro}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong
+                            th:text="${aut.autor.nome}"></strong>
+<!--                            <div class="text-muted small">Eric Arthur Blair</div>-->
+                        </div>
+<!--                        <span class="badge bg-secondary">Principal</span>-->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="info-card">
+                <h3 class="card-title-custom">
+                    <i class="bi bi-tags-fill"></i>
+                    Categorias
+                </h3>
+                <div class="d-flex flex-wrap gap-2">
+                    <span class="badge bg-dark p-2"
+                    th:each="cat : ${livro.livroPertenceCategoria}"
+                    th:text="${cat.categoria.nome}"></span>
+                </div>
+            </div>
+
+            <!-- Exemplares -->
+            <div class="info-card">
+                <h3 class="card-title-custom" th:text="|Exemplares (*{quantidade})|">
+                    <i class="bi bi-collection-fill"></i>
+                </h3>
+
+                <div class="exemplar-item"
+                th:each="ex : ${livro.exemplares}">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong th:text="${ex.id.getCodigo_exemplar()}" class="text-dark"></strong>
+
+                        <span   th:if="${ex.proprio}"
+                                class="badge badge-status badge-proprio">
+                                <i class="bi bi-bank me-1"></i>
+                                Consulta Local
+                        </span>
+
+                        <div th:unless="${ex.proprio}">
+
+                            <span   th:if="${ex.status.name() == 'DISPONIVEL'}"
+                                    class="badge badge-status badge-disponivel">
+                                    <i class="bi bi-check-circle me-1"></i>Disponível
+                            </span>
+                            <span   th:if="${ex.status.name() == 'EMPRESTADO'}"
+                                    class="badge badge-status badge-emprestado">
+                                    <i class="bi bi-clock me-1"></i>Emprestado
+                            </span>
+                            <span   th:if="${ex.status.name() == 'RESERVADO'}"
+                                    class="badge badge-status badge-reservado">
+                                    <i class="bi bi-bookmark-fill me-1"></i>Reservado
+                            </span>
+                            <span   th:if="${ex.status.name() == 'MANUTENCAO'}"
+                                    class="badge badge-status badge-manutencao">
+                                    <i class="bi bi-hammer me-1"></i>Em Manutenção
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exemplar-item">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong class="text-primary">Código: EX-1984-002</strong>
+                        <span class="badge badge-status badge-emprestado">
+                                <i class="bi bi-clock me-1"></i>Emprestado
+                            </span>
+                    </div>
+                    <div class="text-muted small">
+                        Devolução prevista: 20/11/2025 | Usuário: João Silva
+                    </div>
+                </div>
+
+                <div class="exemplar-item">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong class="text-primary">Código: EX-1984-003</strong>
+                        <span class="badge badge-status badge-disponivel">
+                                <i class="bi bi-check-circle me-1"></i>Disponível
+                            </span>
+                    </div>
+                    <div class="text-muted small">Localização: Estante A-23, Prateleira 4</div>
+                </div>
+
+                <div class="exemplar-item">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong class="text-primary">Código: EX-1984-004</strong>
+                        <span class="badge badge-status badge-reservado">
+                                <i class="bi bi-bookmark-fill me-1"></i>Reservado
+                            </span>
+                    </div>
+                    <div class="text-muted small">
+                        Reserva: Maria Santos | Válida até: 18/11/2025
+                    </div>
+                </div>
+
+                <div class="exemplar-item">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <strong class="text-primary">Código: EX-1984-005</strong>
+                        <span class="badge badge-status badge-disponivel">
+                                <i class="bi bi-check-circle me-1"></i>Disponível
+                            </span>
+                    </div>
+                    <div class="text-muted small">Localização: Estante A-23, Prateleira 4</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

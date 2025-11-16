@@ -18,7 +18,6 @@ import java.util.List;
 
 @Entity(name = "Livro")
 @Table(name = "Livro")
-@SQLRestriction("deleted = false")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -73,10 +72,6 @@ public class Livro {
 
     @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Exemplar> exemplares;
-
-    public void softDelete() {
-        this.deleted = true;
-    }
 
     public Livro(CadastrarLivroDto dto) {
 

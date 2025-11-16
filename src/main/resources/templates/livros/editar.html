@@ -22,7 +22,7 @@
 
 <div class="container py-4">
 
-    <form method="POST" enctype="multipart/form-data" th:action="@{/livros/editar(isbn=${livro.isbn})}" th:object="${editarLivroDto} ">
+    <form method="POST" enctype="multipart/form-data" th:action="@{/livros/editar(isbn=${livro.isbn})}" th:object="${editarLivroDto}">
 
         <!-- HEADER -->
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -181,30 +181,31 @@
                 <h5 class="mb-0 fw-semibold">📦 Exemplares</h5>
             </div>
 
-<!--            <div class="card-body p-4">-->
-<!--                &lt;!&ndash; QUANTIDADE &ndash;&gt;-->
-<!--                <div class="mb-3">-->
-<!--                    <label class="form-label fw-semibold">Adicionar Mais Exemplares</label>-->
-<!--                    <div class="input-group">-->
-<!--                        <input id="qtdExemplaresInput"-->
-<!--                               type="number"-->
-<!--                               min="1"-->
-<!--                               class="form-control"-->
-<!--                               placeholder="Quantidade a adicionar (ex: 3)">-->
-<!--                        <button type="button"-->
-<!--                                class="btn btn-outline-primary"-->
-<!--                                onclick="gerarExemplares()">-->
-<!--                            + Adicionar-->
-<!--                        </button>-->
-<!--                    </div>-->
-<!--                    <small class="text-muted">Digite quantos exemplares deseja adicionar e clique em "Adicionar"</small>-->
-<!--                    <p th:if="${#fields.hasErrors('exemplares')}" class="text-danger" th:errors="*{exemplares}"></p>-->
-<!--                </div>-->
+            <div class="card-body p-4">
+                <!-- QUANTIDADE -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Adicionar Mais Exemplares</label>
+                    <div class="input-group">
+                        <input id="qtdExemplaresInput"
+                               type="number"
+                               min="1"
+                               class="form-control"
+                               placeholder="Quantidade a adicionar (ex: 3)">
+                        <button type="button"
+                                class="btn btn-outline-primary"
+                                onclick="gerarExemplares()">
+                            + Adicionar
+                        </button>
+                    </div>
+                    <small class="text-muted">Digite quantos exemplares deseja adicionar e clique em "Adicionar"</small>
+                    <p th:if="${#fields.hasErrors('exemplares')}" class="text-danger" th:errors="*{exemplares}"></p>
+                </div>
 
-<!--                &lt;!&ndash; CONTAINER DOS EXEMPLARES &ndash;&gt;-->
-<!--                <div id="exemplaresContainer"></div>-->
-<!--            </div>-->
-<!--        </div>-->
+                <!-- CONTAINER DOS EXEMPLARES -->
+                <div id="exemplaresContainer"></div>
+            </div>
+
+        </div>
 
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
             <a class="btn btn-outline-danger" role="button" href="/livros">Cancelar</a>

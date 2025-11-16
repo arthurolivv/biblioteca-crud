@@ -34,15 +34,10 @@ public record EditarLivroDto(
     Idioma idioma,
 
     @NotBlank(message = "Editora é um campo obrigatório")
-//        @Pattern(
-//                regexp = "\\d{2}\\.\\d{3}\\.\\d{3}\\-\\d{4}\\-\\d{2}",
-//                message = "CNPJ deve seguir o seguinte formato: 00.000.000/0000-00"
-//        )
-//        @CNPJ(message = "CNPJ inválido")
     String editora_cnpj,
 
-//    @NotEmpty(message = "É obrigatório informar pelo menos um exemplar")
-//    List<CadastrarExemplarDto> exemplares,
+    @NotEmpty(message = "É obrigatório informar pelo menos um exemplar")
+    List<CadastrarExemplarDto> exemplares,
 
     @NotBlank
     @Size(
@@ -60,7 +55,7 @@ public record EditarLivroDto(
                     livro.getImagem_url(),
                     livro.getIdioma(),
                     livro.getEditora().getCnpj(),
-//                    livro.getExemplares().stream().map(exe -> new CadastrarExemplarDto(exe.getId().getCodigo_exemplar(), exe.getProprio())).toList(),
+                    livro.getExemplares().stream().map(exe -> new CadastrarExemplarDto(exe.getId().getCodigo_exemplar(), exe.getProprio())).toList(),
                     livro.getSinopse()
             );
         }

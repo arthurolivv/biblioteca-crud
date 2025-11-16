@@ -51,8 +51,8 @@ public class EditarLivroUsecase {
 
         atualizarCategorias(livro, dto.categoria_id());
         atualizarAutores(livro, dto.autor_oplid());
+        atualizarExemplares(livro, dto.exemplares());
 
-//        atualizarExemplares(livro, dto.exemplares());
         livro.setQuantidade(calculaQuantidade(livro.getExemplares()));
         livro.setDisponiveis(calculaDisponiveis(livro.getExemplares()));
 
@@ -89,6 +89,29 @@ public class EditarLivroUsecase {
                     .anyMatch(lpc -> lpc.getCategoria().getId().equals(cat.getId()));
             if (!existe) {
                 livro.getLivroPertenceCategoria().add(new LivroPertenceCategoria(livro, cat));
+            }
+        }
+    }
+
+    private void atualizarExemplares(Livro livro, List<CadastrarExemplarDto> exemplaresDto) {
+        List<Exemplar> existentes = livro.getExemplares();
+        List<String> codigosDto = exemplaresDto.stream()
+                .map(CadastrarExemplarDto::codigo_exemplar)
+                .toList();
+
+        // Remover exemplares que não existem mais
+        existentes.removeIf(e -> !codigosDto.contains(e.getId().getCodigo_exemplar()));
+
+        // Atualizar ou adicionar novos
+        for (CadastrarExemplarDto dto : exemplaresDto) {
+            Exemplar ex = existentes.stream()
+                    .filter(e -> e.getId().getCodigo_exemplar().equals(dto.codigo_exemplar()))
+                    .findFirst().orElse(null);
+
+            if (ex != null) {
+                ex.setProprio(dto.proprio());
+            } else {
+                existentes.add(new Exemplar(dto, livro));
             }
         }
     }

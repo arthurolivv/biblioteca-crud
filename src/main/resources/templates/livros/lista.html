@@ -177,16 +177,26 @@
 
                         <td>
                             <div class="action-buttons">
-                                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i></button>
-                                <a role="button" class="btn btn-sm btn-outline-primary" th:href="@{/livros/editar(isbn=${livro.isbn})}"><i class="bi bi-pencil"></i></a>
-                                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                <a role="button" class="btn btn-sm btn-outline-secondary" th:href="@{/livros/visualizar(isbn=${livro.isbn})}" title="Visualizar"><i class="bi bi-eye"></i></a>
+                                <a role="button" class="btn btn-sm btn-outline-primary" th:href="@{/livros/editar(isbn=${livro.isbn})}"><i title="Editar" class="bi bi-pencil"></i></a>
+
+                                <a th:if="${!livro.deleted}"
+                                   role="button" class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Tem certeza que deseja desativar esse livro?')"
+                                   th:href="@{/livros/desativar(isbn=${livro.isbn})}"
+                                   title="Desativar"><i class="bi bi-trash"></i></a>
+
+                                <a th:unless="${!livro.deleted}"
+                                   role="button" class="btn btn-sm btn-outline-success"
+                                   onclick="return confirm('Tem certeza que deseja reativar esse livro?')"
+                                   th:href="@{/livros/ativar(isbn=${livro.isbn})}"
+                                   title="Reativar Livro"><i class="bi bi-plus-circle"></i></a>
                             </div>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-
         </div>
     </div>
 </div>
