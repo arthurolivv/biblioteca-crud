@@ -81,4 +81,167 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 //Exemplares
+function carregarExemplaresExistentes(exemplares) {
+    const container = document.getElementById('exemplaresContainer');
+    container.innerHTML = ''; // Limpar apenas uma vez no início
 
+    exemplares.forEach((exemplar, i) => {
+        adicionarCampoExemplar(i, exemplar);
+    });
+}
+
+function adicionarCampoExemplar(index, dados = null) {
+    const container = document.getElementById('exemplaresContainer');
+
+    const exemplar = dados || { codigo_exemplar: '', proprio: '', status: '' };
+
+    let proprioValue = '';
+    if (exemplar.proprio !== null && exemplar.proprio !== undefined) {
+        proprioValue = String(exemplar.proprio).toLowerCase();
+    }
+
+    let statusValue = '';
+    if (exemplar.status) {
+        // Se for objeto com propriedade 'name'
+        if (typeof exemplar.status === 'object' && exemplar.status.name) {
+            statusValue = exemplar.status.name;
+        }
+        else if (typeof exemplar.status === 'string') {
+            statusValue = exemplar.status;
+        }
+    }
+
+    console.log('Status normalizado:', statusValue); // Debug
+
+    const exemplarDiv = document.createElement('div');
+    exemplarDiv.className = 'card mb-3';
+    exemplarDiv.setAttribute('data-exemplar-index', index);
+
+    exemplarDiv.innerHTML = `
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="card-subtitle mb-0 text-muted">Exemplar ${index + 1}</h6>
+                <button type="button" class="btn btn-sm btn-danger" onclick="removerExemplar(${index})">
+                    Remover
+                </button>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Código do Exemplar</label>
+                    <input type="text" 
+                           name="exemplares[${index}].codigo_exemplar" 
+                           class="form-control" 
+                           placeholder="Ex: EX-${String(index + 1).padStart(4, '0')}"
+                           pattern="^EX-\\d+$"
+                           value="${exemplar.codigo_exemplar || ''}" 
+                           required>
+                    <small class="text-muted">Formato: EX-0001, EX-0002, etc.</small>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Exclusivo para consulta local?</label>
+                    <select name="exemplares[${index}].proprio" class="form-select" required>
+                        <option value="" ${proprioValue === '' ? 'selected' : ''}>Selecione...</option>
+                        <option value="true" ${proprioValue === 'true' ? 'selected' : ''}>Sim</option>
+                        <option value="false" ${proprioValue === 'false' ? 'selected' : ''}>Não</option>
+                    </select>
+                </div>                
+                <div class="col-md-4">
+                    <label class="form-label">Status</label>
+                    <select name="exemplares[${index}].status" class="form-select" required>
+                        <option value="">Selecione...</option>             
+                        <option value="DISPONIVEL" ${statusValue === 'DISPONIVEL' ? 'selected' : ''}>
+                            Disponível
+                        </option>
+                        <option value="MANUTENCAO" ${statusValue === 'MANUTENCAO' ? 'selected' : ''}>
+                            Em Manutenção
+                        </option>
+                        <option value="EMPRESTADO" ${statusValue === 'EMPRESTADO' ? 'selected' : ''}>
+                            Emprestado
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    `;
+
+    container.appendChild(exemplarDiv);
+}
+
+function gerarExemplares() {
+    const container = document.getElementById('exemplaresContainer');
+    const qtdInput = document.getElementById('qtdExemplaresInput');
+    const qtdNovos = parseInt(qtdInput.value);
+
+    if (isNaN(qtdNovos) || qtdNovos < 1) {
+        alert('Por favor, digite uma quantidade válida');
+        return;
+    }
+
+    const exemplaresExistentes = container.querySelectorAll('.card').length;
+
+    for (let i = 0; i < qtdNovos; i++) {
+        const novoIndex = exemplaresExistentes + i;
+        adicionarCampoExemplar(novoIndex);
+    }
+
+    qtdInput.value = '';
+
+    reindexarExemplares();
+}
+
+function removerExemplar(index) {
+    const container = document.getElementById('exemplaresContainer');
+    const exemplares = container.querySelectorAll('.card');
+
+    if (exemplares.length <= 1) {
+        alert('Deve haver pelo menos um exemplar!');
+        return;
+    }
+
+    const exemplar = container.querySelector(`[data-exemplar-index="${index}"]`);
+    if (exemplar) {
+        exemplar.remove();
+        reindexarExemplares();
+    }
+}
+
+// Reindexar exemplares após adicionar/remover
+function reindexarExemplares() {
+    const container = document.getElementById('exemplaresContainer');
+    const exemplares = container.querySelectorAll('.card');
+
+    exemplares.forEach((exemplar, index) => {
+        exemplar.setAttribute('data-exemplar-index', index);
+
+        const titulo = exemplar.querySelector('.card-subtitle');
+        if (titulo) {
+            titulo.textContent = `Exemplar ${index + 1}`;
+        }
+
+        const codigoInput = exemplar.querySelector('input[name^="exemplares"]');
+        const proprioSelect = exemplar.querySelectorAll('select[name^="exemplares"]')[0];
+        const statusSelect = exemplar.querySelectorAll('select[name^="exemplares"]')[1];
+
+        if (codigoInput) {
+            const valorAtual = codigoInput.value;
+            codigoInput.name = `exemplares[${index}].codigo_exemplar`;
+            codigoInput.value = valorAtual;
+            codigoInput.placeholder = `Ex: EX-${String(index + 1).padStart(4, '0')}`;
+        }
+        if (proprioSelect) {
+            const valorAtual = proprioSelect.value;
+            proprioSelect.name = `exemplares[${index}].proprio`;
+            proprioSelect.value = valorAtual;
+        }
+        if (statusSelect) {
+            const valorAtual = statusSelect.value;
+            statusSelect.name = `exemplares[${index}].status`;
+            statusSelect.value = valorAtual;
+        }
+
+        const btnRemover = exemplar.querySelector('.btn-danger');
+        if (btnRemover) {
+            btnRemover.setAttribute('onclick', `removerExemplar(${index})`);
+        }
+    });
+}

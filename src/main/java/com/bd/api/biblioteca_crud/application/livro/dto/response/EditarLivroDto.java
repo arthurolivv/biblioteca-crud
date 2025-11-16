@@ -1,8 +1,10 @@
 package com.bd.api.biblioteca_crud.application.livro.dto.response;
 
 import com.bd.api.biblioteca_crud.application.exemplar.dto.request.CadastrarExemplarDto;
+import com.bd.api.biblioteca_crud.application.exemplar.dto.request.EditarExemplarDto;
 import com.bd.api.biblioteca_crud.domain.livro.Livro;
 import com.bd.api.biblioteca_crud.domain.shared.enums.Idioma;
+import com.bd.api.biblioteca_crud.domain.shared.enums.StatusExemplar;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
@@ -37,7 +39,7 @@ public record EditarLivroDto(
     String editora_cnpj,
 
     @NotEmpty(message = "É obrigatório informar pelo menos um exemplar")
-    List<CadastrarExemplarDto> exemplares,
+    List<EditarExemplarDto> exemplares,
 
     @NotBlank
     @Size(
@@ -55,7 +57,7 @@ public record EditarLivroDto(
                     livro.getImagem_url(),
                     livro.getIdioma(),
                     livro.getEditora().getCnpj(),
-                    livro.getExemplares().stream().map(exe -> new CadastrarExemplarDto(exe.getId().getCodigo_exemplar(), exe.getProprio())).toList(),
+                    livro.getExemplares().stream().map(exe -> new EditarExemplarDto(exe.getId().getCodigo_exemplar(), exe.getProprio(), exe.getStatus())).toList(),
                     livro.getSinopse()
             );
         }

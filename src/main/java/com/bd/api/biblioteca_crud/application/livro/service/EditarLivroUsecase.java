@@ -1,6 +1,7 @@
 package com.bd.api.biblioteca_crud.application.livro.service;
 
 import com.bd.api.biblioteca_crud.application.exemplar.dto.request.CadastrarExemplarDto;
+import com.bd.api.biblioteca_crud.application.exemplar.dto.request.EditarExemplarDto;
 import com.bd.api.biblioteca_crud.application.livro.dto.request.CadastrarLivroDto;
 import com.bd.api.biblioteca_crud.application.livro.dto.response.EditarLivroDto;
 import com.bd.api.biblioteca_crud.domain.autor.Autor;
@@ -93,28 +94,46 @@ public class EditarLivroUsecase {
         }
     }
 
-    private void atualizarExemplares(Livro livro, List<CadastrarExemplarDto> exemplaresDto) {
+    private void atualizarExemplares(Livro livro, List<EditarExemplarDto> exemplaresDto) {
+
         List<Exemplar> existentes = livro.getExemplares();
+
+        // Lista de códigos enviados pelo formulário
         List<String> codigosDto = exemplaresDto.stream()
-                .map(CadastrarExemplarDto::codigo_exemplar)
+                .map(EditarExemplarDto::codigo_exemplar)
                 .toList();
 
-        // Remover exemplares que não existem mais
-        existentes.removeIf(e -> !codigosDto.contains(e.getId().getCodigo_exemplar()));
+        // REMOVER exemplares não enviados
+        existentes.removeIf(ex ->
+                !codigosDto.contains(ex.getId().getCodigo_exemplar())
+        );
 
-        // Atualizar ou adicionar novos
-        for (CadastrarExemplarDto dto : exemplaresDto) {
+        // atualizar existentes ou add novos
+        for (EditarExemplarDto dto : exemplaresDto) {
+
             Exemplar ex = existentes.stream()
                     .filter(e -> e.getId().getCodigo_exemplar().equals(dto.codigo_exemplar()))
-                    .findFirst().orElse(null);
+                    .findFirst()
+                    .orElse(null);
 
             if (ex != null) {
-                ex.setProprio(dto.proprio());
+
+                // Atualiza somente se tiver mudado
+                if (!ex.getProprio().equals(dto.proprio())) {
+                    ex.setProprio(dto.proprio());
+                }
+
+                if (!ex.getStatus().equals(dto.status())) {
+                    ex.setStatus(dto.status());
+                }
+
             } else {
+                // Criar novo exemplar
                 existentes.add(new Exemplar(dto, livro));
             }
         }
     }
+
 
     private Short calculaQuantidade(List<Exemplar> exemplares){
 

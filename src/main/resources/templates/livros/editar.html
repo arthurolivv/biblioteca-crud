@@ -168,7 +168,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -205,12 +204,35 @@
                 <div id="exemplaresContainer"></div>
             </div>
 
+            <!-- SCRIPT PARA CARREGAR EXEMPLARES -->
+            <script th:inline="javascript">
+                document.addEventListener('DOMContentLoaded', function() {
+                    /*[# th:if="${editarLivroDto != null and editarLivroDto.exemplares != null and !editarLivroDto.exemplares.isEmpty()}"]*/
+
+                    const exemplares = [];
+
+                    /*[# th:each="ex : ${editarLivroDto.exemplares}"]*/
+                    exemplares.push({
+                        codigo_exemplar: /*[[${ex.codigo_exemplar}]]*/ '',
+                        proprio: /*[[${ex.proprio}]]*/ false,
+                        status: /*[[${ex.status != null ? ex.status.name() : ''}]]*/ ''
+                    });
+                    /*[/]*/
+
+                    if (exemplares.length > 0) {
+                        console.log('Carregando exemplares existentes:', exemplares);
+                        carregarExemplaresExistentes(exemplares);
+                    }
+
+                    /*[/]*/
+                });
+            </script>
+
         </div>
 
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
             <a class="btn btn-outline-danger" role="button" href="/livros">Cancelar</a>
             <button class="btn btn-dark" type="submit">Salvar</button>
-        </div>
         </div>
     </form>
 </div>

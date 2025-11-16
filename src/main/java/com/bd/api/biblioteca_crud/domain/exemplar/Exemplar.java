@@ -1,6 +1,7 @@
 package com.bd.api.biblioteca_crud.domain.exemplar;
 
 import com.bd.api.biblioteca_crud.application.exemplar.dto.request.CadastrarExemplarDto;
+import com.bd.api.biblioteca_crud.application.exemplar.dto.request.EditarExemplarDto;
 import com.bd.api.biblioteca_crud.domain.livro.Livro;
 import com.bd.api.biblioteca_crud.domain.emprestimo.UsuarioEmprestimoExemplar;
 import com.bd.api.biblioteca_crud.domain.shared.enums.StatusExemplar;
@@ -39,11 +40,21 @@ public class Exemplar {
     @OneToMany(mappedBy = "exemplar", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UsuarioEmprestimoExemplar> emprestimos;
 
-    public Exemplar(CadastrarExemplarDto exe, Livro livro) {
+    public Exemplar(CadastrarExemplarDto dto, Livro livro) {
         this(
-                new ExemplarId(livro.getIsbn(), exe.codigo_exemplar()),
+                new ExemplarId(livro.getIsbn(), dto.codigo_exemplar()),
                 StatusExemplar.DISPONIVEL,
-                exe.proprio(),
+                dto.proprio(),
+                livro,
+                new ArrayList<>()
+        );
+    }
+
+    public Exemplar(EditarExemplarDto dto, Livro livro) {
+        this(
+                new ExemplarId(livro.getIsbn(), dto.codigo_exemplar()),
+                dto.status(),
+                dto.proprio(),
                 livro,
                 new ArrayList<>()
         );
