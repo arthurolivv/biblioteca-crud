@@ -15,16 +15,24 @@ public class AutorEscreveLivro {
 
     @EmbeddedId
     @EqualsAndHashCode.Include
-    private AutorEscreveLivroId id;
+    protected AutorEscreveLivroId id;
 
     @ManyToOne
     @MapsId("oplid")
     @JoinColumn(name = "fk_autor_id", nullable = false)
-    private Autor autor;
+    protected Autor autor;
 
     @ManyToOne
     @MapsId("isbn")
     @JoinColumn(name = "fk_livro_isbn", nullable = false)
-    private Livro livro;
+    protected Livro livro;
 
+    public AutorEscreveLivro(Livro livro, Autor aut) {
+
+        this(
+                new AutorEscreveLivroId(aut.getOplid(), livro.getIsbn()),
+                aut,
+                livro
+        );
+    }
 }

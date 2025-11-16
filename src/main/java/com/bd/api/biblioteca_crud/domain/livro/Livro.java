@@ -1,5 +1,7 @@
 package com.bd.api.biblioteca_crud.domain.livro;
 
+import com.bd.api.biblioteca_crud.application.livro.dto.request.CadastrarLivroDto;
+import com.bd.api.biblioteca_crud.application.livro.dto.response.EditarLivroDto;
 import com.bd.api.biblioteca_crud.domain.biblioteca.Biblioteca;
 import com.bd.api.biblioteca_crud.domain.editora.Editora;
 import com.bd.api.biblioteca_crud.domain.exemplar.Exemplar;
@@ -11,6 +13,7 @@ import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "Livro")
@@ -68,11 +71,31 @@ public class Livro {
     @OneToMany(mappedBy = "livro", orphanRemoval = false, fetch = FetchType.LAZY)
     private List<UsuarioReservaLivro> reservas;
 
-    @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "livro", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Exemplar> exemplares;
 
     public void softDelete() {
         this.deleted = true;
     }
 
+    public Livro(CadastrarLivroDto dto) {
+
+        this.isbn = dto.isbn();
+        this.titulo = dto.titulo();
+        this.ano_publicacao = dto.ano_publicacao();
+        this.sinopse = dto.sinopse();
+        this.idioma = dto.idioma();
+        this.imagem_url = dto.imagem_url();
+        this.deleted = false;
+   }
+
+    public Livro(EditarLivroDto dto) {
+
+        this.titulo = dto.titulo();
+        this.ano_publicacao = dto.ano_publicacao();
+        this.sinopse = dto.sinopse();
+        this.idioma = dto.idioma();
+        this.imagem_url = dto.imagem_url();
+        this.deleted = false;
+    }
 }

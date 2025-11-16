@@ -14,15 +14,25 @@ public class LivroPertenceCategoria {
 
     @EmbeddedId
     @EqualsAndHashCode.Include
-    private LivroPertenceCategoriaId id;
+    protected LivroPertenceCategoriaId id;
 
     @ManyToOne
     @MapsId("isbn")
     @JoinColumn(name = "fk_livro_isbn", nullable = false)
-    private Livro livro;
+    protected Livro livro;
 
     @ManyToOne
     @MapsId("categoria_id")
     @JoinColumn(name = "fk_categoria_id", nullable = false)
-    private Categoria categoria;
+    protected Categoria categoria;
+
+    public LivroPertenceCategoria(Livro livro, Categoria cat) {
+
+        this(
+            new LivroPertenceCategoriaId(livro.getIsbn(), cat.getId()),
+            livro,
+                cat
+        );
+
+    }
 }

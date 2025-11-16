@@ -1,11 +1,13 @@
 package com.bd.api.biblioteca_crud.domain.exemplar;
 
+import com.bd.api.biblioteca_crud.application.exemplar.dto.request.CadastrarExemplarDto;
 import com.bd.api.biblioteca_crud.domain.livro.Livro;
 import com.bd.api.biblioteca_crud.domain.emprestimo.UsuarioEmprestimoExemplar;
 import com.bd.api.biblioteca_crud.domain.shared.enums.StatusExemplar;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "Exemplar")
@@ -37,13 +39,29 @@ public class Exemplar {
     @OneToMany(mappedBy = "exemplar", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UsuarioEmprestimoExemplar> emprestimos;
 
-    @PrePersist
-    public void gerarCodigoExemplar() {
-        if (id == null || id.getCodigo_exemplar() == null) {
-            long proximo = (livro.getExemplares() == null) ? 1 : livro.getExemplares().size() + 1;
-            String codigo_exemplar = "EX-" + proximo;
-            this.id = new ExemplarId(livro.getIsbn(), codigo_exemplar);
-        }
+    public Exemplar(CadastrarExemplarDto exe, Livro livro) {
+        this(
+                new ExemplarId(livro.getIsbn(), exe.codigo_exemplar()),
+                StatusExemplar.DISPONIVEL,
+                exe.proprio(),
+                livro,
+                new ArrayList<>()
+        );
     }
 
+//    @PrePersist
+//    public void gerarCodigoExemplar() {
+//        if (id == null || id.getCodigo_exemplar() == null) {
+//            long proximo = (livro.getExemplares() == null) ? 1 : livro.getExemplares().size() + 1;
+//            String codigo_exemplar = "EX-" + proximo;
+//            this.id = new ExemplarId(livro.getIsbn(), codigo_exemplar);
+//        }
+//    }
+
+    public static boolean ehProprio(Exemplar exemplar) {
+        if(exemplar.proprio){
+            return true;
+        }
+        return false;
+    }
 }
