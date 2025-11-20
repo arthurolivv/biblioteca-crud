@@ -6,7 +6,7 @@
     <title>Biblioteca</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" th:href="@{/usuario/css/lista.css}">
+    <link rel="stylesheet" th:href="@{/livros/css/lista.css}">
 </head>
 <body class="bg-light">
 <div class="container py-4">
@@ -19,7 +19,7 @@
             </div>
             <p class="text-muted">Sistema de Gerenciamento de Biblioteca</p>
         </div>
-        <a class="btn btn-dark" role="button" href="/usuario/cadastro">+ Cadastrar Usuário</a>
+        <a class="btn btn-dark" role="button" href="/usuarios/cadastro">+ Cadastrar Usuário</a>
 
     </header>
 
@@ -157,9 +157,9 @@
                                 <!--                                <a role="button" class="btn btn-sm btn-outline-secondary"-->
                                 <!--                                   th:href="@{/usuario/visualizar(isbn=${usuario.isbn})}" title="Visualizar"><i-->
                                 <!--                                        class="bi bi-eye"></i></a>-->
-                                <!--                                <a role="button" class="btn btn-sm btn-outline-primary"-->
-                                <!--                                   th:href="@{/usuario/editar(isbn=${usuario.isbn})}"><i title="Editar"-->
-                                <!--                                                                                         class="bi bi-pencil"></i></a>-->
+                                <a role="button" class="btn btn-sm btn-outline-primary"
+                                   th:href="@{/usuarios/editar(cpf=${usuario.cpf})}"><i title="Editar"
+                                                                                        class="bi bi-pencil"></i></a>
 
                                 <a th:if="${!usuario.status}"
                                    role="button" class="btn btn-sm btn-outline-danger"

@@ -1,5 +1,6 @@
 package com.bd.api.biblioteca_crud.domain.usuario;
 
+import com.bd.api.biblioteca_crud.application.usuario.dto.request.CadastrarUsuarioDto;
 import com.bd.api.biblioteca_crud.domain.emprestimo.UsuarioEmprestimoExemplar;
 import com.bd.api.biblioteca_crud.domain.reserva.UsuarioReservaLivro;
 import com.bd.api.biblioteca_crud.domain.shared.bases.Endereco;
@@ -49,6 +50,26 @@ public class Usuario {
 
     @OneToMany(mappedBy = "usuario", orphanRemoval = false, fetch = FetchType.LAZY)
     private List<UsuarioReservaLivro> reservas;
+
+    public Usuario(CadastrarUsuarioDto dto, String senhaCriptografada) {
+        this.cpf = dto.cpf();
+        this.rg = dto.rg();
+        this.email = dto.email();
+        this.senha = senhaCriptografada;
+        this.nome = new Nome(dto.nome().pri_nome(), dto.nome().sob_nome());
+        this.data_nasc = dto.data_nasc();
+        this.endereco = new Endereco(
+                dto.endereco().rua(),
+                dto.endereco().numero(),
+                dto.endereco().complemento(),
+                dto.endereco().bairro(),
+                dto.endereco().cidade(),
+                dto.endereco().estado(),
+                dto.endereco().cep(),
+                dto.endereco().pais()
+        );
+        this.deleted = false;
+    }
 
     public boolean verificarSenha(String senha, BCryptPasswordEncoder encoder) {
         return encoder.matches(senha, this.senha);
