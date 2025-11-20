@@ -29,11 +29,11 @@ public class Editora {
     @OneToMany(mappedBy = "editora", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EnderecoEditora> enderecos;
 
-    @OneToMany(mappedBy = "editora", cascade = CascadeType.ALL,  orphanRemoval = true)
+    @OneToMany(mappedBy = "editora", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Livro> livros;
 
     public void softDelete() {
         this.deleted = true;
     }
-
+    
 }

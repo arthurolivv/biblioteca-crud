@@ -35,7 +35,7 @@ public class CadastrarLivroUsecase {
     private BibliotecaRepository bibliotecaRepository;
 
     @Transactional
-    public Livro cadastrarLivro(CadastrarLivroDto dto){
+    public Livro execute(CadastrarLivroDto dto) {
 
         var editora = editoraRepository.getReferenceById(dto.editora_cnpj());
         var biblioteca = bibliotecaRepository.getReferenceById("63.025.530/0062‑26");
@@ -55,36 +55,36 @@ public class CadastrarLivroUsecase {
         return livroRepository.save(novoLivro);
     }
 
-    private List<LivroPertenceCategoria> mapearCategorias(Livro livro, List<Long> categoriasId){
+    private List<LivroPertenceCategoria> mapearCategorias(Livro livro, List<Long> categoriasId) {
 
-        List<Categoria> categorias =  categoriaRepository.findAllById(categoriasId);
-        return  categorias.stream()
+        List<Categoria> categorias = categoriaRepository.findAllById(categoriasId);
+        return categorias.stream()
                 .map(cat -> new LivroPertenceCategoria(livro, cat))
                 .toList();
     }
 
-    private List<AutorEscreveLivro> mapearAutores(Livro livro, List<String> autoresOplid){
+    private List<AutorEscreveLivro> mapearAutores(Livro livro, List<String> autoresOplid) {
 
-        List<Autor> autores =  autorRepository.findAllById(autoresOplid);
-        return  autores.stream()
+        List<Autor> autores = autorRepository.findAllById(autoresOplid);
+        return autores.stream()
                 .map(aut -> new AutorEscreveLivro(livro, aut))
                 .toList();
     }
 
-    private List<Exemplar> criarExemplar(Livro livro, List<CadastrarExemplarDto> exemplarDto){
+    private List<Exemplar> criarExemplar(Livro livro, List<CadastrarExemplarDto> exemplarDto) {
 
-        return  exemplarDto.stream()
+        return exemplarDto.stream()
                 .map(exe -> new Exemplar(exe, livro))
                 .toList();
     }
 
-    private Short calculaQuantidade(List<Exemplar> exemplares){
+    private Short calculaQuantidade(List<Exemplar> exemplares) {
 
         var quantidade = exemplares.stream().count();
         return (short) quantidade;
     }
 
-    private Short calculaDisponiveis(List<Exemplar> exemplares){
+    private Short calculaDisponiveis(List<Exemplar> exemplares) {
 
         var proprios = exemplares.stream()
                 .filter(Exemplar::ehProprio)

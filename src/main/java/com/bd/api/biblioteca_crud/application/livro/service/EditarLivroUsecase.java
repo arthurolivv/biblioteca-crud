@@ -37,7 +37,7 @@ public class EditarLivroUsecase {
     private ExemplarRepository exemplarRepository;
 
     @Transactional
-    public Livro editarLivro(EditarLivroDto dto, String isbn) {
+    public Livro execute(EditarLivroDto dto, String isbn) {
 
         Livro livro = livroRepository.findById(isbn).get();
 
@@ -135,13 +135,13 @@ public class EditarLivroUsecase {
     }
 
 
-    private Short calculaQuantidade(List<Exemplar> exemplares){
+    private Short calculaQuantidade(List<Exemplar> exemplares) {
 
         var quantidade = exemplares.stream().count();
         return (short) quantidade;
     }
 
-    private Short calculaDisponiveis(List<Exemplar> exemplares){
+    private Short calculaDisponiveis(List<Exemplar> exemplares) {
 
         var proprios = exemplares.stream()
                 .filter(Exemplar::ehProprio)

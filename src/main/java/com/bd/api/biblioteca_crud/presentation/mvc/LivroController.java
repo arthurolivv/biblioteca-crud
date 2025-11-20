@@ -4,38 +4,30 @@ import com.bd.api.biblioteca_crud.application.livro.dto.request.CadastrarLivroDt
 import com.bd.api.biblioteca_crud.application.livro.dto.response.EditarLivroDto;
 import com.bd.api.biblioteca_crud.application.livro.service.*;
 import com.bd.api.biblioteca_crud.domain.autor.Autor;
-import com.bd.api.biblioteca_crud.domain.autor.AutorEscreveLivro;
 import com.bd.api.biblioteca_crud.domain.categoria.Categoria;
 import com.bd.api.biblioteca_crud.domain.editora.Editora;
 import com.bd.api.biblioteca_crud.domain.livro.Livro;
 import com.bd.api.biblioteca_crud.domain.shared.enums.Idioma;
 import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.*;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/livros")
 public class LivroController {
 
-    @Autowired
-    private CadastrarLivroUsecase cadastrarLivroUsecase;
-
-    @Autowired
-    private EditarLivroUsecase editarLivroUsecase;
-
-    @Autowired
-    private DesativarLivroUsecase desativarLivroUsecase;
-
-    @Autowired
-    private AtivarLivroUsecase ativarLivroUsecase;
+    private final CadastrarLivroUsecase cadastrar;
+    private final EditarLivroUsecase editar;
+    private final DesativarLivroUsecase desativar;
+    private final AtivarLivroUsecase ativar;
 
     @Autowired
     private LivroRepository livroRepository;
@@ -50,7 +42,7 @@ public class LivroController {
     private EditoraRepository editoraRepository;
 
     @Autowired
-    private CadastrarLivroValidationService cadastrarLivroValidationServices;
+    private CadastrarLivroValidationService validar;
 
 
     @GetMapping({"", "/"})
@@ -93,14 +85,14 @@ public class LivroController {
             BindingResult result,
             Model model) {
 
-        cadastrarLivroValidationServices.validate(dto, result);
+        validar.execute(dto, result);
 
         if (result.hasErrors()) {
             carregarDadosFormulario(model);
             return "livros/cadastro";
         }
 
-        cadastrarLivroUsecase.cadastrarLivro(dto);
+        cadastrar.execute(dto);
 
         return "redirect:/livros";
     }
@@ -109,7 +101,7 @@ public class LivroController {
     public String showEditarLivroPagina(Model model, @RequestParam String isbn) {
 
 
-        try{
+        try {
             Livro livro = livroRepository.findById(isbn).get();
             model.addAttribute("livro", livro);
 
@@ -119,8 +111,7 @@ public class LivroController {
 
             model.addAttribute("editarLivroDto", editarLivroDto);
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
             carregarDadosFormulario(model);
             return "redirect:/livros";
@@ -136,18 +127,18 @@ public class LivroController {
             @RequestParam String isbn,
             @Valid @ModelAttribute EditarLivroDto dto,
             BindingResult result
-    ){
+    ) {
         try {
             Livro livro = livroRepository.findById(isbn).get();
             model.addAttribute("livro", livro);
 
-            if(result.hasErrors()){
+            if (result.hasErrors()) {
                 return "livros/editar";
             }
 
-            editarLivroUsecase.editarLivro(dto, isbn);
-        }
-        catch (Exception e){
+            editar.execute(dto, isbn);
+
+        } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
             carregarDadosFormulario(model);
         }
@@ -157,12 +148,11 @@ public class LivroController {
     @GetMapping("/visualizar")
     public String showVisualizarLivroPagina(Model model, @RequestParam String isbn) {
 
-        try{
+        try {
             Livro livro = livroRepository.findById(isbn).get();
             model.addAttribute("livro", livro);
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
             return "redirect:/livros";
         }
@@ -170,33 +160,29 @@ public class LivroController {
         return "livros/visualizar";
     }
 
-    @GetMapping ("/desativar")
+    @GetMapping("/desativar")
     public String desativarLivro(@RequestParam String isbn) {
 
         try {
             Livro livro = livroRepository.getReferenceById(isbn);
-            desativarLivroUsecase.desativar(livro);
-        }
-        catch (Exception e){
+            desativar.execute(livro);
+        } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
         }
         return "redirect:/livros";
     }
 
-    @GetMapping ("/ativar")
+    @GetMapping("/ativar")
     public String ativarLivro(@RequestParam String isbn) {
 
         try {
             Livro livro = livroRepository.getReferenceById(isbn);
-            ativarLivroUsecase.ativar(livro);
-        }
-        catch (Exception e){
+            ativar.execute(livro);
+        } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
         }
         return "redirect:/livros";
     }
-
-
 
     private void carregarDadosFormulario(Model model) {
 

@@ -23,7 +23,7 @@ public class UsuarioEmprestimoExemplar {
     @Column(nullable = false)
     private LocalDateTime data_emprestimo;
 
-    @Column(nullable = false)
+    @Column()
     private LocalDateTime data_devolucao;
 
     @Column(nullable = false)

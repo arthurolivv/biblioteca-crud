@@ -13,7 +13,7 @@ public class DesativarLivroUsecase {
     private LivroRepository livroRepository;
 
     @Transactional
-    public void desativar(Livro livro){
+    public void execute(Livro livro) {
         livro.setDeleted(true);
         livroRepository.save(livro);
     }

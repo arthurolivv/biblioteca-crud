@@ -14,7 +14,7 @@ public class CadastrarLivroValidationService {
     @Autowired
     private List<Validation<CadastrarLivroDto>> validations;
 
-    public void validate(CadastrarLivroDto dto, Errors errors) {
+    public void execute(CadastrarLivroDto dto, Errors errors) {
 
         validations.forEach(v -> v.validate(dto, errors));
     }

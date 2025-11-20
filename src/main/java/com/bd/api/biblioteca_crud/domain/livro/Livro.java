@@ -14,6 +14,7 @@ import org.hibernate.annotations.SQLRestriction;
 
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity(name = "Livro")
@@ -82,7 +83,7 @@ public class Livro {
         this.idioma = dto.idioma();
         this.imagem_url = dto.imagem_url();
         this.deleted = false;
-   }
+    }
 
     public Livro(EditarLivroDto dto) {
 

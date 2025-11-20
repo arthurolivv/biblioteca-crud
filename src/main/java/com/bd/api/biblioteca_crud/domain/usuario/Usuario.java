@@ -14,7 +14,7 @@ import java.util.List;
 
 @Entity(name = "Usuario")
 @Table(name = "Usuario")
-@SQLRestriction("deleted = false")
+//@SQLRestriction("deleted = false")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -45,7 +45,7 @@ public class Usuario {
     private Endereco endereco;
 
     @Column(name = "deleted")
-    private boolean deleted = false;
+    private Boolean deleted = false;
 
     @OneToMany(mappedBy = "usuario", orphanRemoval = false, fetch = FetchType.LAZY)
     private List<UsuarioReservaLivro> reservas;
@@ -56,8 +56,4 @@ public class Usuario {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<UsuarioEmprestimoExemplar> emprestimos;
-
-    public void softDelete() {
-        this.deleted = true;
-    }
 }
