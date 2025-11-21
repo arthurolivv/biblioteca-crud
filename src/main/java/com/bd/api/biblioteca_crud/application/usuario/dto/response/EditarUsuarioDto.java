@@ -1,5 +1,7 @@
 package com.bd.api.biblioteca_crud.application.usuario.dto.response;
 
+import com.bd.api.biblioteca_crud.domain.shared.bases.CadastrarEnderecoDto;
+import com.bd.api.biblioteca_crud.domain.shared.bases.CadastrarNomeDto;
 import com.bd.api.biblioteca_crud.domain.shared.bases.Endereco;
 import com.bd.api.biblioteca_crud.domain.shared.bases.Nome;
 import com.bd.api.biblioteca_crud.domain.usuario.Usuario;
@@ -19,26 +21,32 @@ public record EditarUsuarioDto(
         @Email
         String email,
 
-        // senha não está no HTML, pode remover se for editar em outra página
         String senha,
 
-        // Nome é um objeto, deve ser @Valid ao invés de @NotBlank
         @Valid
-        Nome nome,
+        CadastrarNomeDto nome,
 
         @Valid
-        Endereco endereco,
+        CadastrarEnderecoDto endereco,
 
-        @NotNull
         LocalDate data_nasc
 ) {
     public EditarUsuarioDto(Usuario usuario) {
         this(
                 usuario.getRg(),
                 usuario.getEmail(),
-                usuario.getSenha(),
-                usuario.getNome(),
-                usuario.getEndereco(),
+                null,
+                new CadastrarNomeDto(usuario.getNome().getPri_nome(),
+                        usuario.getNome().getSob_nome()),
+                new CadastrarEnderecoDto(usuario.getEndereco().getRua(),
+                        usuario.getEndereco().getNumero(),
+                        usuario.getEndereco().getComplemento(),
+                        usuario.getEndereco().getBairro(),
+                        usuario.getEndereco().getCidade(),
+                        usuario.getEndereco().getEstado(),
+                        usuario.getEndereco().getCep(),
+                        usuario.getEndereco().getPaís()
+                ),
                 usuario.getData_nasc()
         );
     }

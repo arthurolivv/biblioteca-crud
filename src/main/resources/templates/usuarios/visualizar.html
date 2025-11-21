@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizar Usuário</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" th:href="@{/usuarios/css/visualizar.css}">
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="/usuarios">
+            <i class="bi bi-person-vcard-fill fs-3 me-2 text-primary"></i>
+            <strong style="font-size: 1.3rem;">Usuários</strong>
+        </a>
+        <a class="btn btn-dark" href="/usuarios">Voltar</a>
+    </div>
+</nav>
+
+<div class="container my-4" th:object="${usuario}">
+
+    <!-- CARD SUPERIOR – INFORMAÇÕES DO USUÁRIO -->
+    <div class="card shadow-lg border-0 rounded-4 mb-4">
+        <div class="card-body p-4">
+
+            <div class="d-flex align-items-center mb-3">
+                <i class="bi bi-person-circle text-primary fs-1 me-3"></i>
+
+                <div>
+                    <h2 class="fw-bold mb-0" th:text="|*{nome.pri_nome} *{nome.sob_nome}|"></h2>
+                    <span class="badge"
+                          th:classappend="${usuario.deleted} ? ' bg-danger' : ' bg-success'">
+
+                        <i class="bi"
+                           th:classappend="${usuario.deleted} ? ' bi-x-circle me-1' : ' bi-check-circle me-1'"></i>
+
+                        <span th:text="${usuario.deleted} ? 'Inativo' : 'Ativo'"></span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-4 mb-2">
+                    <i class="bi bi-credit-card-2-front me-2"></i>
+                    <strong>CPF:</strong> <span th:text="*{cpf}"></span>
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <i class="bi bi-credit-card me-2"></i>
+                    <strong>RG:</strong> <span th:text="*{rg}"></span>
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <i class="bi bi-envelope-at me-2"></i>
+                    <strong>Email:</strong> <span th:text="*{email}"></span>
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <i class="bi bi-calendar3 me-2"></i>
+                    <strong>Nascimento:</strong>
+                    <span th:text="*{data_nasc}"></span>
+                </div>
+
+                <div class="col-md-8 mb-2">
+                    <i class="bi bi-geo-alt-fill me-2"></i>
+                    <strong>Endereço:</strong>
+                    <span th:text="|*{endereco.rua}, *{endereco.numero} - *{endereco.cidade}|"></span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- LINHA COM 2 CARDS (RESERVAS E EMPRÉSTIMOS) -->
+    <div class="row g-4">
+
+        <!-- CARD DE EMPRÉSTIMOS -->
+        <div class="col-lg-6">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-body">
+
+                    <!-- header com botão -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="fw-bold mb-0">
+                            <i class="bi bi-arrow-left-right me-2 text-primary"></i>
+                            Empréstimos
+                        </h4>
+
+                        <!--                        <a href="/emprestimos/cadastro" class="btn btn-primary btn-sm">-->
+                        <!--                            <i class="bi bi-plus-lg"></i> Novo Empréstimo-->
+                        <!--                        </a>-->
+
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#modalNovoEmprestimo">
+                            <i class="bi bi-plus-lg"></i> Novo Empréstimo
+                        </button>
+
+                    </div>
+
+                    <div th:if="*{emprestimos != null and emprestimos.size() > 0}">
+                        <div class="list-group">
+
+                            <div class="list-group-item py-3"
+                                 th:each="emp : *{emprestimos}">
+
+                                <div class="d-flex justify-content-between align-items-start">
+
+                                    <div>
+                                        <strong th:text="${emp.exemplar.livro.titulo}"></strong>
+
+                                        <div class="text-muted small">
+                                            <i class="bi bi-calendar-check me-1"></i>
+                                            Empréstimo:
+                                            <span th:text="${#temporals.format(emp.data_emprestimo, 'dd/MM/yyyy')}"></span>
+                                        </div>
+
+                                        <div class="text-muted small">
+                                            <i class="bi bi-calendar-event me-1"></i>
+                                            Prev. Devolução:
+                                            <span th:text="${#temporals.format(emp.data_devolucao_prevista, 'dd/MM/yyyy')}"></span>
+                                        </div>
+
+                                        <div class="small text-muted mt-1">
+                                            <i class="bi bi-hash me-1"></i>
+                                            Nº Empréstimo:
+                                            <strong th:text="${emp.id.num_emprestimo}"></strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-end">
+
+                                        <span class="badge mb-2"
+                                              th:classappend="${emp.data_devolucao == null} ? ' bg-danger' : ' bg-success'">
+                                            <i class="bi bi-book-fill me-1"></i>
+                                            <span th:text="${emp.data_devolucao == null ? 'Em Aberto' : 'Devolvido'}"></span>
+                                        </span>
+
+                                        <div>
+                                            <a th:href="@{'/emprestimos/editar/' + ${emp.id.num_emprestimo}}"
+                                               class="btn btn-outline-primary btn-sm me-1">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+
+                                            <a th:href="@{'/emprestimos/excluir/' + ${emp.id.num_emprestimo}}"
+                                               class="btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:unless="*{emprestimos != null and emprestimos.size() > 0}"
+                         class="alert alert-warning mt-3">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Nenhum empréstimo encontrado.
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- CARD DE RESERVAS -->
+        <div class="col-lg-6">
+            <div class="card shadow border-0 rounded-4 h-100">
+                <div class="card-body">
+
+                    <!-- header com botão -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="fw-bold mb-0">
+                            <i class="bi bi-bookmark-star-fill me-2 text-primary"></i>
+                            Reservas
+                        </h4>
+
+                        <a href="/reservas/cadastro" class="btn btn-primary btn-sm">
+                            <i class="bi bi-plus-lg"></i> Nova Reserva
+                        </a>
+                    </div>
+
+                    <!-- lista -->
+                    <div th:if="*{reservas != null and reservas.size() > 0}">
+                        <div class="list-group">
+
+                            <div class="list-group-item py-3"
+                                 th:each="res : *{reservas}">
+
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong th:text="${res.livro.titulo}"></strong>
+
+                                        <div class="text-muted small">
+                                            <i class="bi bi-calendar-check me-1"></i>
+                                            <span th:text="${#temporals.format(res.data_reserva, 'dd/MM/yyyy HH:mm')}"></span>
+                                        </div>
+
+                                        <div class="small mt-1 text-muted">
+                                            <i class="bi bi-list-ol me-1"></i>
+                                            Posição na fila:
+                                            <strong th:text="${res.posicao_fila}"></strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-end">
+
+                                        <!-- badge status -->
+                                        <span class="badge mb-2"
+                                              th:classappend="${res.status == 'ATIVA'} ? ' bg-success' :
+                                                              ${res.status == 'CANCELADA'} ? ' bg-secondary' :
+                                                              ' bg-warning'">
+                                            <i class="bi bi-circle-fill small me-1"></i>
+                                            <span th:text="${res.status}"></span>
+                                        </span>
+
+                                        <!-- botoes editar/excluir -->
+                                        <div>
+                                            <a th:href="@{'/reservas/editar/' + ${res.id}}"
+                                               class="btn btn-outline-primary btn-sm me-1">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+
+                                            <a th:href="@{'/reservas/excluir/' + ${res.id}}"
+                                               class="btn btn-outline-danger btn-sm">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div th:unless="*{reservas != null and reservas.size() > 0}"
+                         class="alert alert-warning mt-3">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Nenhuma reserva encontrada.
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

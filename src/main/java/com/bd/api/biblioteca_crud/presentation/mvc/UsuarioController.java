@@ -32,6 +32,7 @@ public class UsuarioController {
     private final ListarUsuarioUsecase listar;
     private final CadastrarUsuarioUsecase cadastrar;
     private final EditarUsuarioUsecase editar;
+    private final ExcluirUsuarioUsecase excluir;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -41,9 +42,7 @@ public class UsuarioController {
 
     @GetMapping({"", "/"})
     public String showListarUsuarioPagina(Model model) {
-
-        listar.execute(model);
-        return "usuarios/lista";
+        return listar.execute(model);
     }
 
     @GetMapping("/cadastro")
@@ -93,7 +92,6 @@ public class UsuarioController {
     @GetMapping("/editar")
     public String showEditarUsuarioPagina(Model model, @RequestParam String cpf) {
 
-
         try {
             Usuario usuario = usuarioRepository.getReferenceById(cpf);
             model.addAttribute("usuario", usuario);
@@ -106,7 +104,7 @@ public class UsuarioController {
             System.out.println("Exception: " + e.getMessage());
             return "redirect:/usuarios";
         }
-        
+
         return "usuarios/editar";
     }
 
@@ -115,19 +113,53 @@ public class UsuarioController {
             Model model,
             @RequestParam String cpf,
             @Valid @ModelAttribute EditarUsuarioDto dto,
-            BindingResult result
+            BindingResult result,
+            @RequestParam(required = false) String senhaAtual
     ) {
-
         try {
+            Usuario usuario = usuarioRepository.getReferenceById(cpf);
+            model.addAttribute("usuario", usuario);
 
+            // Se tem erros de validação, retorna
             if (result.hasErrors()) {
+                return "usuarios/editar";
+            }
+
+            // Executa a edição
+            boolean sucesso = editar.execute(dto, cpf, senhaAtual, model);
+
+            if (!sucesso) {
                 return "usuarios/editar";
             }
 
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
+            model.addAttribute("error", "Erro ao editar usuário");
+            return "usuarios/editar";
         }
 
+        return "redirect:/usuarios";
+    }
+
+    @GetMapping("/visualizar")
+    public String showVisualizarUsuarioPagina(Model model, @RequestParam String cpf) {
+
+        try {
+            Usuario usuario = usuarioRepository.getReferenceById(cpf);
+            model.addAttribute("usuario", usuario);
+
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            return "redirect:/usuarios";
+        }
+
+        return "usuarios/visualizar";
+    }
+
+    @GetMapping("/excluir")
+    public String excluirUsuario(@RequestParam String cpf) {
+
+        excluir.execute(cpf);
         return "redirect:/usuarios";
     }
 

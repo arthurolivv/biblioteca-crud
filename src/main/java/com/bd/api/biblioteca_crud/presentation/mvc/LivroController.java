@@ -102,7 +102,7 @@ public class LivroController {
 
 
         try {
-            Livro livro = livroRepository.findById(isbn).get();
+            Livro livro = livroRepository.getReferenceById(isbn);
             model.addAttribute("livro", livro);
 
             carregarDadosFormulario(model);

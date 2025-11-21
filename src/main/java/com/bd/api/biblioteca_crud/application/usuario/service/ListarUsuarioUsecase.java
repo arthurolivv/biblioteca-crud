@@ -14,11 +14,13 @@ public class ListarUsuarioUsecase {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public void execute(Model model) {
+    public String execute(Model model) {
         List<ListarUsuarios> usuarios = usuarioRepository.findAll().stream()
                 .map(ListarUsuarios::new)
                 .toList();
 
         model.addAttribute("usuarios", usuarios);
+
+        return "usuarios/lista";
     }
 }
