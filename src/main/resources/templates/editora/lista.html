@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Editoras</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/categoria/css/lista.css}">
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Gerenciamento de Editoras</h1>
+
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div class="d-flex justify-content-start mb-3">
+        <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modalCadastro">
+            Adicionar Nova Editora
+        </button>
+        <a th:href="@{/}" class="btn btn-secondary">Voltar para o Início</a>
+    </div>
+
+
+    <div th:if="${listaDeEditoras.isEmpty()}" class="alert alert-info">
+        Nenhuma editora encontrada.
+    </div>
+    <table th:unless="${listaDeEditoras.isEmpty()}" class="table table-striped table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>CNPJ (ID)</th>
+            <th>Razão Social</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="editora : ${listaDeEditoras}">
+            <td th:text="${editora.cnpj}">00000000000000</td>
+            <td th:text="${editora.razaoSocial}">Editora Exemplo S.A.</td>
+            <td>
+                <form th:action="@{/editoras/{cnpj}/excluir(cnpj=${editora.cnpj})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Tem certeza que deseja excluir a editora: ' + '[[${editora.razaoSocial}]]' + '? Esta ação não pode ser desfeita.')">
+                        Deletar
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="modalCadastro" tabindex="-1" aria-labelledby="modalCadastroLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form th:action="@{/editoras}" method="post" th:object="${cadastrarEditoraDto}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCadastroLabel">Cadastrar Nova Editora</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="cnpjEditora" class="form-label">CNPJ (apenas números):</label>
+                        <input type="text"
+                               class="form-control"
+                               id="cnpjEditora"
+                               th:field="*{cnpj}"
+                               placeholder="Ex: 00000000000000"
+                               required
+                               maxlength="14"
+                               th:classappend="${#fields.hasErrors('cnpj')} ? 'is-invalid'">
+                        <div th:if="${#fields.hasErrors('cnpj')}" class="invalid-feedback">
+                            <span th:errors="*{cnpj}">Erro de CNPJ</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="razaoSocialEditora" class="form-label">Razão Social:</label>
+                        <input type="text"
+                               class="form-control"
+                               id="razaoSocialEditora"
+                               th:field="*{razaoSocial}"
+                               placeholder="Ex: Editora Exemplo S.A."
+                               required
+                               maxlength="255"
+                               th:classappend="${#fields.hasErrors('razaoSocial')} ? 'is-invalid'">
+                        <div th:if="${#fields.hasErrors('razaoSocial')}" class="invalid-feedback">
+                            <span th:errors="*{razaoSocial}">Erro de Razão Social</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/editoras/js/editora.js}"></script>
+</body>
+</html>
