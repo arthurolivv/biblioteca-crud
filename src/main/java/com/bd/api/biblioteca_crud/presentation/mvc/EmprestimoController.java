@@ -73,4 +73,43 @@ public class EmprestimoController {
 
         return "redirect:/usuarios/visualizar?cpf=" + cpf;
     }
+
+    @PostMapping("/renovar")
+    public String renovarEmprestimo(
+            @RequestParam String cpf,
+            @RequestParam Long num_emprestimo
+    ) {
+
+        EmprestimoId emprestimoId = new EmprestimoId(num_emprestimo, cpf);
+        UsuarioEmprestimoExemplar renovarEmprestimo = emprestimoRepository.getReferenceById(emprestimoId);
+        LocalDate novaDataPrevista = renovarEmprestimo.getData_devolucao_prevista().plusDays(7);
+        renovarEmprestimo.setData_devolucao_prevista(novaDataPrevista);
+        emprestimoRepository.save(renovarEmprestimo);
+
+        return "redirect:/usuarios/visualizar?cpf=" + cpf;
+    }
+
+    @PostMapping("/concluir")
+    public String concluirEmprestimo(
+            @RequestParam String cpf,
+            @RequestParam Long num_emprestimo,
+            @RequestParam String isbn_exemplar,
+            @RequestParam String codigo_exemplar
+    ) {
+
+        EmprestimoId emprestimoId = new EmprestimoId(num_emprestimo, cpf);
+        UsuarioEmprestimoExemplar concluirEmprestimo = emprestimoRepository.getReferenceById(emprestimoId);
+        LocalDate data_devolucao = LocalDate.now();
+        concluirEmprestimo.setData_devolucao(data_devolucao);
+
+        emprestimoRepository.save(concluirEmprestimo);
+
+        ExemplarId exemplarId = new ExemplarId(isbn_exemplar, codigo_exemplar);
+        Exemplar exemplar = exemplarRepository.getReferenceById(exemplarId);
+        exemplar.setStatus(StatusExemplar.DISPONIVEL);
+
+        exemplarRepository.save(exemplar);
+
+        return "redirect:/usuarios/visualizar?cpf=" + cpf;
+    }
 }

@@ -22,7 +22,7 @@ public record ListarUsuarios(
                 usuario.getNome().getSob_nome(),
                 usuario.getEmail(),
                 usuario.getEmprestimos().stream()
-                        .filter(e -> e.getData_devolucao() != null)
+                        .filter(e -> e.getData_devolucao() == null)
                         .count(),
                 usuario.getReservas().stream().count(),
                 usuario.getDeleted()

@@ -77,7 +77,7 @@
         <!-- CARD DE EMPRÉSTIMOS -->
         <div class="col-lg-6">
             <div class="card shadow border-0 rounded-4 h-100">
-                <div class="card-body">
+                <div class="card-body d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h4 class="fw-bold mb-0">
                             <i class="bi bi-arrow-left-right me-2 text-primary"></i>
@@ -89,12 +89,18 @@
                         </button>
                     </div>
 
-                    <div th:if="*{emprestimos != null and emprestimos.size() > 0}">
+                    <div th:if="*{emprestimos != null and emprestimos.size() > 0}"
+                         class="overflow-auto" style="max-height: 500px;">
                         <div class="list-group">
                             <div class="list-group-item py-3" th:each="emp : *{emprestimos}">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <strong th:text="${emp.exemplar.livro.titulo}">Título</strong>
+                                        <div class="text-muted small">
+                                            <i class="bi bi-upc-scan"></i>
+                                            Exemplar: <span
+                                                th:text="${emp.exemplar.id.codigo_exemplar}">EX-01</span>
+                                        </div>
                                         <div class="text-muted small">
                                             <i class="bi bi-calendar-check me-1"></i>
                                             Empréstimo: <span
@@ -135,15 +141,33 @@
 
                                         <!-- Botões de ação -->
                                         <div th:if="${emp.data_devolucao == null}" class="d-flex gap-2">
-                                            <button class="btn btn-sm btn-success"
-                                                    title="Devolver livro">
-                                                <i class="bi bi-check-circle"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-primary"
-                                                    title="Renovar empréstimo">
-                                                <i class="bi bi-arrow-clockwise"></i>
-                                            </button>
+                                            <form method="post" class="d-inline">
+
+                                                <input type="hidden" name="cpf" th:value="${usuario.cpf}">
+                                                <input type="hidden" name="num_emprestimo" th:value="${emp.id.num_emprestimo}">
+                                                <input type="hidden" name="isbn_exemplar" th:value="${emp.exemplar.livro.isbn}">
+                                                <input type="hidden" name="codigo_exemplar" th:value="${emp.exemplar.id.codigo_exemplar}">
+                                                <input type="hidden" name="data_emprestimo" th:value="${emp.data_emprestimo}">
+                                                <input type="hidden" name="data_devolucao_prevista" th:value="${emp.data_devolucao_prevista}">
+
+                                                <!-- Botão de devolver -->
+                                                <button
+                                                        class="btn btn-sm btn-success"
+                                                        title="Devolver livro"
+                                                        formaction="/emprestimos/concluir">
+                                                    <i class="bi bi-check-circle"></i>
+                                                </button>
+
+                                                <!-- Botão de renovar -->
+                                                <button
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        title="Renovar Empréstimo"
+                                                        formaction="/emprestimos/renovar">
+                                                    <i class="bi bi-arrow-clockwise"></i>
+                                                </button>
+                                            </form>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>

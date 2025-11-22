@@ -18,8 +18,18 @@ public class ListarUsuarioUsecase {
         List<ListarUsuarios> usuarios = usuarioRepository.findAll().stream()
                 .map(ListarUsuarios::new)
                 .toList();
-
         model.addAttribute("usuarios", usuarios);
+
+        long totalUsuarios = usuarios.size();
+        long ativos = usuarios.stream()
+                .filter(u -> Boolean.FALSE.equals(u.status())) // status == false => ativo (pelo seu mapeamento)
+                .count();
+        model.addAttribute("ativos", ativos);
+
+        long inativos = usuarios.stream()
+                .filter(u -> Boolean.TRUE.equals(u.status())) // status == true => inativo
+                .count();
+        model.addAttribute("inativos", inativos);
 
         return "usuarios/lista";
     }
