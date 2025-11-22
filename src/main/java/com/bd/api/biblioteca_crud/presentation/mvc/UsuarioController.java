@@ -7,9 +7,12 @@ import com.bd.api.biblioteca_crud.application.usuario.dto.request.CadastrarUsuar
 import com.bd.api.biblioteca_crud.application.usuario.dto.response.EditarUsuarioDto;
 import com.bd.api.biblioteca_crud.application.usuario.dto.response.ListarUsuarios;
 import com.bd.api.biblioteca_crud.application.usuario.service.*;
+import com.bd.api.biblioteca_crud.domain.exemplar.Exemplar;
 import com.bd.api.biblioteca_crud.domain.livro.Livro;
 import com.bd.api.biblioteca_crud.domain.shared.bases.CadastrarEnderecoDto;
 import com.bd.api.biblioteca_crud.domain.shared.bases.CadastrarNomeDto;
+import com.bd.api.biblioteca_crud.domain.shared.enums.StatusExemplar;
+import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.ExemplarRepository;
 import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.UsuarioRepository;
 import com.bd.api.biblioteca_crud.domain.usuario.Usuario;
 import jakarta.validation.Valid;
@@ -21,6 +24,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Controller
 @RequiredArgsConstructor
@@ -36,6 +41,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private ExemplarRepository exemplarRepository;
 
     @Autowired
     private CadastrarUsuarioValidationService validar;
@@ -143,13 +151,18 @@ public class UsuarioController {
 
     @GetMapping("/visualizar")
     public String showVisualizarUsuarioPagina(Model model, @RequestParam String cpf) {
-
         try {
             Usuario usuario = usuarioRepository.getReferenceById(cpf);
+
+            List<Exemplar> exemplaresDisponiveis = exemplarRepository.findAll().stream()
+                    .filter(ex -> ex.getStatus() == StatusExemplar.DISPONIVEL)
+                    .toList();
+            
             model.addAttribute("usuario", usuario);
+            model.addAttribute("exemplaresDisponiveis", exemplaresDisponiveis);
 
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
             return "redirect:/usuarios";
         }
 
