@@ -1,3 +1,4 @@
+
 create table autor (
                        deleted boolean not null,
                        id varchar(255) not null,
@@ -103,9 +104,9 @@ create table usuario (
 );
 
 create table usuario_emprestimo_exemplar (
-                                             data_devolucao timestamp(6) not null,
-                                             data_devolucao_prevista timestamp(6) not null,
-                                             data_emprestimo timestamp(6) not null,
+                                             data_devolucao date,
+                                             data_devolucao_prevista date not null,
+                                             data_emprestimo date not null,
                                              num_emprestimo bigint not null,
                                              fk_exemplar_codigo_exemplar varchar(255) not null,
                                              fk_livro_isbn varchar(255) not null,

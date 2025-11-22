@@ -152,10 +152,15 @@
             </div>
 
             <form th:action="@{/emprestimos/salvar}" method="post" id="formEmprestimo">
+
                 <div class="modal-body">
 
                     <!-- CPF do usuário (hidden) -->
                     <input type="hidden" th:value="${usuario.cpf}" name="cpf">
+
+                    <!-- Campos que serão preenchidos ao selecionar o livro -->
+                    <input type="hidden" name="isbn_exemplar" id="isbn_exemplar" required>
+                    <input type="hidden" name="codigo_exemplar" id="codigo_exemplar" required>
 
                     <div class="row g-3">
 
@@ -214,41 +219,39 @@
                                 </div>
                             </div>
 
-                            <!-- Campos hidden que serão preenchidos ao selecionar -->
-                            <input type="hidden" name="exemplarIsbn" id="exemplarIsbn" required>
-                            <input type="hidden" name="exemplarCodigo" id="exemplarCodigo" required>
-
                             <small class="text-muted d-block mt-1">
                                 <i class="bi bi-info-circle me-1"></i>
                                 Selecione um exemplar disponível
                             </small>
                         </div>
 
-                        <!-- Data do empréstimo -->
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">
                                 <i class="bi bi-calendar-event me-1"></i>
                                 Data do Empréstimo
                             </label>
-                            <input type="date"
+                            <input type="text"
                                    class="form-control"
-                                   name="dataEmprestimo"
-                                   id="dataEmprestimo"
-                                   disabled
+                                   style="background-color: #e9ecef; cursor: not-allowed;"
+                                   name="data_emprestimo"
+                                   id="data_emprestimo"
+                                   placeholder="dd/mm/yyyy"
+                                   readonly
                                    required>
                         </div>
 
-                        <!-- Data prevista de devolução -->
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">
                                 <i class="bi bi-calendar-check me-1"></i>
                                 Previsão de Devolução
                             </label>
-                            <input type="date"
+                            <input type="text"
                                    class="form-control"
-                                   name="dataPrevista"
-                                   id="dataPrevista"
-                                   disabled
+                                   style="background-color: #e9ecef; cursor: not-allowed;"
+                                   name="data_devolucao_prevista"
+                                   id="data_devolucao_prevista"
+                                   placeholder="dd/mm/yyyy"
+                                   readonly
                                    required>
                         </div>
                     </div>

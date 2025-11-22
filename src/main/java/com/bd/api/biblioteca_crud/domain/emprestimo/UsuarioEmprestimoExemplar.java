@@ -5,6 +5,7 @@ import com.bd.api.biblioteca_crud.domain.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity(name = "Usuario_Emprestimo_Exemplar")
@@ -21,13 +22,13 @@ public class UsuarioEmprestimoExemplar {
     private EmprestimoId id;
 
     @Column(nullable = false)
-    private LocalDateTime data_emprestimo;
+    private LocalDate data_emprestimo;
 
-    @Column()
-    private LocalDateTime data_devolucao;
+    @Column
+    private LocalDate data_devolucao;
 
     @Column(nullable = false)
-    private LocalDateTime data_devolucao_prevista;
+    private LocalDate data_devolucao_prevista;
 
     @Column(nullable = false)
     private String livro_isbn;
@@ -44,11 +45,4 @@ public class UsuarioEmprestimoExemplar {
     })
     private Exemplar exemplar;
 
-    @PrePersist
-    public void gerarNumeroEmprestimo() {
-        if (id == null || id.getNum_emprestimo() == null) {
-            long proximo = (usuario.getEmprestimos() == null) ? 1 : usuario.getEmprestimos().size() + 1;
-            this.id = new EmprestimoId(proximo, usuario.getCpf());
-        }
-    }
 }

@@ -2,23 +2,31 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('livroSearch');
     const dropdown = document.getElementById('searchDropdown');
     const searchWrapper = document.querySelector('.search-wrapper');
-    const isbnInput = document.getElementById('exemplarIsbn');
-    const codigoInput = document.getElementById('exemplarCodigo');
-    const dataEmprestimoInput = document.getElementById('dataEmprestimo');
-    const dataPrevistaInput = document.getElementById('dataPrevista');
+    const isbnInput = document.getElementById('isbn_exemplar');
+    const codigoInput = document.getElementById('codigo_exemplar');
+    const dataEmprestimoInput = document.getElementById('data_emprestimo');
+    const dataPrevistaInput = document.getElementById('data_devolucao_prevista');
     const formEmprestimo = document.getElementById('formEmprestimo');
 
     // Pega todos os itens de busca
     const searchItems = document.querySelectorAll('.search-item');
 
-    // Define data de hoje
-    const hoje = new Date().toISOString().split('T')[0];
-    dataEmprestimoInput.value = hoje;
+// Formata data para dd/MM/yyyy
+    function formatarDataBR(date) {
+        const dia = String(date.getDate()).padStart(2, '0');
+        const mes = String(date.getMonth() + 1).padStart(2, '0');
+        const ano = date.getFullYear();
+        return `${dia}/${mes}/${ano}`;
+    }
 
-    // Define data prevista (hoje + 14 dias)
+// Data de empréstimo = hoje
+    const hoje = new Date();
+    dataEmprestimoInput.value = formatarDataBR(hoje);
+
+// Data prevista = hoje + 14 dias
     const dataPrevisao = new Date();
     dataPrevisao.setDate(dataPrevisao.getDate() + 14);
-    dataPrevistaInput.value = dataPrevisao.toISOString().split('T')[0];
+    dataPrevistaInput.value = formatarDataBR(dataPrevisao);
 
     // Mostra dropdown ao focar no input
     searchInput.addEventListener('focus', function () {
@@ -48,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
         searchWrapper.classList.add('active');
     });
 
-    // Seleciona um item
+// Seleciona um item
     searchItems.forEach(item => {
         item.addEventListener('click', function () {
             const isbn = this.getAttribute('data-exemplar-isbn');
@@ -58,15 +66,13 @@ document.addEventListener('DOMContentLoaded', function () {
             // Preenche o input visível
             searchInput.value = `${titulo} (${codigo})`;
 
-            // Preenche os campos hidden
-            isbnInput.value = isbn;
-            codigoInput.value = codigo;
+            // Preenche os campos hidden que serão enviados
+            document.getElementById('isbn_exemplar').value = isbn;
+            document.getElementById('codigo_exemplar').value = codigo;
 
             // Fecha o dropdown
             dropdown.classList.remove('show');
             searchWrapper.classList.remove('active');
-
-            console.log('Selecionado:', {isbn, codigo, titulo}); // Debug
         });
     });
 
