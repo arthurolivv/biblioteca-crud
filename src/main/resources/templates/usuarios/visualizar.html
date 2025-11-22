@@ -48,8 +48,24 @@
                 </div>
                 <div class="col-md-4 mb-2">
                     <i class="bi bi-calendar3 me-2"></i>
+                    <strong>Idade:</strong>
+                    <span th:text="${T(java.time.Period).between(usuario.data_nasc, T(java.time.LocalDate).now()).getYears()}">0</span>
+                </div>
+                <div class="col-md-4 mb-2">
+                    <i class="bi bi-calendar3 me-2"></i>
                     <strong>Nascimento:</strong>
                     <span th:text="${#temporals.format(usuario.data_nasc, 'dd/MM/yyyy')}">01/01/2000</span>
+                </div>
+                <div class="col-md-8 mb-2">
+                    <i class="bi bi-geo-alt-fill me-2"></i>
+                    <strong>Endereço:</strong>
+                    <span th:if="${usuario.endereco != null}"
+                          th:text="|${usuario.endereco.rua}, ${usuario.endereco.numero} - ${usuario.endereco.cidade}/${usuario.endereco.estado}|">
+        Endereço completo
+    </span>
+                    <span th:if="${usuario.endereco == null}" class="text-muted">
+        Não informado
+    </span>
                 </div>
             </div>
         </div>
@@ -76,7 +92,7 @@
                     <div th:if="*{emprestimos != null and emprestimos.size() > 0}">
                         <div class="list-group">
                             <div class="list-group-item py-3" th:each="emp : *{emprestimos}">
-                                <div class="d-flex justify-content-between align-items-start">
+                                <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <strong th:text="${emp.exemplar.livro.titulo}">Título</strong>
                                         <div class="text-muted small">
@@ -84,11 +100,51 @@
                                             Empréstimo: <span
                                                 th:text="${#temporals.format(emp.data_emprestimo, 'dd/MM/yyyy')}">01/01/2024</span>
                                         </div>
+                                        <div class="text-muted small">
+                                            <i class="bi bi-calendar-event me-1"></i>
+                                            Devolução Prevista: <span
+                                                th:text="${#temporals.format(emp.data_devolucao_prevista, 'dd/MM/yyyy')}">08/01/2024</span>
+                                        </div>
+                                        <div class="text-muted small" th:if="${emp.data_devolucao != null}">
+                                            <i class="bi bi-calendar-check-fill me-1"></i>
+                                            Devolvido em: <span
+                                                th:text="${#temporals.format(emp.data_devolucao, 'dd/MM/yyyy')}">10/01/2024</span>
+                                        </div>
                                     </div>
-                                    <span class="badge"
-                                          th:classappend="${emp.data_devolucao == null} ? 'bg-danger' : 'bg-success'">
-                                        <span th:text="${emp.data_devolucao == null ? 'Em Aberto' : 'Devolvido'}">Status</span>
-                                    </span>
+
+                                    <div class="d-flex align-items-center gap-2">
+                                        <!-- Devolvido -->
+                                        <span th:if="${emp.data_devolucao != null}" class="badge bg-success">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Devolvido
+                                </span>
+
+                                        <!-- Em Atraso (não devolvido E data prevista passou) -->
+                                        <span th:if="${emp.data_devolucao == null and emp.data_devolucao_prevista.isBefore(T(java.time.LocalDate).now())}"
+                                              class="badge bg-danger">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    Em Atraso
+                                </span>
+
+                                        <!-- Em Aberto (não devolvido E data prevista ainda não passou) -->
+                                        <span th:if="${emp.data_devolucao == null and !emp.data_devolucao_prevista.isBefore(T(java.time.LocalDate).now())}"
+                                              class="badge bg-warning">
+                                    <i class="bi bi-clock me-1"></i>
+                                    Em Aberto
+                                </span>
+
+                                        <!-- Botões de ação -->
+                                        <div th:if="${emp.data_devolucao == null}" class="d-flex gap-2">
+                                            <button class="btn btn-sm btn-success"
+                                                    title="Devolver livro">
+                                                <i class="bi bi-check-circle"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-primary"
+                                                    title="Renovar empréstimo">
+                                                <i class="bi bi-arrow-clockwise"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

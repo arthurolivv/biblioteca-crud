@@ -155,9 +155,10 @@ public class UsuarioController {
             Usuario usuario = usuarioRepository.getReferenceById(cpf);
 
             List<Exemplar> exemplaresDisponiveis = exemplarRepository.findAll().stream()
+                    .filter(ex -> !ex.getLivro().isDeleted())
                     .filter(ex -> ex.getStatus() == StatusExemplar.DISPONIVEL)
                     .toList();
-            
+
             model.addAttribute("usuario", usuario);
             model.addAttribute("exemplaresDisponiveis", exemplaresDisponiveis);
 
