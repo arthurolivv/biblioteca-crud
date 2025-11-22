@@ -25,4 +25,8 @@ public class Categoria {
 
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<LivroPertenceCategoria> livroPertenceCategoria;
+
+    public Categoria(String nome) {
+        this.nome = nome;
+    }
 }
