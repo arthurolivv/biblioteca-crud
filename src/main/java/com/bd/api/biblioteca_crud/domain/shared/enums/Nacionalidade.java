@@ -1,5 +1,8 @@
 package com.bd.api.biblioteca_crud.domain.shared.enums;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public enum Nacionalidade {
     AFGHANISTAN("Afghanistan", "AFG"),
     ALBANIA("Albania", "ALB"),
@@ -192,6 +195,16 @@ public enum Nacionalidade {
     Nacionalidade(String nome, String codigoISO3) {
         this.nome = nome;
         this.codigoISO3 = codigoISO3;
+    }
+
+    public static String normalizarNacionalidade(String enumName) {
+        if (enumName == null || enumName.isEmpty()) return "";
+
+        String[] parts = enumName.split("_");
+
+        return Arrays.stream(parts)
+                .map(word -> word.substring(0,1).toUpperCase() + word.substring(1).toLowerCase())
+                .collect(Collectors.joining(" "));
     }
 
     public String getNome() {

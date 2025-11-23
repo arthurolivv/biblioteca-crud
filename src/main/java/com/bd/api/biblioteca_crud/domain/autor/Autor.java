@@ -7,6 +7,8 @@ import org.hibernate.annotations.SQLRestriction;
 
 import java.util.List;
 
+import static com.bd.api.biblioteca_crud.domain.shared.enums.Nacionalidade.normalizarNacionalidade;
+
 @Table(name = "Autor")
 @Entity(name = "Autor")
 @SQLRestriction("deleted = false")
@@ -34,6 +36,10 @@ public class Autor {
 
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<AutorEscreveLivro> escreve;
+
+    public String getNacionalidadeFormatada(){
+        return normalizarNacionalidade(this.nacionalidade.name());
+    }
 
     public void softDelete() {
         this.deleted = true;

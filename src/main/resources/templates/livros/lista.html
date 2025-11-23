@@ -227,8 +227,10 @@
                     <!-- Autor(es) -->
                     <td>
                                 <span th:each="autorRel, iterStat : ${livro.autorEscreveLivro}">
-                                    <span th:text="${autorRel.autor.nome}" class="text-primary">Autor</span>
-                                    <br th:if="${!iterStat.last}"/>
+                                <a th:href="@{/autores/{oplid}(oplid=${autorRel.autor.oplid})}"
+                                    th:text="${autorRel.autor.nome}"
+                                    class="text-primary text-decoration-none"></a>
+                                    <span th:if="${!iterStat.last}">, </span>
                                 </span>
                     </td>
 
