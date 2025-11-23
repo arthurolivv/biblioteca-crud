@@ -71,4 +71,54 @@
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
+.search-wrapper {
+    position: relative;
+}
+
+.search-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-item-reserva {
+    padding: 12px 16px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+}
+
+.search-item-reserva:last-child {
+    border-bottom: none;
+}
+
+.search-item-reserva:hover {
+    background-color: #f8f9fa;
+}
+
+.livro-titulo {
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 4px;
+}
+
+.livro-info {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.no-results {
+    padding: 40px 20px;
+    text-align: center;
+    color: #6c757d;
+}
 

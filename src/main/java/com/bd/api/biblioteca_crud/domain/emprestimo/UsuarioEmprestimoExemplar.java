@@ -34,7 +34,7 @@ public class UsuarioEmprestimoExemplar {
     private String livro_isbn;
 
     @ManyToOne
-    @MapsId("usuarioCpf")
+    @MapsId("usuario_cpf")
     @JoinColumn(name = "fk_usuario_cpf", nullable = false)
     private Usuario usuario;
 

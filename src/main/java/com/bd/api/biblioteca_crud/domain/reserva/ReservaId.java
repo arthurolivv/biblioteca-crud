@@ -1,4 +1,4 @@
-package com.bd.api.biblioteca_crud.domain.emprestimo;
+package com.bd.api.biblioteca_crud.domain.reserva;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -10,10 +10,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class EmprestimoId {
+public class ReservaId {
 
     @Column(nullable = false)
-    private Long num_emprestimo;
+    private String livro_isbn;
 
     @Column(nullable = false)
     private String usuario_cpf;

@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const dataEmprestimoInput = document.getElementById('data_emprestimo');
     const dataPrevistaInput = document.getElementById('data_devolucao_prevista');
     const formEmprestimo = document.getElementById('formEmprestimo');
+    const noResultsMessage = document.getElementById('noResultsMessageEmprestimo');
 
     // Pega todos os itens de busca
     const searchItems = document.querySelectorAll('.search-item');
@@ -52,6 +53,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
+        if (!hasVisibleItems && searchTerm !== '') {
+            noResultsMessage.style.display = 'block';
+        } else {
+            noResultsMessage.style.display = 'none';
+        }
+
         dropdown.classList.add('show');
         searchWrapper.classList.add('active');
     });
@@ -76,14 +83,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Fecha dropdown ao clicar fora
-    document.addEventListener('click', function (e) {
-        if (!searchWrapper.contains(e.target)) {
-            dropdown.classList.remove('show');
-            searchWrapper.classList.remove('active');
-        }
-    });
-
     // Validação antes de submeter
     formEmprestimo.addEventListener('submit', function (e) {
         if (!isbnInput.value || !codigoInput.value) {
@@ -93,5 +92,37 @@ document.addEventListener('DOMContentLoaded', function () {
             return false;
         }
     });
+
+// Limpar formulário ao fechar o modal de EMPRESTIMO
+    const modalEmprestimo = document.getElementById('modalNovoEmprestimo');
+
+    modalEmprestimo.addEventListener('hidden.bs.modal', function () {
+
+        // Limpa os campos
+        searchInput.value = '';
+        isbnInput.value = '';
+        codigoInput.value = '';
+
+        // Resetar datas
+        const hoje = new Date();
+        dataEmprestimoInput.value = formatarDataBR(hoje);
+
+        const dataPrevisao = new Date();
+        dataPrevisao.setDate(dataPrevisao.getDate() + 14);
+        dataPrevistaInput.value = formatarDataBR(dataPrevisao);
+
+        // Mostrar todos os itens novamente
+        searchItems.forEach(item => {
+            item.style.display = 'block';
+        });
+
+        // Esconder mensagem de "nenhum resultado"
+        noResultsMessage.style.display = 'none';
+
+        // Fechar dropdown
+        dropdown.classList.remove('show');
+        searchWrapper.classList.remove('active');
+    });
+
 });
 
