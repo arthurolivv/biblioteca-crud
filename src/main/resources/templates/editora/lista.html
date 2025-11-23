@@ -65,14 +65,14 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="cnpjEditora" class="form-label">CNPJ (apenas números):</label>
+                        <label for="cnpjEditora" class="form-label">CNPJ (no formato XX.XXX.XXX/XXXX-XX):</label>
                         <input type="text"
                                class="form-control"
                                id="cnpjEditora"
                                th:field="*{cnpj}"
-                               placeholder="Ex: 00000000000000"
+                               placeholder="Ex: 22.222.222/0001-82"
                                required
-                               maxlength="14"
+                               maxlength="18"
                                th:classappend="${#fields.hasErrors('cnpj')} ? 'is-invalid'">
                         <div th:if="${#fields.hasErrors('cnpj')}" class="invalid-feedback">
                             <span th:errors="*{cnpj}">Erro de CNPJ</span>

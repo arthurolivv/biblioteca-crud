@@ -19,6 +19,10 @@ public class CadastrarEditoraUsecase {
 
     @Transactional
     public Editora execute(CadastrarEditoraDto dados) {
+        if (dados.cnpj() == null || dados.cnpj().length() != 18) {
+            throw new IllegalArgumentException("O CNPJ deve ser fornecido no formato XX.XXX.XXX/XXXX-XX (18 caracteres).");
+        }
+
         if (repository.existsById(dados.cnpj())) {
             throw new IllegalArgumentException("Editora com CNPJ '" + dados.cnpj() + "' já cadastrada.");
         }
