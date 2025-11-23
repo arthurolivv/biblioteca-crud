@@ -21,6 +21,19 @@
 </nav>
 
 <div class="container my-4" th:object="${usuario}">
+<!--    Notificacoes-->
+    <div th:if="${mensagemSucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        <span th:text="${mensagemSucesso}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <div th:if="${mensagemErro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${mensagemErro}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+<!--    Fim notificacoes-->
 
     <!-- CARD INFORMAÇÕES DO USUÁRIO -->
     <div class="card shadow-lg border-0 rounded-4 mb-4">
@@ -93,8 +106,8 @@
                          class="overflow-auto" style="max-height: 500px;">
                         <div class="list-group">
                             <div class="list-group-item py-3" th:each="emp : *{emprestimos}">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1 me-3">
                                         <strong th:text="${emp.exemplar.livro.titulo}">Título</strong>
                                         <div class="text-muted small">
                                             <i class="bi bi-upc-scan"></i>
@@ -118,26 +131,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="d-flex align-items-center gap-2">
-                                        <!-- Devolvido -->
-                                        <span th:if="${emp.data_devolucao != null}" class="badge bg-success">
-                                    <i class="bi bi-check-circle me-1"></i>
-                                    Devolvido
-                                </span>
-
-                                        <!-- Em Atraso (não devolvido E data prevista passou) -->
-                                        <span th:if="${emp.data_devolucao == null and emp.data_devolucao_prevista.isBefore(T(java.time.LocalDate).now())}"
-                                              class="badge bg-danger">
-                                    <i class="bi bi-exclamation-triangle me-1"></i>
-                                    Em Atraso
-                                </span>
-
-                                        <!-- Em Aberto (não devolvido E data prevista ainda não passou) -->
-                                        <span th:if="${emp.data_devolucao == null and !emp.data_devolucao_prevista.isBefore(T(java.time.LocalDate).now())}"
-                                              class="badge bg-warning">
-                                    <i class="bi bi-clock me-1"></i>
-                                    Em Aberto
-                                </span>
+                                    <div class="d-flex flex-column align-items-end gap-4" style="min-width: fit-content;">
 
                                         <!-- Botões de ação -->
                                         <div th:if="${emp.data_devolucao == null}" class="d-flex gap-2">
@@ -167,6 +161,25 @@
                                                 </button>
                                             </form>
                                         </div>
+                                        <!-- Devolvido -->
+                                        <span th:if="${emp.data_devolucao != null}" class="badge bg-success">
+            <i class="bi bi-check-circle me-1"></i>
+            Devolvido
+        </span>
+
+                                        <!-- Em Atraso (não devolvido E data prevista passou) -->
+                                        <span th:if="${emp.data_devolucao == null and emp.data_devolucao_prevista.isBefore(T(java.time.LocalDate).now())}"
+                                              class="badge bg-danger">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            Em Atraso
+        </span>
+
+                                        <!-- Em Aberto (não devolvido E data prevista ainda não passou) -->
+                                        <span th:if="${emp.data_devolucao == null and !emp.data_devolucao_prevista.isBefore(T(java.time.LocalDate).now())}"
+                                              class="badge bg-warning">
+            <i class="bi bi-clock me-1"></i>
+            Em Aberto
+        </span>
 
                                     </div>
                                 </div>
@@ -201,11 +214,11 @@
                          class="overflow-auto" style="max-height: 500px;">
                         <div class="list-group">
                             <div class="list-group-item py-3" th:each="res : *{reservas}">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1 me-3">
                                         <strong th:text="${res.livro.titulo}">Título do Livro</strong>
                                         <div class="text-muted small">
-                                            <i class="bi bi-journal-text me-1"></i>
+                                            <i class="bi bi-upc-scan"></i>
                                             ISBN: <span th:text="${res.livro.isbn}">978-XXXXX</span>
                                         </div>
                                         <div class="text-muted small">
@@ -213,45 +226,56 @@
                                             Reserva: <span
                                                 th:text="${#temporals.format(res.data_reserva, 'dd/MM/yyyy')}">01/01/2024</span>
                                         </div>
+                                        <div class="text-muted small text-truncate" style="max-width: 300px;">
+                                            <i class="bi bi-hash"></i>
+                                            ID: <span th:text="${res.id.num_reserva}" title="${res.id.num_reserva}">978-XXXXX</span>
+                                        </div>
                                     </div>
 
-                                    <div class="d-flex align-items-center gap-2">
-                                        <!-- Ativa -->
-                                        <span th:if="${res.status_reserva.toString() == 'ATIVA'}"
-                                              class="badge bg-primary">
-                                    <i class="bi bi-hourglass-split me-1"></i>
-                                    Ativa
-                                </span>
+                                    <div class="d-flex flex-column align-items-end gap-4" style="min-width: fit-content;">
 
-                                        <!-- Atendida -->
-                                        <span th:if="${res.status_reserva.toString() == 'ATENDIDA'}"
-                                              class="badge bg-success">
-                                    <i class="bi bi-check-circle me-1"></i>
-                                    Atendida
-                                </span>
-
-                                        <!-- Cancelada -->
-                                        <span th:if="${res.status_reserva.toString() == 'CANCELADA'}"
-                                              class="badge bg-secondary">
-                                    <i class="bi bi-x-circle me-1"></i>
-                                    Cancelada
-                                </span>
-
-                                        <!-- Botão de cancelar (apenas para reservas ativas) -->
-                                        <div th:if="${res.status_reserva.toString() == 'ATIVA'}">
+                                        <!-- Botões de ação (apenas para reservas pendentes) -->
+                                        <div th:if="${res.status.toString() == 'PENDENTE'}" class="d-flex gap-2">
                                             <form method="post" class="d-inline">
                                                 <input type="hidden" name="cpf" th:value="${usuario.cpf}">
-                                                <input type="hidden" name="isbn" th:value="${res.livro.isbn}">
-                                                <input type="hidden" name="data_reserva" th:value="${res.data_reserva}">
+                                                <input type="hidden" name="isbn_livro" th:value="${res.livro.isbn}">
+                                                <input type="hidden" name="codigo_reserva" th:value="${res.id.num_reserva}">
 
+                                                <!-- Cancelar Reserva -->
                                                 <button
-                                                        class="btn btn-sm btn-outline-danger"
+                                                        class="btn btn-sm btn-danger"
                                                         title="Cancelar Reserva"
                                                         formaction="/reservas/cancelar">
                                                     <i class="bi bi-x-lg"></i>
                                                 </button>
+                                                <!-- Verificar Situação -->
+                                                <button
+                                                        class="btn btn-sm btn-outline-primary"
+                                                        title="Verificar Situação"
+                                                        formaction="/reservas/verificar">
+                                                    <i class="bi bi-search"></i>
+                                                </button>
                                             </form>
                                         </div>
+
+                                        <!-- Cancelada -->
+                                        <span th:if="${res.status.toString() == 'CANCELADA'}"
+                                              class="badge bg-secondary">
+                        <i class="bi bi-x-circle me-1"></i>
+                        Cancelada
+                    </span>
+                                        <!-- Pendente -->
+                                        <span th:if="${res.status.toString() == 'PENDENTE'}"
+                                              class="badge bg-warning">
+                        <i class="bi bi-clock me-1"></i>
+                        Pendente
+                    </span>
+                                        <!-- Concluída -->
+                                        <span th:if="${res.status.toString() == 'CONCLUIDA'}"
+                                              class="badge bg-success">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Concluída
+                    </span>
                                     </div>
                                 </div>
                             </div>
@@ -395,7 +419,6 @@
                     </button>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
@@ -419,7 +442,7 @@
                     <input type="hidden" th:value="${usuario.cpf}" name="cpf">
 
                     <!-- ISBN do livro -->
-                    <input type="hidden" name="isbn" id="isbn_reserva" required>
+                    <input type="hidden" name="isbn_livro" id="isbn_livro" required>
 
                     <div class="row g-3">
 
@@ -445,7 +468,7 @@
                                          th:attr="data-livro-isbn=${livro.isbn},
                                                  data-livro-titulo=${livro.titulo}">
 
-                                        <div class="livro-titulo" th:text="${livro.titulo}">Título do Livro</div>
+                                        <div class="livro-titulo" th:text="${livro.titulo}">Título do Livro sem Exemplares Disponíveis</div>
 
                                         <div class="livro-info">
                                             <i class="bi bi-person me-1"></i>
@@ -461,7 +484,7 @@
                                     <!-- Mensagem quando não há resultados da busca -->
                                     <div class="no-results" id="noResultsMessage" style="display: none;">
                                         <i class="bi bi-search" style="font-size: 2rem;"></i>
-                                        <p class="mt-2 mb-0">Nenhum livro encontrado</p>
+                                        <p class="mt-2 mb-0">Este livro não foi encontrado ou ainda possui exemplares disponíveis!</p>
                                     </div>
                                 </div>
                             </div>

@@ -25,6 +25,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -166,8 +167,14 @@ public class UsuarioController {
                     .toList();
             model.addAttribute("exemplaresDisponiveis", exemplaresDisponiveis);
 
-            List<Livro> livros = livroRepository.findAll();
-            model.addAttribute("livros", livros);
+            List<Livro> livrosSemExemplaresDisponíveis = livroRepository.findAll().stream()
+                    .filter(livro -> {
+                        return livro.getExemplares().stream()
+                                .noneMatch(exemplar -> exemplar.getStatus() == StatusExemplar.DISPONIVEL);
+                    })
+                    .collect(Collectors.toList());
+
+            model.addAttribute("livros", livrosSemExemplaresDisponíveis);
 
         } catch (Exception e) {
             e.printStackTrace();

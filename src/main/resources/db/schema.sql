@@ -117,11 +117,11 @@
 
     create table usuario_reserva_livro (
         data_reserva date not null,
-        num_reserva uuid,
+        num_reserva uuid not null,
         fk_livro_isbn varchar(255) not null,
         fk_usuario_cpf varchar(255) not null,
         status varchar(255) not null check (status in ('PENDENTE','DISPONIVEL','CANCELADA','CONCLUIDA')),
-        primary key (fk_livro_isbn, fk_usuario_cpf)
+        primary key (num_reserva, fk_livro_isbn, fk_usuario_cpf)
     );
 
     alter table if exists autor_escreve_livro 

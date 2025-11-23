@@ -51,6 +51,9 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", orphanRemoval = false, fetch = FetchType.LAZY)
     private List<UsuarioReservaLivro> reservas;
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UsuarioEmprestimoExemplar> emprestimos;
+
     public Usuario(CadastrarUsuarioDto dto, String senhaCriptografada) {
         this.cpf = dto.cpf();
         this.rg = dto.rg();
@@ -74,7 +77,4 @@ public class Usuario {
     public boolean verificarSenha(String senha, BCryptPasswordEncoder encoder) {
         return encoder.matches(senha, this.senha);
     }
-
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<UsuarioEmprestimoExemplar> emprestimos;
 }

@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInputReserva = document.getElementById('livroSearchReserva');
     const dropdownReserva = document.getElementById('searchDropdownReserva');
     const searchItemsReserva = document.querySelectorAll('.search-item-reserva');
-    const isbnInputReserva = document.getElementById('isbn_reserva');
+    const isbnInputReserva = document.getElementById('isbn_livro');
     const dataReservaInput = document.getElementById('data_reserva');
     const noResultsMessage = document.getElementById('noResultsMessage');
 

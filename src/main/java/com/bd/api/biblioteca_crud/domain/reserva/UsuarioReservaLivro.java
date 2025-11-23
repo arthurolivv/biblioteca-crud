@@ -25,8 +25,6 @@ public class UsuarioReservaLivro {
     @EqualsAndHashCode.Include
     private ReservaId id;
 
-    private UUID num_reserva;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusReserva status;

@@ -1,5 +1,6 @@
 package com.bd.api.biblioteca_crud.application.usuario.dto.response;
 
+import com.bd.api.biblioteca_crud.domain.shared.enums.StatusReserva;
 import com.bd.api.biblioteca_crud.domain.usuario.Usuario;
 import jakarta.validation.constraints.NotNull;
 
@@ -24,7 +25,9 @@ public record ListarUsuarios(
                 usuario.getEmprestimos().stream()
                         .filter(e -> e.getData_devolucao() == null)
                         .count(),
-                usuario.getReservas().stream().count(),
+                usuario.getReservas().stream()
+                        .filter(r -> r.getStatus().equals(StatusReserva.PENDENTE))
+                        .count(),
                 usuario.getDeleted()
         );
 

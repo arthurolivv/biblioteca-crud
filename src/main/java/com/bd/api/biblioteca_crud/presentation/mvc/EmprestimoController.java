@@ -32,9 +32,9 @@ public class EmprestimoController {
     private EmprestimoRepository emprestimoRepository;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
     private ExemplarRepository exemplarRepository;
+
+    private final NovoEmprestimoUsecase emprestimo;
 
     @PostMapping("/salvar")
     public String salvarEmprestimo(
@@ -44,32 +44,11 @@ public class EmprestimoController {
             @RequestParam String data_emprestimo,
             @RequestParam String data_devolucao_prevista
     ) {
-
-        Usuario usuario = usuarioRepository.getReferenceById(cpf);
-
-        ExemplarId exemplarId = new ExemplarId(isbn_exemplar, codigo_exemplar);
-        Exemplar exemplar = exemplarRepository.getReferenceById(exemplarId);
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate dataEmp = LocalDate.parse(data_emprestimo, formatter);
         LocalDate dataPrev = LocalDate.parse(data_devolucao_prevista, formatter);
 
-        Long totalEmprestimos = emprestimoRepository.contarEmprestimosPorUsuario(cpf);
-        Long proximoNumero = totalEmprestimos + 1;
-
-        EmprestimoId emprestimoId = new EmprestimoId(proximoNumero, cpf);
-
-        UsuarioEmprestimoExemplar emprestimo = new UsuarioEmprestimoExemplar();
-        emprestimo.setId(emprestimoId);
-        emprestimo.setUsuario(usuario);
-        emprestimo.setExemplar(exemplar);
-        emprestimo.setLivro_isbn(isbn_exemplar);
-        emprestimo.setData_emprestimo(dataEmp);
-        emprestimo.setData_devolucao_prevista(dataPrev);
-
-        exemplar.setStatus(StatusExemplar.EMPRESTADO);
-
-        emprestimoRepository.save(emprestimo);
+        emprestimo.execute(cpf, isbn_exemplar, codigo_exemplar, dataEmp, dataPrev);
 
         return "redirect:/usuarios/visualizar?cpf=" + cpf;
     }
