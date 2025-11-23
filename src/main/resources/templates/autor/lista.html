@@ -2,48 +2,202 @@
 <html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Autores</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Autores - Biblioteca</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+
+        .card {
+            border: none;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: #495057;
+            background-color: #f8f9fa;
+        }
+
+        .desktop-table {
+            overflow-x: auto;
+        }
+    </style>
 </head>
-<body>
-<div class="container mt-5">
-    <h1 class="mb-4">Gerenciamento de Autores</h1>
+<body class="bg-light">
+<div class="container py-4">
 
-    <div class="d-flex justify-content-start mb-3">
-        <a href="/" class="btn btn-secondary me-2">Voltar para o Início</a>
-        <a href="/autores/cadastro" class="btn btn-primary">Adicionar Novo Autor</a>
+    <!-- Cabeçalho -->
+    <header class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-person-badge-fill" style="font-size: 2rem; color: #212529;"></i>
+                <h3 class="fw-bold mb-0">Autores</h3>
+            </div>
+            <p class="text-muted mb-0">Sistema de Gerenciamento de Biblioteca</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary" href="/">
+                <i class="bi bi-house me-2"></i>Início
+            </a>
+            <a class="btn btn-dark" href="/autores/cadastro">
+                <i class="bi bi-plus-circle me-2"></i>Cadastrar Autor
+            </a>
+        </div>
+    </header>
+
+    <!-- Cards de Estatísticas -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Total de Autores</h6>
+                    <h2 class="mb-0 fw-bold" th:text="${autores.size()}">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Autores com Livros</h6>
+                    <h2 class="mb-0 fw-bold text-success" th:text="${autoresComLivros}">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted mb-2">Nacionalidades</h6>
+                    <h2 class="mb-0 fw-bold text-primary" th:text="${totalNacionalidades}">0</h2>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div th:if="${autores.isEmpty()}" class="alert alert-info">
-        Nenhum autor encontrado.
-    </div>
+    <!-- Card de Filtros e Tabela -->
+    <div class="card shadow-sm">
+        <!-- Cabeçalho de Filtros -->
+        <div class="card-header bg-white border-bottom">
+            <h6 class="mb-0 d-flex align-items-center gap-2">
+                <i class="bi bi-funnel text-secondary"></i>
+                <span>Filtros de Pesquisa</span>
+            </h6>
+        </div>
 
-    <table th:unless="${autores.isEmpty()}" class="table table-striped table-hover">
-        <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Nacionalidade</th>
-            <th>Livros Escritos</th>
-            <th>Ações</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="autor : ${autores}">
-            <td th:text="${autor.oplid}">1</td>
-            <td>
-                <a th:href="@{/autores/{oplid}(oplid=${autor.oplid})}"
-                   th:text="${autor.nome}">Nome do Autor</a>
-            </td>
-            <td th:text="${autor.nacionalidadeFormatada}">BR</td>
-            <td th:text="${autor.escreve != null ? autor.escreve.size() : 0}">0</td>
-            <td>
-                <a th:href="@{/autores/{oplid}(oplid=${autor.oplid})}"
-                   class="btn btn-sm btn-outline-secondary">Visualizar</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+        <!-- Formulário de Filtros -->
+        <form th:action="@{/autores}" method="get" id="formFiltros">
+            <div class="card-body">
+                <div class="row g-3">
+                    <!-- Busca -->
+                    <div class="col-md-5">
+                        <label class="form-label small text-muted">Pesquisar</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text"
+                                   class="form-control"
+                                   name="busca"
+                                   placeholder="Nome do autor...">
+                        </div>
+                    </div>
+
+                    <!-- Nacionalidade -->
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted">Nacionalidade</label>
+                        <select class="form-select" name="nacionalidade">
+                            <option value="" selected>Todas</option>
+                            <option th:each="nac : ${nacionalidades}"
+                                    th:value="${nac}"
+                                    th:text="${nac}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Ordenação -->
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted">Ordenar por</label>
+                        <select class="form-select" name="ordem">
+                            <option value="nome_asc">Nome A-Z</option>
+                            <option value="nome_desc">Nome Z-A</option>
+                            <option value="livros_desc">Mais Livros</option>
+                            <option value="livros_asc">Menos Livros</option>
+                        </select>
+                    </div>
+
+                    <!-- Botão Limpar -->
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="reset" class="btn btn-outline-danger w-100" title="Limpar filtros">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Tabela de Autores -->
+        <div class="desktop-table">
+            <div th:if="${autores.isEmpty()}" class="alert alert-info m-3">
+                <i class="bi bi-info-circle me-2"></i>
+                Nenhum autor encontrado.
+            </div>
+
+            <table th:unless="${autores.isEmpty()}" class="table table-hover align-middle mb-0">
+                <thead>
+                <tr>
+                    <th class="text-center">ID</th>
+                    <th>Nome</th>
+                    <th class="text-center">Nacionalidade</th>
+                    <th class="text-center">Livros Escritos</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="autor : ${autores}">
+                    <td class="text-center">
+                        <strong th:text="${autor.oplid}">1</strong>
+                    </td>
+                    <td>
+                        <a th:href="@{/autores/{oplid}(oplid=${autor.oplid})}"
+                           th:text="${autor.nome}"
+                           class="text-decoration-none fw-semibold">Nome do Autor</a>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-light text-dark" th:text="${autor.nacionalidadeFormatada}">BR</span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-primary" th:text="${autor.escreve != null ? autor.escreve.size() : 0}">0</span>
+                    </td>
+                    <td>
+                        <div class="action-buttons justify-content-center">
+                            <!-- Botão Visualizar -->
+                            <a role="button"
+                               class="btn btn-sm btn-outline-secondary"
+                               th:href="@{/autores/{oplid}(oplid=${autor.oplid})}"
+                               title="Visualizar">
+                                <i class="bi bi-eye"></i>
+                            </a>
+
+                            <!-- Botão Editar -->
+                            <a role="button"
+                               class="btn btn-sm btn-outline-primary"
+                               th:href="@{/autores/editar/{oplid}(oplid=${autor.oplid})}"
+                               title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
