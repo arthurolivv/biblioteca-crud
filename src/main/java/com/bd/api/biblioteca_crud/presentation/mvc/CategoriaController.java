@@ -36,7 +36,7 @@ public class CategoriaController {
     @GetMapping
     public String listar(Model model) {
         List<Categoria> categorias = listarCategoriasUsecase.execute();
-        categorias.sort(Comparator.comparing(Categoria::getNome));
+        categorias.sort(Comparator.comparing(Categoria::getId));
 
         model.addAttribute("categorias", categorias);
 
