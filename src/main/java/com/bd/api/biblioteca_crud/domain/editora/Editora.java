@@ -4,6 +4,7 @@ import com.bd.api.biblioteca_crud.domain.livro.Livro;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLRestriction;
+import com.bd.api.biblioteca_crud.application.editora.dto.request.CadastrarEditoraDto;
 
 import java.util.List;
 
@@ -34,6 +35,12 @@ public class Editora {
 
     public void softDelete() {
         this.deleted = true;
+    }
+
+    public Editora(CadastrarEditoraDto dados) {
+        this.cnpj = dados.cnpj();
+        this.razao_social = dados.razaoSocial();
+        this.deleted = false;
     }
     
 }
