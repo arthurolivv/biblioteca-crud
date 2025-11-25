@@ -19,7 +19,8 @@ public class ListarEditorasUsecase {
     }
 
     public List<ListarEditoraDto> execute() {
-        List<ListarEditoraDto> editoras = repository.findAll().stream().map(ListarEditoraDto::new).toList();
+
+        List<ListarEditoraDto> editoras = repository.findAllWithLivros().stream().map(ListarEditoraDto::new).toList();
 
         return editoras.stream()
                 .sorted(Comparator.comparing(ListarEditoraDto::razaoSocial))

@@ -1,6 +1,7 @@
 package com.bd.api.biblioteca_crud.presentation.mvc;
 
 import com.bd.api.biblioteca_crud.application.categoria.dto.request.CadastrarCategoriaDto;
+import com.bd.api.biblioteca_crud.application.categoria.dto.response.ListarCategoriaDto; // NOVO IMPORT
 import com.bd.api.biblioteca_crud.application.categoria.service.CadastrarCategoriaUsecase;
 import com.bd.api.biblioteca_crud.application.categoria.service.ExcluirCategoriaUsecase;
 import com.bd.api.biblioteca_crud.application.categoria.service.ListarCategoriasUsecase;
@@ -35,10 +36,14 @@ public class CategoriaController {
 
     @GetMapping
     public String listar(Model model) {
-        List<Categoria> categorias = listarCategoriasUsecase.execute();
-        categorias.sort(Comparator.comparing(Categoria::getId));
+        List<ListarCategoriaDto> categorias = listarCategoriasUsecase.execute();
+
+        long totalLivrosCadastrados = categorias.stream()
+                .mapToLong(ListarCategoriaDto::totalLivros)
+                .sum();
 
         model.addAttribute("categorias", categorias);
+        model.addAttribute("totalLivrosCadastrados", totalLivrosCadastrados); // NOVO ATRIBUTO
 
         if (!model.containsAttribute("cadastrarCategoriaDto")) {
             model.addAttribute("cadastrarCategoriaDto", new CadastrarCategoriaDto(null));
