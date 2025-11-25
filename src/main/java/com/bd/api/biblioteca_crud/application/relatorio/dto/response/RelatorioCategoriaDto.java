@@ -1,0 +1,7 @@
+package com.bd.api.biblioteca_crud.application.relatorio.dto.response;
+
+public record RelatorioCategoriaDto(
+        String nome,
+        Long totalEmprestimos
+) {
+}

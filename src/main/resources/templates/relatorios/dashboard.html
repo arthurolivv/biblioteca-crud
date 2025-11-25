@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - Biblioteca</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+        .card-header-custom {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container-fluid py-4">
+
+    <header class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <i class="bi bi-bar-chart-line-fill" style="font-size: 2rem; color: #212529;"></i>
+            <h3 class="fw-bold mb-0">Dashboard</h3>
+        </div>
+        <a class="btn btn-dark" href="/">
+            <i class="bi bi-house me-2"></i>Início
+        </a>
+    </header>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header card-header-custom">
+                    <i class="bi bi-pie-chart-fill me-2"></i>
+                    Livros emprestados por categoria
+                </div>
+                <div class="card-body">
+                    <div th:if="${emprestimosPorCategoria.isEmpty()}" class="alert alert-info">
+                        Nenhum dado de empréstimo por categoria encontrado.
+                    </div>
+                    <div class="chart-container" th:unless="${emprestimosPorCategoria.isEmpty()}">
+                        <canvas id="chartCategorias"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header card-header-custom">
+                    <i class="bi bi-list-ol me-2"></i>
+                    Top 10 livros mais emprestados
+                </div>
+                <div class="card-body">
+                    <div th:if="${top10Livros.isEmpty()}" class="alert alert-info">
+                        Nenhum dado de empréstimo de livro encontrado.
+                    </div>
+                    <div th:unless="${top10Livros.isEmpty()}">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Livro</th>
+                                <th class="text-end">Empréstimos</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="livro, stats : ${top10Livros}">
+                                <td th:text="${stats.index + 1}">1</td>
+                                <td th:text="${livro.titulo}">Título do Livro</td>
+                                <td class="text-end fw-bold" th:text="${livro.totalEmprestimos}">10</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header card-header-custom">
+                    <i class="bi bi-journal-bookmark-fill me-2"></i>
+                    Top 10 Editoras Mais Emprestadas
+                </div>
+                <div class="card-body">
+                    <div th:if="${top10Editoras.isEmpty()}" class="alert alert-info">
+                        Nenhum dado de editora encontrado.
+                    </div>
+                    <div class="chart-container" th:unless="${top10Editoras.isEmpty()}">
+                        <canvas id="chartEditoras"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header card-header-custom">
+                    <i class="bi bi-person-fill me-2"></i>
+                    Top 10 autores mais emprestados
+                </div>
+                <div class="card-body">
+                    <div th:if="${top10Autores.isEmpty()}" class="alert alert-info">
+                        Nenhum dado de autor encontrado.
+                    </div>
+                    <div class="chart-container" th:unless="${top10Autores.isEmpty()}">
+                        <canvas id="chartAutores"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header card-header-custom">
+                    <i class="bi bi-clock-history me-2"></i>
+                    Empréstimos por status
+                </div>
+                <div class="card-body">
+                    <div th:if="${emprestimosPorStatus.isEmpty()}" class="alert alert-info">
+                        Nenhum dado de empréstimo por status encontrado.
+                    </div>
+                    <div class="chart-container" th:unless="${emprestimosPorStatus.isEmpty()}">
+                        <canvas id="chartStatus"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    // Função para gerar cores aleatórias para o gráfico de pizza
+    function generateColors(count) {
+        const colors = [];
+        const saturation = 70;
+        const lightness = 60;
+        for (let i = 0; i < count; i++) {
+            // Distribui as cores pelo círculo de matizes (hue)
+            const hue = (i * (360 / count)) % 360;
+            colors.push(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+        }
+        return colors;
+    }
+
+    // 1. Gráfico: Empréstimos por Categoria (Pizza)
+    const dadosCategorias = /*[[${emprestimosPorCategoria}]]*/ [];
+    if (dadosCategorias.length > 0) {
+        const labels = dadosCategorias.map(d => d.nome);
+        const data = dadosCategorias.map(d => d.totalEmprestimos);
+        const cores = generateColors(labels.length);
+
+        new Chart(document.getElementById('chartCategorias'), {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total de Empréstimos',
+                    data: data,
+                    backgroundColor: cores,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    },
+                    title: {
+                        display: false,
+                    }
+                }
+            }
+        });
+    }
+
+    // 2. Gráfico: Top 10 Editoras (Barra Vertical)
+    const dadosEditoras = /*[[${top10Editoras}]]*/ [];
+    if (dadosEditoras.length > 0) {
+        const labels = dadosEditoras.map(d => d.razaoSocial);
+        const data = dadosEditoras.map(d => d.totalEmprestimos);
+        const corBase = '#198754';
+
+        new Chart(document.getElementById('chartEditoras'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total de Empréstimos',
+                    data: data,
+                    backgroundColor: corBase,
+                    borderColor: corBase,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: false,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // 3. Gráfico: Top 10 Autores (Barra Vertical)
+    const dadosAutores = /*[[${top10Autores}]]*/ [];
+    if (dadosAutores.length > 0) {
+        const labels = dadosAutores.map(d => d.nome);
+        const data = dadosAutores.map(d => d.totalEmprestimos);
+        const corBase = '#0d6efd';
+
+        new Chart(document.getElementById('chartAutores'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total de Empréstimos',
+                    data: data,
+                    backgroundColor: corBase,
+                    borderColor: corBase,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: false,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                if (value % 1 === 0) {
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // 5. Gráfico: Empréstimos por Status (Pizza)
+    const dadosStatus = /*[[${emprestimosPorStatus}]]*/ [];
+    if (dadosStatus.length > 0) {
+        const labels = dadosStatus.map(d => {
+            const status = d.status;
+            if (status === 'EM_ABERTO') return 'Em Aberto';
+            if (status === 'EM_ATRASO') return 'Em Atraso';
+            if (status === 'DEVOLVIDO') return 'Devolvido';
+            return status;
+        });
+        const data = dadosStatus.map(d => d.totalEmprestimos);
+
+        // Cores fixas e representativas
+        const coresStatus = [
+            '#0d6efd',
+            '#dc3545',
+            '#198754'
+        ];
+
+        new Chart(document.getElementById('chartStatus'), {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total de Empréstimos',
+                    data: data,
+                    backgroundColor: coresStatus,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    },
+                    title: {
+                        display: false,
+                    }
+                }
+            }
+        });
+    }
+
+    /*]]>*/
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
