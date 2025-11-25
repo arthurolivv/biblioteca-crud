@@ -7,7 +7,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class FormularioController {
 
-    @GetMapping("/home")
+    @GetMapping({"/", "/home"})
     public ModelAndView home() {
         ModelAndView mv = new ModelAndView("index");
         return mv;
