@@ -146,7 +146,6 @@
 </head>
 <body>
 
-<!-- Hero Section -->
 <div class="hero-section">
     <div class="container">
         <h1 class="hero-title">
@@ -157,16 +156,14 @@
     </div>
 </div>
 
-<!-- Main Container -->
 <div class="main-container">
 
-    <!-- Seção: Catálogo -->
     <div class="section-title">
         <i class="bi bi-collection"></i>
         Catálogo
     </div>
     <div class="row g-3 mb-4">
-        <div class="col-md-4 col-sm-6">
+        <div class="col-md-3 col-sm-6">
             <a th:href="@{/livros}" class="card-module">
                 <div class="card-icon bg-primary-soft">
                     <i class="bi bi-book"></i>
@@ -175,7 +172,16 @@
                 <p>Gerencie o acervo completo de livros da biblioteca</p>
             </a>
         </div>
-        <div class="col-md-4 col-sm-6">
+        <div class="col-md-3 col-sm-6">
+            <a th:href="@{/autores}" class="card-module">
+                <div class="card-icon bg-indigo-soft">
+                    <i class="bi bi-person-badge-fill"></i>
+                </div>
+                <h5>Autores</h5>
+                <p>Cadastre e gerencie os autores das obras</p>
+            </a>
+        </div>
+        <div class="col-md-3 col-sm-6">
             <a th:href="@{/categoria}" class="card-module">
                 <div class="card-icon bg-warning-soft">
                     <i class="bi bi-tags"></i>
@@ -184,7 +190,7 @@
                 <p>Organize os livros por categorias e gêneros</p>
             </a>
         </div>
-        <div class="col-md-4 col-sm-6">
+        <div class="col-md-3 col-sm-6">
             <a th:href="@{/editoras}" class="card-module">
                 <div class="card-icon bg-info-soft">
                     <i class="bi bi-building"></i>
@@ -195,7 +201,6 @@
         </div>
     </div>
 
-    <!-- Seção: Operações -->
     <div class="section-title">
         <i class="bi bi-arrow-left-right"></i>
         Operações
@@ -230,7 +235,6 @@
         </div>
     </div>
 
-    <!-- Seção: Administração -->
     <div class="section-title">
         <i class="bi bi-gear"></i>
         Administração

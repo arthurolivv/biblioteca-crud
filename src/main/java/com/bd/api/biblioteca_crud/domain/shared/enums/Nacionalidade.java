@@ -45,7 +45,7 @@ public enum Nacionalidade {
     CONGO_DEMOCRATIC_REPUBLIC_OF_THE("Congo, Democratic Republic of the", "COD"),
     CONGO_REPUBLIC_OF_THE("Congo, Republic of the", "COG"),
     COSTA_RICA("Costa Rica", "CRI"),
-    CÔTE_DIVOIRE("Côte d’Ivoire", "CIV"),
+    CÔTE_DIVOIRE("Côte d'Ivoire", "CIV"),
     CROATIA("Croatia", "HRV"),
     CUBA("Cuba", "CUB"),
     CYPRUS("Cyprus", "CYP"),
@@ -195,6 +195,14 @@ public enum Nacionalidade {
     Nacionalidade(String nome, String codigoISO3) {
         this.nome = nome;
         this.codigoISO3 = codigoISO3;
+    }
+
+    /**
+     * Método usado no Thymeleaf para exibir o nome formatado da nacionalidade
+     * @return Nome formatado da nacionalidade
+     */
+    public String getDisplayValue() {
+        return this.nome;
     }
 
     public static String normalizarNacionalidade(String enumName) {
