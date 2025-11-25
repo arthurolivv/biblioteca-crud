@@ -125,61 +125,61 @@ create table usuario_reserva_livro (
 );
 
 alter table if exists autor_escreve_livro
-    add constraint FKsqfnngov3jaubi7imo4s7puqe
+    add constraint FK_AutorEscreveLivro_Autor
     foreign key (fk_autor_id)
     references autor;
 
 alter table if exists autor_escreve_livro
-    add constraint FK4x8d9s9ninu751flkaddvut66
+    add constraint FK_AutorEscreveLivro_Livro
     foreign key (fk_livro_isbn)
     references livro;
 
 alter table if exists endereco_editora
-    add constraint FK9ifghpblwk6nhpcgg1gwgk7kc
+    add constraint FK_EnderecoEditora_Editora
     foreign key (fk_editora_cnpj)
     references editora;
 
 alter table if exists exemplar
-    add constraint FKare8sw6awrdkonqe151d372en
+    add constraint FK_Exemplar_Livro
     foreign key (fk_livro_isbn)
     references livro;
 
 alter table if exists livro
-    add constraint FKgfmrh7icg1vp1wy52yw0pqlux
+    add constraint FK_Livro_Biblioteca
     foreign key (fk_biblioteca_cnpj)
     references biblioteca;
 
 alter table if exists livro
-    add constraint FKtkdx5op7vwfco9ntrdxwp8014
+    add constraint FK_Livro_Editora
     foreign key (fk_editora_cnpj)
     references editora;
 
 alter table if exists livro_pertence_categoria
-    add constraint FKawn07s420vvf5hx03jd9rakgj
+    add constraint FK_LivroPertenceCategoria_Categoria
     foreign key (fk_categoria_id)
     references categoria;
 
 alter table if exists livro_pertence_categoria
-    add constraint FKpulg6985lvfs1oqp9xowdupn2
+    add constraint FK_LivroPertenceCategoria_Livro
     foreign key (fk_livro_isbn)
     references livro;
 
 alter table if exists usuario_emprestimo_exemplar
-    add constraint FK1nqt60y07qmx7xnhape4t9pui
+    add constraint FK_Emprestimo_Exemplar
     foreign key (fk_exemplar_codigo_exemplar, fk_livro_isbn)
     references exemplar;
 
 alter table if exists usuario_emprestimo_exemplar
-    add constraint FKaqa1l76seuvu30x2g07ywj33o
+    add constraint FK_Emprestimo_Usuario
     foreign key (fk_usuario_cpf)
     references usuario;
 
 alter table if exists usuario_reserva_livro
-    add constraint FK1lublwktxbkkpmo2hp830xf9
+    add constraint FK_Reserva_Livro
     foreign key (fk_livro_isbn)
     references livro;
 
 alter table if exists usuario_reserva_livro
-    add constraint FKk8mc120194tvsplnul11d688h
+    add constraint FK_Reserva_Usuario
     foreign key (fk_usuario_cpf)
     references usuario;
