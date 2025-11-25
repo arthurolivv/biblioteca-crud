@@ -1,0 +1,49 @@
+
+.book-cover {
+    width: 50px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.icon-cover {
+    font-size: 2.5rem;
+    color: #6c757d;
+}
+
+.book-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.book-categories .badge {
+    font-size: 0.75rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    white-space: nowrap;
+}
+
+.card {
+    border: none;
+}
+
+.table th {
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8f9fa;
+    white-space: nowrap;
+}
+
+.desktop-table {
+    overflow-x: auto;
+}
+
+.table td {
+    vertical-align: middle;
+}

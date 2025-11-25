@@ -1,0 +1,11 @@
+.chart-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+.card-header-custom {
+    font-size: 1.1rem;
+    font-weight: 600;
+    background-color: #f8f9fa;
+}

@@ -1,0 +1,19 @@
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.card {
+    border: none;
+}
+
+.table th {
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8f9fa;
+}
+
+.desktop-table {
+    overflow-x: auto;
+}

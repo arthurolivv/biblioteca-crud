@@ -1,0 +1,29 @@
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.card {
+    border: none;
+}
+
+.table th {
+    font-weight: 600;
+    color: #495057;
+    background-color: #f8f9fa;
+}
+
+.desktop-table {
+    overflow-x: auto;
+}
+
+.card-stat-count {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Animação suave para o modal */
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+}
