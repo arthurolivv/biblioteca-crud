@@ -1,4 +1,4 @@
-package com.bd.api.biblioteca_crud.infraestructure.persistence;
+package com.bd.api.biblioteca_crud.infraestructure.persistence.jpa;
 
 import com.bd.api.biblioteca_crud.domain.reserva.ReservaId;
 import com.bd.api.biblioteca_crud.domain.reserva.UsuarioReservaLivro;

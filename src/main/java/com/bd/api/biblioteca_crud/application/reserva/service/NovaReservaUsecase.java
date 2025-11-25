@@ -5,13 +5,11 @@ import com.bd.api.biblioteca_crud.domain.reserva.ReservaId;
 import com.bd.api.biblioteca_crud.domain.reserva.UsuarioReservaLivro;
 import com.bd.api.biblioteca_crud.domain.shared.enums.StatusReserva;
 import com.bd.api.biblioteca_crud.domain.usuario.Usuario;
-import com.bd.api.biblioteca_crud.infraestructure.persistence.ReservaRepository;
-import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.ExemplarRepository;
+import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.ReservaRepository;
 import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.LivroRepository;
 import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

@@ -11,6 +11,7 @@ import com.bd.api.biblioteca_crud.domain.editora.Editora;
 import com.bd.api.biblioteca_crud.domain.exemplar.Exemplar;
 import com.bd.api.biblioteca_crud.domain.livro.Livro;
 import com.bd.api.biblioteca_crud.domain.livro.LivroPertenceCategoria;
+import com.bd.api.biblioteca_crud.domain.shared.enums.StatusExemplar;
 import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,6 @@ public class EditarLivroUsecase {
 
     @Autowired
     private EditoraRepository editoraRepository;
-
-    @Autowired
-    private ExemplarRepository exemplarRepository;
 
     @Transactional
     public Livro execute(EditarLivroDto dto, String isbn) {
@@ -143,12 +141,12 @@ public class EditarLivroUsecase {
 
     private Short calculaDisponiveis(List<Exemplar> exemplares) {
 
-        var proprios = exemplares.stream()
-                .filter(Exemplar::ehProprio)
+        long disponiveisNaoProprios = exemplares.stream()
+                .filter(e -> e.getStatus() == StatusExemplar.DISPONIVEL)
+                .filter(e -> Boolean.FALSE.equals(e.getProprio()))
                 .count();
 
-        var disponiveis = calculaQuantidade(exemplares) - proprios;
-
-        return (short) disponiveis;
+        return (short) disponiveisNaoProprios;
     }
+
 }

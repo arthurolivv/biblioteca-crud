@@ -154,37 +154,36 @@
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <strong th:text="${ex.id.codigo_exemplar}" class="text-dark"></strong>
 
-                            <span th:if="${ex.proprio}"
+                            <!-- 1) PRIORIDADE: MANUTENÇÃO -->
+                            <span th:if="${ex.status.name() == 'MANUTENCAO'}"
+                                  class="badge badge-status badge-manutencao">
+                <i class="bi bi-hammer me-1"></i>Em Manutenção
+            </span>
+
+                            <!-- 2) PRIORIDADE: PRÓPRIO -->
+                            <span th:if="${ex.status.name() != 'MANUTENCAO' and ex.proprio}"
                                   class="badge badge-status badge-proprio">
-                    <i class="bi bi-bank me-1"></i>
-                    Consulta Local
-                </span>
+                <i class="bi bi-bank me-1"></i>
+                Consulta Local
+            </span>
 
-                            <div th:unless="${ex.proprio}">
-                    <span th:if="${ex.status.name() == 'DISPONIVEL'}"
-                          class="badge badge-status badge-disponivel">
-                        <i class="bi bi-check-circle me-1"></i>Disponível
-                    </span>
+                            <!-- 3) PRIORIDADE: EMPRESTADO -->
+                            <span th:if="${ex.status.name() == 'EMPRESTADO'}"
+                                  class="badge badge-status badge-emprestado">
+                <i class="bi bi-clock me-1"></i>Emprestado
+            </span>
 
-                                <span th:if="${ex.status.name() == 'EMPRESTADO'}"
-                                      class="badge badge-status badge-emprestado">
-                        <i class="bi bi-clock me-1"></i>Emprestado
-                    </span>
+                            <!-- 4) PRIORIDADE: DISPONIVEL -->
+                            <span th:if="${ex.status.name() == 'DISPONIVEL' and !ex.proprio}"
+                                  class="badge badge-status badge-disponivel">
+                <i class="bi bi-check-circle me-1"></i>Disponível
+            </span>
 
-                                <span th:if="${ex.status.name() == 'RESERVADO'}"
-                                      class="badge badge-status badge-reservado">
-                        <i class="bi bi-bookmark-fill me-1"></i>Reservado
-                    </span>
-
-                                <span th:if="${ex.status.name() == 'MANUTENCAO'}"
-                                      class="badge badge-status badge-manutencao">
-                        <i class="bi bi-hammer me-1"></i>Em Manutenção
-                    </span>
-                            </div>
                         </div>
 
                     </div>
                 </div>
+
 
                 <div th:unless="${livro.deleted == false}" class="alert alert-warning mt-3">
                     <i class="bi bi-info-circle me-2"></i>

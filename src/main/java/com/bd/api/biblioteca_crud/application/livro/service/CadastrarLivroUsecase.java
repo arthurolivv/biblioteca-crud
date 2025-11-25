@@ -8,6 +8,7 @@ import com.bd.api.biblioteca_crud.domain.categoria.Categoria;
 import com.bd.api.biblioteca_crud.domain.exemplar.Exemplar;
 import com.bd.api.biblioteca_crud.domain.livro.Livro;
 import com.bd.api.biblioteca_crud.domain.livro.LivroPertenceCategoria;
+import com.bd.api.biblioteca_crud.domain.shared.enums.StatusExemplar;
 import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class CadastrarLivroUsecase {
 
         novoLivro.setLivroPertenceCategoria(mapearCategorias(novoLivro, dto.categoria_id()));
         novoLivro.setAutorEscreveLivro(mapearAutores(novoLivro, dto.autor_oplid()));
-//        novoLivro.setExemplares(criarExemplar(novoLivro, dto.exemplares()));
+        novoLivro.setExemplares(criarExemplar(novoLivro, dto.exemplares()));
 
         novoLivro.setQuantidade(calculaQuantidade(novoLivro.getExemplares()));
         novoLivro.setDisponiveis(calculaDisponiveis(novoLivro.getExemplares()));
@@ -86,12 +87,11 @@ public class CadastrarLivroUsecase {
 
     private Short calculaDisponiveis(List<Exemplar> exemplares) {
 
-        var proprios = exemplares.stream()
-                .filter(Exemplar::ehProprio)
+        long disponiveisNaoProprios = exemplares.stream()
+                .filter(e -> e.getStatus() == StatusExemplar.DISPONIVEL)
+                .filter(e -> Boolean.FALSE.equals(e.getProprio()))
                 .count();
 
-        var disponiveis = calculaQuantidade(exemplares) - proprios;
-
-        return (short) disponiveis;
+        return (short) disponiveisNaoProprios;
     }
 }

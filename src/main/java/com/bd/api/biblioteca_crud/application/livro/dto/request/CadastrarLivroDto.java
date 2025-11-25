@@ -48,7 +48,7 @@ public record CadastrarLivroDto(
 //                regexp = "\\d{2}\\.\\d{3}\\.\\d{3}\\-\\d{4}\\-\\d{2}",
 //                message = "CNPJ deve seguir o seguinte formato: 00.000.000/0000-00"
 //        )
-        @CNPJ(message = "CNPJ inválido")
+//        @CNPJ(message = "CNPJ inválido")
         String editora_cnpj,
 
         @NotEmpty(message = "É obrigatório informar pelo menos um exemplar")
