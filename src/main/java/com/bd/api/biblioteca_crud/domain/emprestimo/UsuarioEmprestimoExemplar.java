@@ -33,12 +33,12 @@ public class UsuarioEmprestimoExemplar {
     @Column(nullable = false)
     private String livro_isbn;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("usuario_cpf")
     @JoinColumn(name = "fk_usuario_cpf", nullable = false)
     private Usuario usuario;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumns({
             @JoinColumn(name = "fk_livro_isbn", referencedColumnName = "fk_livro_isbn", nullable = false),
             @JoinColumn(name = "fk_exemplar_codigo_exemplar", referencedColumnName = "codigo_exemplar", nullable = false)
