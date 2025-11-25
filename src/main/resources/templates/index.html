@@ -200,64 +200,118 @@
         </div>
     </div>
 
-    <div class="section-title">
-        <i class="bi bi-arrow-left-right"></i>
-        Operações
-    </div>
     <div class="row g-3 mb-4">
-        <div class="col-md-4 col-sm-6">
-            <a th:href="@{/usuarios}" class="card-module">
-                <div class="card-icon bg-success-soft">
-                    <i class="bi bi-people"></i>
+
+        <!-- Operações -->
+        <div class="col-md-6">
+            <div class="section-title">
+                <i class="bi bi-arrow-left-right"></i>
+                Operações
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-12 col-sm-12">
+                    <a th:href="@{/usuarios}" class="card-module">
+                        <div class="card-icon bg-success-soft">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h5>Usuários</h5>
+                        <p>Gerencie cadastros e perfis de usuários</p>
+                    </a>
                 </div>
-                <h5>Usuários</h5>
-                <p>Gerencie cadastros e perfis de usuários</p>
-            </a>
+            </div>
         </div>
-        <div class="col-md-4 col-sm-6">
-            <a th:href="@{/emprestimos}" class="card-module">
-                <div class="card-icon bg-indigo-soft">
-                    <i class="bi bi-arrow-repeat"></i>
+
+        <!-- Administração -->
+        <div class="col-md-6">
+            <div class="section-title">
+                <i class="bi bi-gear"></i>
+                Administração
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-12 col-sm-12">
+                    <a th:href="@{/relatorios}" class="card-module">
+                        <div class="card-icon bg-danger-soft">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <h5>Relatórios</h5>
+                        <p>Visualize estatísticas e relatórios gerenciais</p>
+                    </a>
                 </div>
-                <h5>Empréstimos</h5>
-                <p>Controle empréstimos e devoluções de livros</p>
-            </a>
+            </div>
         </div>
-        <div class="col-md-4 col-sm-6">
-            <a th:href="@{/reservas}" class="card-module">
-                <div class="card-icon bg-teal-soft">
-                    <i class="bi bi-bookmark"></i>
-                </div>
-                <h5>Reservas</h5>
-                <p>Administre reservas de livros solicitadas</p>
-            </a>
-        </div>
+
     </div>
 
-    <div class="section-title">
-        <i class="bi bi-gear"></i>
-        Administração
-    </div>
-    <div class="row g-3">
-        <div class="col-md-4 col-sm-6">
-            <a th:href="@{/exemplares}" class="card-module">
-                <div class="card-icon bg-orange-soft">
-                    <i class="bi bi-box-seam"></i>
-                </div>
-                <h5>Exemplares</h5>
-                <p>Controle de exemplares físicos disponíveis</p>
-            </a>
-        </div>
-        <div class="col-md-4 col-sm-6">
-            <a th:href="@{/relatorios}" class="card-module">
-                <div class="card-icon bg-danger-soft">
-                    <i class="bi bi-graph-up"></i>
-                </div>
-                <h5>Relatórios</h5>
-                <p>Visualize estatísticas e relatórios gerenciais</p>
-            </a>
-        </div>
-    </div>
+
+    <!--    <div class="section-title">-->
+<!--        <i class="bi bi-arrow-left-right"></i>-->
+<!--        Operações-->
+<!--    </div>-->
+<!--    <div class="row g-3 mb-4">-->
+<!--        <div class="col-md-4 col-sm-6">-->
+<!--            <a th:href="@{/usuarios}" class="card-module">-->
+<!--                <div class="card-icon bg-success-soft">-->
+<!--                    <i class="bi bi-people"></i>-->
+<!--                </div>-->
+<!--                <h5>Usuários</h5>-->
+<!--                <p>Gerencie cadastros e perfis de usuários</p>-->
+<!--            </a>-->
+<!--        </div>-->
+<!--        <div class="col-md-4 col-sm-6">-->
+<!--            <a th:href="@{/emprestimos}" class="card-module">-->
+<!--                <div class="card-icon bg-indigo-soft">-->
+<!--                    <i class="bi bi-arrow-repeat"></i>-->
+<!--                </div>-->
+<!--                <h5>Empréstimos</h5>-->
+<!--                <p>Controle empréstimos e devoluções de livros</p>-->
+<!--            </a>-->
+<!--        </div>-->
+<!--        <div class="col-md-4 col-sm-6">-->
+<!--            <a th:href="@{/reservas}" class="card-module">-->
+<!--                <div class="card-icon bg-teal-soft">-->
+<!--                    <i class="bi bi-bookmark"></i>-->
+<!--                </div>-->
+<!--                <h5>Reservas</h5>-->
+<!--                <p>Administre reservas de livros solicitadas</p>-->
+<!--            </a>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="section-title">-->
+<!--        <i class="bi bi-gear"></i>-->
+<!--        Administração-->
+<!--    </div>-->
+<!--    <div class="row g-3">-->
+<!--        <div class="col-md-4 col-sm-6">-->
+<!--            <a th:href="@{/exemplares}" class="card-module">-->
+<!--                <div class="card-icon bg-orange-soft">-->
+<!--                    <i class="bi bi-box-seam"></i>-->
+<!--                </div>-->
+<!--                <h5>Exemplares</h5>-->
+<!--                <p>Controle de exemplares físicos disponíveis</p>-->
+<!--            </a>-->
+<!--        </div>-->
+<!--        <div class="col-md-4 col-sm-6">-->
+<!--            <a th:href="@{/relatorios}" class="card-module">-->
+<!--                <div class="card-icon bg-danger-soft">-->
+<!--                    <i class="bi bi-graph-up"></i>-->
+<!--                </div>-->
+<!--                <h5>Relatórios</h5>-->
+<!--                <p>Visualize estatísticas e relatórios gerenciais</p>-->
+<!--            </a>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <footer class="mt-5 py-3 text-center border-top text-muted" style="font-size: 0.9rem;">
+        <i class="bi bi-people-fill"></i>
+        <strong>Integrantes:</strong> Arthur Oliveira • Diogo Leonel  • Maysa Sacht
+        <br>
+        <i class="bi bi-c-circle"></i>
+        2025 — Todos os direitos reservados.
+    </footer>
+
 
 </div>
 
