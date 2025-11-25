@@ -28,67 +28,33 @@ public class LivroController {
     private final EditarLivroUsecase editar;
     private final DesativarLivroUsecase desativar;
     private final AtivarLivroUsecase ativar;
-
-    @Autowired
-    private LivroRepository livroRepository;
-
-    @Autowired
-    private CategoriaRepository categoriaRepository;
-
-    @Autowired
-    private AutorRepository autorRepository;
-
-    @Autowired
-    private EditoraRepository editoraRepository;
-
-    @Autowired
-    private CadastrarLivroValidationService validar;
+    private final ListarLivroUsecase listar;
+    private final VisualizarLivroUsecase visualizar;
+    private final CadastrarLivroValidationService validar;
 
 
     @GetMapping({"", "/"})
     public String showListarLivroPagina(Model model) {
 
-        List<Livro> livros = livroRepository.findAll();
-        List<Categoria> categorias = categoriaRepository.findAll();
-
-        model.addAttribute("livros", livros);
-        model.addAttribute("categorias", categorias);
-
+        listar.execute(model);
         return "livros/lista";
     }
 
     @GetMapping("/cadastro")
     public String showCadastrarLivroPagina(Model model) {
 
-        CadastrarLivroDto cadastrarLivroDto = new CadastrarLivroDto(
-                "", // isbn
-                "", // titulo
-                null, // ano_publicacao
-                List.of(), // autor
-                List.of(), // categoria_id
-                "", // imagem_url
-                null, // idioma
-                "", // editora_cnpj
-                List.of(), // exemplares
-                "" //sinopse
-        ); //criando dto vazio apenas para poder inicializa-lo
-
-        model.addAttribute("cadastrarLivroDto", cadastrarLivroDto);
-        carregarDadosFormulario(model);
-
+        cadastrar.show(model);
         return "livros/cadastro";
     }
 
     @PostMapping("/cadastro")
     public String cadastrarLivro(
             @Valid @ModelAttribute CadastrarLivroDto dto,
-            BindingResult result,
-            Model model) {
+            BindingResult result) {
 
         validar.execute(dto, result);
 
         if (result.hasErrors()) {
-            carregarDadosFormulario(model);
             return "livros/cadastro";
         }
 
@@ -100,47 +66,27 @@ public class LivroController {
     @GetMapping("/editar")
     public String showEditarLivroPagina(Model model, @RequestParam String isbn) {
 
-
         try {
-            Livro livro = livroRepository.getReferenceById(isbn);
-            model.addAttribute("livro", livro);
-
-            carregarDadosFormulario(model);
-
-            EditarLivroDto editarLivroDto = new EditarLivroDto(livro);
-
-            model.addAttribute("editarLivroDto", editarLivroDto);
-
+            editar.show(model, isbn);
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
-            carregarDadosFormulario(model);
             return "redirect:/livros";
         }
-
 
         return "livros/editar";
     }
 
     @PostMapping("/editar")
     public String editarLivro(
-            Model model,
             @RequestParam String isbn,
-            @Valid @ModelAttribute EditarLivroDto dto,
-            BindingResult result
+            @Valid @ModelAttribute EditarLivroDto dto
     ) {
         try {
-            Livro livro = livroRepository.findById(isbn).get();
-            model.addAttribute("livro", livro);
-
-            if (result.hasErrors()) {
-                return "livros/editar";
-            }
-
             editar.execute(dto, isbn);
 
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
-            carregarDadosFormulario(model);
+            return "livros/editar";
         }
         return "redirect:/livros";
     }
@@ -149,51 +95,27 @@ public class LivroController {
     public String showVisualizarLivroPagina(Model model, @RequestParam String isbn) {
 
         try {
-            Livro livro = livroRepository.findById(isbn).get();
-            model.addAttribute("livro", livro);
+            visualizar.execute(model, isbn);
 
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
             return "redirect:/livros";
         }
-
         return "livros/visualizar";
     }
 
     @GetMapping("/desativar")
     public String desativarLivro(@RequestParam String isbn) {
 
-        try {
-            Livro livro = livroRepository.getReferenceById(isbn);
-            desativar.execute(livro);
-        } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-        }
+        desativar.execute(isbn);
         return "redirect:/livros";
     }
 
     @GetMapping("/ativar")
     public String ativarLivro(@RequestParam String isbn) {
 
-        try {
-            Livro livro = livroRepository.getReferenceById(isbn);
-            ativar.execute(livro);
-        } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
-        }
+        ativar.execute(isbn);
         return "redirect:/livros";
-    }
-
-    private void carregarDadosFormulario(Model model) {
-
-        List<Autor> autores = autorRepository.findAll();
-        List<Categoria> categorias = categoriaRepository.findAll();
-        List<Editora> editoras = editoraRepository.findAll();
-
-        model.addAttribute("idiomas", Idioma.values());
-        model.addAttribute("autores", autores);
-        model.addAttribute("categorias", categorias);
-        model.addAttribute("editoras", editoras);
     }
 
 }

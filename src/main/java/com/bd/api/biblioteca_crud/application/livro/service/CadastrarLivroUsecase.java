@@ -5,15 +5,18 @@ import com.bd.api.biblioteca_crud.application.livro.dto.request.CadastrarLivroDt
 import com.bd.api.biblioteca_crud.domain.autor.Autor;
 import com.bd.api.biblioteca_crud.domain.autor.AutorEscreveLivro;
 import com.bd.api.biblioteca_crud.domain.categoria.Categoria;
+import com.bd.api.biblioteca_crud.domain.editora.Editora;
 import com.bd.api.biblioteca_crud.domain.exemplar.Exemplar;
 import com.bd.api.biblioteca_crud.domain.livro.Livro;
 import com.bd.api.biblioteca_crud.domain.livro.LivroPertenceCategoria;
+import com.bd.api.biblioteca_crud.domain.shared.enums.Idioma;
 import com.bd.api.biblioteca_crud.domain.shared.enums.StatusExemplar;
 import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import java.util.List;
 
@@ -34,6 +37,34 @@ public class CadastrarLivroUsecase {
 
     @Autowired
     private BibliotecaRepository bibliotecaRepository;
+
+    public void show(Model model){
+
+        CadastrarLivroDto cadastrarLivroDto = new CadastrarLivroDto(
+                "", // isbn
+                "", // titulo
+                null, // ano_publicacao
+                List.of(), // autor
+                List.of(), // categoria_id
+                "", // imagem_url
+                null, // idioma
+                "", // editora_cnpj
+                List.of(), // exemplares
+                "" //sinopse
+        ); //criando dto vazio apenas para poder inicializa-lo
+
+        model.addAttribute("cadastrarLivroDto", cadastrarLivroDto);
+
+        List<Autor> autores = autorRepository.findAll();
+        List<Categoria> categorias = categoriaRepository.findAll();
+        List<Editora> editoras = editoraRepository.findAll();
+
+        model.addAttribute("idiomas", Idioma.values());
+        model.addAttribute("autores", autores);
+        model.addAttribute("categorias", categorias);
+        model.addAttribute("editoras", editoras);
+
+    }
 
     @Transactional
     public Livro execute(CadastrarLivroDto dto) {

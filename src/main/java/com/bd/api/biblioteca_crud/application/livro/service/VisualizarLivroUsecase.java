@@ -2,20 +2,19 @@ package com.bd.api.biblioteca_crud.application.livro.service;
 
 import com.bd.api.biblioteca_crud.domain.livro.Livro;
 import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.LivroRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 @Service
-public class AtivarLivroUsecase {
+public class VisualizarLivroUsecase {
 
     @Autowired
     private LivroRepository livroRepository;
 
-    @Transactional
-    public void execute(String isbn) {
+    public void execute(Model model, String isbn){
+
         Livro livro = livroRepository.getReferenceById(isbn);
-        livro.setDeleted(false);
-        livroRepository.save(livro);
+        model.addAttribute("livro", livro);
     }
 }

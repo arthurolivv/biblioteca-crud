@@ -6,6 +6,7 @@ import com.bd.api.biblioteca_crud.application.editora.service.ExcluirEditoraUsec
 import com.bd.api.biblioteca_crud.application.editora.service.ListarEditorasUsecase;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,23 +15,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/editoras")
+@RequiredArgsConstructor
 public class EditoraController {
 
     private final ListarEditorasUsecase listarEditorasUsecase;
     private final CadastrarEditoraUsecase cadastrarEditoraUsecase;
     private final ExcluirEditoraUsecase excluirEditoraUsecase;
 
-    public EditoraController(
-            ListarEditorasUsecase listarEditorasUsecase,
-            CadastrarEditoraUsecase cadastrarEditoraUsecase,
-            ExcluirEditoraUsecase excluirEditoraUsecase) {
-        this.listarEditorasUsecase = listarEditorasUsecase;
-        this.cadastrarEditoraUsecase = cadastrarEditoraUsecase;
-        this.excluirEditoraUsecase = excluirEditoraUsecase;
-    }
-
     @GetMapping
     public String listar(Model model) {
+
         model.addAttribute("listaDeEditoras", listarEditorasUsecase.execute());
 
         if (!model.containsAttribute("cadastrarEditoraDto")) {

@@ -1,6 +1,8 @@
 package com.bd.api.biblioteca_crud.presentation.mvc;
 
+import com.bd.api.biblioteca_crud.application.emprestimo.service.ConcluirEmprestimoUsecase;
 import com.bd.api.biblioteca_crud.application.emprestimo.service.NovoEmprestimoUsecase;
+import com.bd.api.biblioteca_crud.application.emprestimo.service.RenovarEmprestimoUsecase;
 import com.bd.api.biblioteca_crud.domain.emprestimo.EmprestimoId;
 import com.bd.api.biblioteca_crud.domain.emprestimo.UsuarioEmprestimoExemplar;
 import com.bd.api.biblioteca_crud.domain.exemplar.Exemplar;
@@ -30,13 +32,9 @@ import java.util.Map;
 @RequestMapping("/emprestimos")
 public class EmprestimoController {
 
-    @Autowired
-    private EmprestimoRepository emprestimoRepository;
-
-    @Autowired
-    private ExemplarRepository exemplarRepository;
-
     private final NovoEmprestimoUsecase emprestimo;
+    private final RenovarEmprestimoUsecase renovar;
+    private final ConcluirEmprestimoUsecase concluir;
 
     @PostMapping("/salvar")
     public String salvarEmprestimo(
@@ -46,6 +44,7 @@ public class EmprestimoController {
             @RequestParam String data_emprestimo,
             @RequestParam String data_devolucao_prevista
     ) {
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate dataEmp = LocalDate.parse(data_emprestimo, formatter);
         LocalDate dataPrev = LocalDate.parse(data_devolucao_prevista, formatter);
@@ -60,13 +59,7 @@ public class EmprestimoController {
             @RequestParam String cpf,
             @RequestParam Long num_emprestimo
     ) {
-
-        EmprestimoId emprestimoId = new EmprestimoId(num_emprestimo, cpf);
-        UsuarioEmprestimoExemplar renovarEmprestimo = emprestimoRepository.getReferenceById(emprestimoId);
-        LocalDate novaDataPrevista = renovarEmprestimo.getData_devolucao_prevista().plusDays(7);
-        renovarEmprestimo.setData_devolucao_prevista(novaDataPrevista);
-        emprestimoRepository.save(renovarEmprestimo);
-
+        renovar.execute(num_emprestimo, cpf);
         return "redirect:/usuarios/visualizar?cpf=" + cpf;
     }
 
@@ -78,19 +71,7 @@ public class EmprestimoController {
             @RequestParam String codigo_exemplar
     ) {
 
-        EmprestimoId emprestimoId = new EmprestimoId(num_emprestimo, cpf);
-        UsuarioEmprestimoExemplar concluirEmprestimo = emprestimoRepository.getReferenceById(emprestimoId);
-        LocalDate data_devolucao = LocalDate.now();
-        concluirEmprestimo.setData_devolucao(data_devolucao);
-
-        emprestimoRepository.save(concluirEmprestimo);
-
-        ExemplarId exemplarId = new ExemplarId(isbn_exemplar, codigo_exemplar);
-        Exemplar exemplar = exemplarRepository.getReferenceById(exemplarId);
-        exemplar.setStatus(StatusExemplar.DISPONIVEL);
-
-        exemplarRepository.save(exemplar);
-
+        concluir.execute(num_emprestimo, cpf, isbn_exemplar, codigo_exemplar);
         return "redirect:/usuarios/visualizar?cpf=" + cpf;
     }
 }

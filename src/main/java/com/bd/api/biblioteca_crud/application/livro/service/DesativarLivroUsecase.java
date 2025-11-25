@@ -13,7 +13,8 @@ public class DesativarLivroUsecase {
     private LivroRepository livroRepository;
 
     @Transactional
-    public void execute(Livro livro) {
+    public void execute(String isbn) {
+        Livro livro = livroRepository.getReferenceById(isbn);
         livro.setDeleted(true);
         livroRepository.save(livro);
     }

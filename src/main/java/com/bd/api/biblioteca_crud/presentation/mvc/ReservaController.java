@@ -18,9 +18,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ReservaController {
 
-    private final NovaReservaUsecase novaReserva;
-    private final CancelarReservaUsecase cancelarReserva;
-    private final VerificarReservaUsecase verificarReserva;
+    private final NovaReservaUsecase reserva;
+    private final CancelarReservaUsecase cancelar;
+    private final VerificarReservaUsecase verificar;
 
     @PostMapping("/salvar")
     public String salvarReserva(
@@ -29,8 +29,7 @@ public class ReservaController {
             @RequestParam String data_reserva
     ){
 
-        novaReserva.execute(cpf, isbn_livro, data_reserva);
-
+        reserva.execute(cpf, isbn_livro, data_reserva);
         return "redirect:/usuarios/visualizar?cpf=" + cpf;
     }
 
@@ -41,8 +40,7 @@ public class ReservaController {
             @RequestParam UUID codigo_reserva
     ){
 
-        cancelarReserva.execute(cpf, isbn_livro,codigo_reserva);
-
+        cancelar.execute(cpf, isbn_livro,codigo_reserva);
         return "redirect:/usuarios/visualizar?cpf=" + cpf;
     }
 
@@ -54,8 +52,7 @@ public class ReservaController {
             RedirectAttributes redirectAttributes
     ){
 
-        verificarReserva.execute(cpf, isbn_livro, codigo_reserva, redirectAttributes);
-
+        verificar.execute(cpf, isbn_livro, codigo_reserva, redirectAttributes);
         return "redirect:/usuarios/visualizar?cpf=" + cpf;
     }
 }

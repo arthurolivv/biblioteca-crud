@@ -11,11 +11,13 @@ import com.bd.api.biblioteca_crud.domain.editora.Editora;
 import com.bd.api.biblioteca_crud.domain.exemplar.Exemplar;
 import com.bd.api.biblioteca_crud.domain.livro.Livro;
 import com.bd.api.biblioteca_crud.domain.livro.LivroPertenceCategoria;
+import com.bd.api.biblioteca_crud.domain.shared.enums.Idioma;
 import com.bd.api.biblioteca_crud.domain.shared.enums.StatusExemplar;
 import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import java.util.List;
 
@@ -33,6 +35,25 @@ public class EditarLivroUsecase {
 
     @Autowired
     private EditoraRepository editoraRepository;
+
+    public void show(Model model, String isbn){
+
+        Livro livro = livroRepository.getReferenceById(isbn);
+        model.addAttribute("livro", livro);
+
+        EditarLivroDto editarLivroDto = new EditarLivroDto(livro);
+
+        model.addAttribute("editarLivroDto", editarLivroDto);
+
+        List<Autor> autores = autorRepository.findAll();
+        List<Categoria> categorias = categoriaRepository.findAll();
+        List<Editora> editoras = editoraRepository.findAll();
+
+        model.addAttribute("idiomas", Idioma.values());
+        model.addAttribute("autores", autores);
+        model.addAttribute("categorias", categorias);
+        model.addAttribute("editoras", editoras);
+    }
 
     @Transactional
     public Livro execute(EditarLivroDto dto, String isbn) {

@@ -20,18 +20,24 @@ public class EditarUsuarioUsecase {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public void show(Model model, String cpf) {
+    public String show(Model model, String cpf) {
         try {
             Usuario usuario = usuarioRepository.getReferenceById(cpf);
             model.addAttribute("usuario", usuario);
+
+            EditarUsuarioDto editarUsuarioDto = new EditarUsuarioDto(usuario);
+
+            model.addAttribute("editarUsuarioDto", editarUsuarioDto);
+
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
-            throw new RuntimeException("Usuário não encontrado");
+            return "redirect:/usuarios";
         }
+        return null;
     }
 
     @Transactional
-    public boolean execute(EditarUsuarioDto dto, String cpf, String senhaAtual, Model model) {
+    public void execute(EditarUsuarioDto dto, String cpf, String senhaAtual, Model model) {
 
         try {
             // Buscar o usuário gerenciado pelo JPA
@@ -45,7 +51,6 @@ public class EditarUsuarioUsecase {
                 if (senhaAtual == null || senhaAtual.trim().isEmpty()) {
                     model.addAttribute("error", "Para alterar a senha, informe a senha atual!");
                     model.addAttribute("usuario", usuario);
-                    return false;
                 }
 
                 // Verificar se a senha atual está correta
@@ -53,7 +58,6 @@ public class EditarUsuarioUsecase {
                     model.addAttribute("senhaErrada", true);
                     model.addAttribute("error", "Senha atual incorreta!");
                     model.addAttribute("usuario", usuario);
-                    return false;
                 }
 
                 String senhaCriptografada = passwordEncoder.encode(dto.senha());
@@ -87,12 +91,9 @@ public class EditarUsuarioUsecase {
             // Salvar
             usuarioRepository.save(usuario);
 
-            return true; // Sucesso
-
         } catch (Exception e) {
             System.out.println("Erro ao editar usuário: " + e.getMessage());
             model.addAttribute("error", "Erro ao editar usuário: " + e.getMessage());
-            return false;
         }
     }
 }
