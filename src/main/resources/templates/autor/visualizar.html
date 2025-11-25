@@ -10,14 +10,20 @@
 <body class="bg-light">
 <div class="container py-4">
 
-    <!-- Cabeçalho -->
-    <div class="mb-4">
-        <h2 class="fw-bold" th:text="${autor.nome}">Nome do Autor</h2>
-        <p class="text-muted">
-            Nacionalidade:
-            <span th:text="${autor.nacionalidadeFormatada}">BR</span>
-        </p>
-    </div>
+    <!-- Cabeçalho (Adicionado botão Voltar) -->
+    <header class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold" th:text="${autor.nome}">Nome do Autor</h2>
+            <p class="text-muted mb-0">
+                Nacionalidade:
+                <span th:text="${autor.nacionalidadeFormatada}">BR</span>
+            </p>
+        </div>
+        <!-- Botão Voltar Adicionado -->
+        <a class="btn btn-dark" role="button" href="/autores">
+            <i class="bi bi-arrow-left me-2"></i>Voltar
+        </a>
+    </header>
 
     <!-- Livros -->
     <div class="card shadow-sm">
