@@ -6,13 +6,61 @@
     <title>Livros - Biblioteca</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" th:href="@{/livros/css/lista.css}">
+    <style>
+        /* ... Seu CSS original ... */
+        .book-cover {
+            width: 50px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
+        .icon-cover {
+            font-size: 2.5rem;
+            color: #6c757d;
+        }
+
+        .book-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.25rem;
+        }
+
+        .book-categories .badge {
+            font-size: 0.75rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            white-space: nowrap;
+        }
+
+        .card {
+            border: none;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: #495057;
+            background-color: #f8f9fa;
+            white-space: nowrap;
+        }
+
+        .desktop-table {
+            overflow-x: auto;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+    </style>
 </head>
 <body class="bg-light">
 <div class="container-fluid py-4">
 
-    <!-- Cabeçalho -->
     <header class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <div class="d-flex align-items-center gap-2 mb-1">
@@ -22,22 +70,21 @@
             <p class="text-muted mb-0">Sistema de Gerenciamento de Biblioteca</p>
         </div>
         <div class="d-flex gap-2">
-        <a class="btn btn-outline-secondary" href="/">
-            <i class="bi bi-house me-2"></i>Início
-        </a>
-        <a class="btn btn-dark" href="/livros/cadastro">
-            <i class="bi bi-plus-circle me-2"></i>Cadastrar Livro
-        </a>
+            <a class="btn btn-outline-secondary" href="/">
+                <i class="bi bi-house me-2"></i>Início
+            </a>
+            <a class="btn btn-dark" href="/livros/cadastro">
+                <i class="bi bi-plus-circle me-2"></i>Cadastrar Livro
+            </a>
         </div>
     </header>
 
-    <!-- Cards de Estatísticas -->
     <div class="row g-3 mb-4">
         <div class="col-md-3">
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                     <h6 class="text-muted mb-2">Total de Livros</h6>
-                    <h2 class="mb-0 fw-bold">2</h2>
+                    <h2 class="mb-0 fw-bold" th:text="${livros.size()}">0</h2>
                 </div>
             </div>
         </div>
@@ -70,9 +117,8 @@
         </div>
     </div>
 
-    <!-- Card de Filtros e Tabela -->
+
     <div class="card shadow-sm">
-        <!-- Cabeçalho de Filtros -->
         <div class="card-header bg-white border-bottom">
             <h6 class="mb-0 d-flex align-items-center gap-2">
                 <i class="bi bi-funnel text-secondary"></i>
@@ -80,11 +126,9 @@
             </h6>
         </div>
 
-        <!-- Formulário de Filtros -->
-        <form th:action="@{/templates/livros}" method="get" id="formFiltros">
+        <form th:action="@{/livros}" method="get" id="formFiltros">
             <div class="card-body">
                 <div class="row g-3">
-                    <!-- Busca -->
                     <div class="col-md-4">
                         <label class="form-label small text-muted">Pesquisar</label>
                         <div class="input-group">
@@ -94,54 +138,83 @@
                             <input type="text"
                                    class="form-control"
                                    name="busca"
-                                   placeholder="ISBN, Título ou Autor...">
+                                   placeholder="ISBN, Título ou Autor..."
+                                   th:value="${buscaSelecionada}">
                         </div>
                     </div>
 
-                    <!-- Ordenação -->
                     <div class="col-md-2">
-                        <label class="form-label small text-muted">Ordenar por</label>
-                        <select class="form-select" name="ordem">
-                            <option value="titulo_asc">Título A-Z</option>
-                            <option value="titulo_desc">Título Z-A</option>
-                            <option value="ano_desc">Ano (Mais recente)</option>
-                            <option value="ano_asc">Ano (Mais antigo)</option>
-                        </select>
-                    </div>
-
-                    <!-- Categoria -->
-                    <div class="col-md-3">
-                        <label class="form-label small text-muted">Categoria</label>
-                        <select class="form-select" name="categoria">
-                            <option value="" selected>Todas as Categorias</option>
-                            <option th:each="categoria : ${categorias}"
-                                    th:value="${categoria.id}"
-                                    th:text="${categoria.nome}">
+                        <label class="form-label small text-muted">Autor</label>
+                        <select class="form-select" name="autorId">
+                            <option value="" th:selected="${autorSelecionado == ''}">Todos os Autores</option>
+                            <option th:each="autor : ${autores}"
+                                    th:value="${autor.oplid}"
+                                    th:text="${autor.nome}"
+                                    th:selected="${autorSelecionado == autor.oplid}">
                             </option>
                         </select>
                     </div>
 
-                    <!-- Status -->
                     <div class="col-md-2">
-                        <label class="form-label small text-muted">Status</label>
-                        <select class="form-select" name="status">
-                            <option value="" selected>Todos</option>
-                            <option value="true">Ativo</option>
-                            <option value="false">Inativo</option>
+                        <label class="form-label small text-muted">Categoria</label>
+                        <select class="form-select" name="categoriaId">
+                            <option value="" th:selected="${categoriaSelecionada == null or categoriaSelecionada == ''}">Todas as Categorias</option>
+                            <option th:each="categoria : ${categorias}"
+                                    th:value="${categoria.id}"
+                                    th:text="${categoria.nome}"
+                                    th:selected="${categoriaSelecionada != null and categoriaSelecionada == #strings.toString(categoria.id)}">
+                            </option>
                         </select>
                     </div>
 
-                    <!-- Botão Limpar -->
+                    <div class="col-md-2">
+                        <label class="form-label small text-muted">Status</label>
+                        <select class="form-select" name="status">
+                            <option value="" th:selected="${statusSelecionado == null or statusSelecionado == ''}">Todos</option>
+                            <option value="true" th:selected="${statusSelecionado == 'true'}">Ativo</option>
+                            <option value="false" th:selected="${statusSelecionado == 'false'}">Inativo</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label small text-muted">Idioma</label>
+                        <select class="form-select" name="idioma">
+                            <option value="" th:selected="${idiomaSelecionado == ''}">Todos os Idiomas</option>
+                            <option th:each="idiomaEnum : ${idiomas}"
+                                    th:value="${idiomaEnum.name()}"
+                                    th:text="${idiomaEnum.name()}"
+                                    th:selected="${idiomaSelecionado == idiomaEnum.name()}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="form-label small text-muted">Ordenar por</label>
+                        <select class="form-select" name="ordem">
+                            <option value="titulo_asc" th:selected="${ordemSelecionada == 'titulo_asc'}">Título A-Z</option>
+                            <option value="titulo_desc" th:selected="${ordemSelecionada == 'titulo_desc'}">Título Z-A</option>
+                            <option value="ano_desc" th:selected="${ordemSelecionada == 'ano_desc'}">Ano (Mais recente)</option>
+                            <option value="ano_asc" th:selected="${ordemSelecionada == 'ano_asc'}">Ano (Mais antigo)</option>
+                            <option value="disponiveis_desc" th:selected="${ordemSelecionada == 'disponiveis_desc'}">Disponíveis (Maior)</option>
+                            <option value="disponiveis_asc" th:selected="${ordemSelecionada == 'disponiveis_asc'}">Disponíveis (Menor)</option>
+                        </select>
+                    </div>
+
                     <div class="col-md-1 d-flex align-items-end">
-                        <button type="reset" class="btn btn-outline-danger w-100" title="Limpar filtros">
-                            <i class="bi bi-x-circle"></i>
+                        <button type="submit" class="btn btn-primary w-100" title="Pesquisar">
+                            <i class="bi bi-search"></i>
                         </button>
+                    </div>
+
+                    <div class="col-md-1 d-flex align-items-end">
+                        <a th:href="@{/livros}" class="btn btn-outline-danger w-100" title="Limpar filtros">
+                            <i class="bi bi-x-circle"></i>
+                        </a>
                     </div>
                 </div>
             </div>
         </form>
 
-        <!-- Tabela de Livros -->
         <div class="desktop-table">
             <table class="table table-hover align-middle mb-0">
                 <thead>
@@ -161,12 +234,10 @@
                 </thead>
                 <tbody>
                 <tr th:each="livro : ${livros}">
-                    <!-- ISBN -->
                     <td>
                         <strong th:text="${livro.isbn}">1212121</strong>
                     </td>
 
-                    <!-- Capa -->
                     <td>
                         <img th:if="${livro.imagem_url != null}"
                              th:src="${livro.imagem_url}"
@@ -176,22 +247,19 @@
                            class="bi bi-book-half icon-cover"></i>
                     </td>
 
-                    <!-- Título -->
                     <td>
                         <span th:text="${livro.titulo}" class="fw-semibold">Título</span>
                     </td>
 
-                    <!-- Autor(es) -->
                     <td>
                                 <span th:each="autorRel, iterStat : ${livro.autorEscreveLivro}">
                                 <a th:href="@{/autores/{oplid}(oplid=${autorRel.autor.oplid})}"
-                                    th:text="${autorRel.autor.nome}"
-                                    class="text-primary text-decoration-none"></a>
+                                   th:text="${autorRel.autor.nome}"
+                                   class="text-primary text-decoration-none"></a>
                                     <span th:if="${!iterStat.last}">, </span>
                                 </span>
                     </td>
 
-                    <!-- Categoria(s) -->
                     <td>
                         <div class="book-categories">
                                     <span class="badge bg-dark"
@@ -200,32 +268,25 @@
                         </div>
                     </td>
 
-                    <!-- Idioma -->
                     <td th:text="${livro.idioma.name}">PT-BR</td>
 
-                    <!-- Ano -->
                     <td class="text-center" th:text="${livro.ano_publicacao}">2025</td>
 
-                    <!-- Quantidade -->
                     <td class="text-center">
                         <span class="badge bg-secondary" th:text="${livro.quantidade}">5</span>
                     </td>
 
-                    <!-- Disponíveis -->
                     <td class="text-center">
                         <span class="badge bg-success" th:text="${livro.disponiveis}">5</span>
                     </td>
 
-                    <!-- Status -->
                     <td class="text-center">
                         <span th:if="${!livro.deleted}" class="badge bg-success">Ativo</span>
                         <span th:unless="${!livro.deleted}" class="badge bg-danger">Inativo</span>
                     </td>
 
-                    <!-- Ações -->
                     <td>
                         <div class="action-buttons">
-                            <!-- Botão Visualizar -->
                             <a role="button"
                                class="btn btn-sm btn-outline-secondary"
                                th:href="@{/livros/visualizar(isbn=${livro.isbn})}"
@@ -233,7 +294,6 @@
                                 <i class="bi bi-eye"></i>
                             </a>
 
-                            <!-- Botão Editar -->
                             <a role="button"
                                class="btn btn-sm btn-outline-primary"
                                th:href="@{/livros/editar(isbn=${livro.isbn})}"
@@ -241,7 +301,6 @@
                                 <i class="bi bi-pencil"></i>
                             </a>
 
-                            <!-- Botão Desativar (se ativo) -->
                             <a th:if="${!livro.deleted}"
                                role="button"
                                class="btn btn-sm btn-outline-danger"
@@ -251,7 +310,6 @@
                                 <i class="bi bi-trash"></i>
                             </a>
 
-                            <!-- Botão Reativar (se inativo) -->
                             <a th:unless="${!livro.deleted}"
                                role="button"
                                class="btn btn-sm btn-outline-success"
