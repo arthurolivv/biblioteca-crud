@@ -32,6 +32,7 @@ public class LivroController {
     private final EditarLivroUsecase editar;
     private final DesativarLivroUsecase desativar;
     private final AtivarLivroUsecase ativar;
+    private final VisualizarLivroUsecase visualizar;
 
     @Autowired
     private LivroRepository livroRepository;
@@ -48,10 +49,6 @@ public class LivroController {
     @Autowired
     private CadastrarLivroValidationService validar;
 
-    /**
-     * Exibe a página de listagem de livros, aplicando filtros e ordenação
-     * diretamente no banco de dados usando JpaSpecificationExecutor.
-     */
     @GetMapping({"", "/"})
     public String showListarLivroPagina(
             Model model,
@@ -117,22 +114,7 @@ public class LivroController {
     @GetMapping("/cadastro")
     public String showCadastrarLivroPagina(Model model) {
 
-        CadastrarLivroDto cadastrarLivroDto = new CadastrarLivroDto(
-                "", // isbn
-                "", // titulo
-                null, // ano_publicacao
-                List.of(), // autor
-                List.of(), // categoria_id
-                "", // imagem_url
-                null, // idioma
-                "", // editora_cnpj
-                List.of(), // exemplares
-                "" //sinopse
-        );
-
-        model.addAttribute("cadastrarLivroDto", cadastrarLivroDto);
-        carregarDadosFormulario(model);
-
+        cadastrar.show(model);
         return "livros/cadastro";
     }
 
@@ -145,7 +127,6 @@ public class LivroController {
         validar.execute(dto, result);
 
         if (result.hasErrors()) {
-            carregarDadosFormulario(model);
             return "livros/cadastro";
         }
 
@@ -158,18 +139,11 @@ public class LivroController {
     public String showEditarLivroPagina(Model model, @RequestParam String isbn) {
 
         try {
-            Livro livro = livroRepository.getReferenceById(isbn);
-            model.addAttribute("livro", livro);
 
-            carregarDadosFormulario(model);
-
-            EditarLivroDto editarLivroDto = new EditarLivroDto(livro);
-
-            model.addAttribute("editarLivroDto", editarLivroDto);
+            editar.show(model, isbn);
 
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
-            carregarDadosFormulario(model);
             return "redirect:/livros";
         }
 
@@ -184,25 +158,12 @@ public class LivroController {
             BindingResult result
     ) {
         try {
-            // Se o findById falhar, ele deve ser tratado
-            Optional<Livro> livroOpt = livroRepository.findById(isbn);
-            if (livroOpt.isEmpty()) {
-                System.out.println("Livro não encontrado para o ISBN: " + isbn);
-                return "redirect:/livros";
-            }
-
-            Livro livro = livroOpt.get();
-            model.addAttribute("livro", livro);
-            carregarDadosFormulario(model); // Recarregar dados caso haja erro de validação
-
-            if (result.hasErrors()) {
-                return "livros/editar";
-            }
-
             editar.execute(dto, isbn);
 
         } catch (Exception e) {
             System.out.println("Exception ao editar: " + e.getMessage());
+            editar.show(model, isbn);
+            return "livros/editar";
         }
         return "redirect:/livros";
     }
@@ -211,8 +172,7 @@ public class LivroController {
     public String showVisualizarLivroPagina(Model model, @RequestParam String isbn) {
 
         try {
-            Livro livro = livroRepository.findById(isbn).orElseThrow(() -> new RuntimeException("Livro não encontrado"));
-            model.addAttribute("livro", livro);
+            visualizar.execute(model, isbn);
 
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
@@ -244,18 +204,4 @@ public class LivroController {
         return "redirect:/livros";
     }
 
-    /**
-     * Método auxiliar para carregar dados comuns a formulários de livro (cadastro e edição).
-     */
-    private void carregarDadosFormulario(Model model) {
-
-        List<Autor> autores = autorRepository.findAll();
-        List<Categoria> categorias = categoriaRepository.findAll();
-        List<Editora> editoras = editoraRepository.findAll();
-
-        model.addAttribute("idiomas", Idioma.values());
-        model.addAttribute("autores", autores);
-        model.addAttribute("categorias", categorias);
-        model.addAttribute("editoras", editoras);
-    }
 }
