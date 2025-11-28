@@ -4,186 +4,184 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Autores - Biblioteca</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" th:href="@{/autores/lista.css}">
 
+    <style>
+        .action-buttons { display: flex; gap: 0.5rem; justify-content: center; }
+        .table th { font-weight: 600; background-color: #f8f9fa; }
+        .desktop-table { overflow-x: auto; }
+        .card-stat-count { font-size: 1.6rem; font-weight: 700; }
+        .modal.fade .modal-dialog { transition: transform 0.3s ease-out; }
+    </style>
 </head>
+
 <body class="bg-light">
 <div class="container py-4">
 
-    <!-- Cabeçalho -->
     <header class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <div class="d-flex align-items-center gap-2 mb-1">
-                <i class="bi bi-person-badge-fill" style="font-size: 2rem; color: #212529;"></i>
+                <i class="bi bi-person-badge-fill" style="font-size: 2rem;"></i>
                 <h3 class="fw-bold mb-0">Autores</h3>
             </div>
             <p class="text-muted mb-0">Sistema de Gerenciamento de Biblioteca</p>
         </div>
+
         <div class="d-flex gap-2">
             <a class="btn btn-outline-secondary" href="/">
                 <i class="bi bi-house me-2"></i>Início
             </a>
-            <!-- Botão para abrir o modal de cadastro -->
-            <button type="button"
-                    class="btn btn-dark"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalCadastroAutor">
+
+            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalCadastroAutor">
                 <i class="bi bi-plus-circle me-2"></i>Cadastrar Autor
             </button>
         </div>
     </header>
 
-    <!-- Alertas de Feedback -->
-    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show">
         <i class="bi bi-check-circle me-2"></i>
         <span th:text="${successMessage}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        <button class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
-    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show">
         <i class="bi bi-exclamation-triangle me-2"></i>
         <span th:text="${errorMessage}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        <button class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
-    <!-- Cards de Estatísticas -->
     <div class="row g-3 mb-4">
-        <!-- Cartão: Total de Autores -->
         <div class="col-md-6">
-            <div class="card shadow-sm border-start">
+            <div class="card shadow-sm ">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Total de Autores</h6>
-                    <h2 class="mb-0 fw-bold text-primary card-stat-count" th:text="${autores.size()}">0</h2>
+                    <h6 class="text-muted">Total de Autores</h6>
+                    <h2 class="text-primary card-stat-count"
+                        th:text="${autores != null ? autores.size() : 0}">0</h2>
                 </div>
             </div>
         </div>
 
-        <!-- Cartão: Nacionalidades -->
         <div class="col-md-6">
-            <div class="card shadow-sm border-start">
+            <div class="card shadow-sm ">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Nacionalidades</h6>
-                    <h2 class="mb-0 fw-bold text-warning card-stat-count" th:text="${totalNacionalidades}">0</h2>
+                    <h6 class="text-muted">Nacionalidades Únicas</h6>
+                    <h2 class="text-warning card-stat-count" th:text="${totalNacionalidades}">0</h2>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Card de Filtros e Tabela -->
     <div class="card shadow-sm">
-        <div class="card-header bg-white border-bottom">
-            <h6 class="mb-0 d-flex align-items-center gap-2">
-                <i class="bi bi-funnel text-secondary"></i>
-                <span>Filtros de Pesquisa</span>
-            </h6>
+        <div class="card-header bg-white">
+            <h6 class="mb-0"><i class="bi bi-funnel text-secondary me-2"></i>Filtros</h6>
         </div>
 
-        <form th:action="@{/autores}" method="get" id="formFiltros">
+        <form th:action="@{/autores}" method="get">
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-5">
                         <label class="form-label small text-muted">Pesquisar</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light">
-                                <i class="bi bi-search text-muted"></i>
+                                <i class="bi bi-search"></i>
                             </span>
-                            <input type="text"
-                                   class="form-control"
-                                   name="busca"
-                                   placeholder="Nome do autor..."
-                                   aria-label="Buscar autor">
+                            <input type="text" name="busca" class="form-control"
+                                   th:value="${buscaSelecionada}"
+                                   placeholder="Nome do autor...">
                         </div>
                     </div>
 
                     <div class="col-md-3">
                         <label class="form-label small text-muted">Nacionalidade</label>
-                        <select class="form-select" name="nacionalidade" aria-label="Filtrar por nacionalidade">
-                            <option value="" selected>Todas</option>
+                        <select name="nacionalidade" class="form-select">
+                            <option value="" th:selected="${nacionalidadeSelecionada == ''}">Todas</option>
                             <option th:each="nac : ${nacionalidadesDisponiveis}"
-                                    th:value="${nac}"
-                                    th:text="${nac.displayValue}">
-                            </option>
+                                    th:value="${nac.name()}"
+                                    th:text="${nac.displayValue}"
+                                    th:selected="${nacionalidadeSelecionada == nac.name()}"></option>
                         </select>
                     </div>
 
                     <div class="col-md-3">
-                        <label class="form-label small text-muted">Ordenar por</label>
-                        <select class="form-select" name="ordem" aria-label="Ordenar autores">
-                            <option value="nome_asc">Nome A-Z</option>
-                            <option value="nome_desc">Nome Z-A</option>
-                            <option value="livros_desc">Mais Livros</option>
-                            <option value="livros_asc">Menos Livros</option>
+                        <label class="form-label small text-muted">Ordenar</label>
+                        <select name="ordem" class="form-select">
+                            <option value="nome_asc" th:selected="${ordemSelecionada == 'nome_asc'}">Nome A-Z</option>
+                            <option value="nome_desc" th:selected="${ordemSelecionada == 'nome_desc'}">Nome Z-A</option>
+                            <option value="livros_desc" th:selected="${ordemSelecionada == 'livros_desc'}">Mais Livros</option>
+                            <option value="livros_asc" th:selected="${ordemSelecionada == 'livros_asc'}">Menos Livros</option>
                         </select>
                     </div>
 
                     <div class="col-md-1 d-flex align-items-end">
-                        <button type="reset" class="btn btn-outline-danger w-100" title="Limpar filtros" aria-label="Limpar filtros">
+                        <button class="btn btn-primary w-100"><i class="bi bi-search"></i></button>
+                    </div>
+
+                    <div class="col-md-1 d-flex align-items-end">
+                        <a th:href="@{/autores}" class="btn btn-outline-danger w-100">
                             <i class="bi bi-x-circle"></i>
-                        </button>
+                        </a>
                     </div>
                 </div>
+
             </div>
         </form>
 
-        <!-- Tabela de Autores -->
         <div class="desktop-table">
-            <!-- Mensagem quando não há autores -->
-            <div th:if="${autores.isEmpty()}" class="alert alert-info m-3">
+
+            <div th:if="${autores == null or autores.isEmpty()}" class="alert alert-info m-3">
                 <i class="bi bi-info-circle me-2"></i>
                 Nenhum autor encontrado.
             </div>
 
-            <!-- Tabela com autores -->
-            <table th:unless="${autores.isEmpty()}" class="table table-hover align-middle mb-0">
+            <table th:unless="${autores == null or autores.isEmpty()}" class="table table-hover align-middle mb-0">
                 <thead>
                 <tr>
                     <th class="text-center">ID</th>
                     <th>Nome</th>
                     <th class="text-center">Nacionalidade</th>
-                    <th class="text-center">Livros Escritos</th>
+                    <th class="text-center">Livros</th>
                     <th class="text-center">Ações</th>
                 </tr>
                 </thead>
+
                 <tbody>
                 <tr th:each="autor : ${autores}">
-                    <td class="text-center">
-                        <strong th:text="${autor.oplid}">OL1234567890A</strong>
-                    </td>
+                    <td class="text-center"><strong th:text="${autor.oplid}"></strong></td>
+
                     <td>
-                        <a th:href="@{/autores/{oplid}(oplid=${autor.oplid})}"
-                           th:text="${autor.nome}"
-                           class="text-decoration-none fw-semibold">Nome do Autor</a>
+                        <a th:href="@{/autores/{id}(id=${autor.oplid})}" class="fw-semibold text-decoration-none"
+                           th:text="${autor.nome}"></a>
                     </td>
+
                     <td class="text-center">
-                        <span class="badge bg-light text-dark" th:text="${autor.nacionalidade.displayValue}">BR</span>
+                        <span class="badge bg-light text-dark"
+                              th:text="${autor.nacionalidade.displayValue}"></span>
                     </td>
+
                     <td class="text-center">
-                        <span class="badge bg-primary" th:text="${autor.escreve != null ? autor.escreve.size() : 0}">0</span>
+                        <span class="badge bg-primary"
+                              th:text="${autor.escreve != null ? autor.escreve.size() : 0}">0</span>
                     </td>
+
                     <td>
-                        <div class="action-buttons justify-content-center">
-                            <a role="button"
-                               class="btn btn-sm btn-outline-secondary"
-                               th:href="@{/autores/{oplid}(oplid=${autor.oplid})}"
-                               title="Visualizar">
+                        <div class="action-buttons">
+
+                            <a th:href="@{/autores/{id}(id=${autor.oplid})}"
+                               class="btn btn-sm btn-outline-secondary" title="Visualizar">
                                 <i class="bi bi-eye"></i>
                             </a>
 
-                            <button type="button"
-                                    class="btn btn-sm btn-outline-primary"
+                            <button class="btn btn-sm btn-outline-primary"
                                     data-bs-toggle="modal"
-                                    th:data-bs-target="'#modalEditar' + ${autor.oplid}"
-                                    title="Editar">
+                                    th:data-bs-target="'#modalEditar' + ${autor.oplid}">
                                 <i class="bi bi-pencil"></i>
                             </button>
 
-                            <button type="button"
-                                    class="btn btn-sm btn-outline-danger"
+                            <button class="btn btn-sm btn-outline-danger"
                                     data-bs-toggle="modal"
-                                    th:data-bs-target="'#modalRemover' + ${autor.oplid}"
-                                    title="Remover">
+                                    th:data-bs-target="'#modalRemover' + ${autor.oplid}">
                                 <i class="bi bi-trash"></i>
                             </button>
                         </div>
@@ -195,258 +193,45 @@
     </div>
 </div>
 
-<!-- ====================================== -->
-<!-- MODAIS DE EDIÇÃO                      -->
-<!-- ====================================== -->
-<div th:each="autor : ${autores}">
-    <div class="modal fade" th:id="'modalEditar' + ${autor.oplid}" tabindex="-1" aria-labelledby="modalEditarLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <form th:action="@{/autores/editar/{oplid}(oplid=${autor.oplid})}" method="post">
-
-                    <div class="modal-header bg-primary bg-gradient text-white">
-                        <h5 class="modal-title" id="modalEditarLabel">
-                            <i class="bi bi-pencil-square me-2"></i>
-                            Editar Autor
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <!-- Badge com OPLID -->
-                        <div class="mb-3 text-center">
-                            <span class="badge bg-secondary">
-                                <i class="bi bi-hash me-1"></i>
-                                <span th:text="${autor.oplid}">OL1234567890A</span>
-                            </span>
-                        </div>
-
-                        <!-- Campo: Nome -->
-                        <div class="mb-3">
-                            <label th:for="'nomeEdit' + ${autor.oplid}" class="form-label fw-semibold">
-                                <i class="bi bi-person me-1 text-primary"></i>
-                                Nome Completo <span class="text-danger">*</span>
-                            </label>
-                            <input type="text"
-                                   class="form-control"
-                                   th:id="'nomeEdit' + ${autor.oplid}"
-                                   name="nome"
-                                   th:value="${autor.nome}"
-                                   placeholder="Ex: Machado de Assis"
-                                   required
-                                   maxlength="255">
-                            <div class="form-text">
-                                <i class="bi bi-info-circle me-1"></i>
-                                Digite o nome completo do autor (máximo 255 caracteres)
-                            </div>
-                        </div>
-
-                        <!-- Campo: Nacionalidade -->
-                        <div class="mb-3">
-                            <label th:for="'nacionalidadeEdit' + ${autor.oplid}" class="form-label fw-semibold">
-                                <i class="bi bi-flag me-1 text-primary"></i>
-                                Nacionalidade <span class="text-danger">*</span>
-                            </label>
-                            <select class="form-select"
-                                    th:id="'nacionalidadeEdit' + ${autor.oplid}"
-                                    name="nacionalidade"
-                                    required>
-                                <option value="" disabled>Selecione a nacionalidade</option>
-                                <option th:each="nac : ${nacionalidadesDisponiveis}"
-                                        th:value="${nac.name()}"
-                                        th:text="${nac.displayValue}"
-                                        th:selected="${nac == autor.nacionalidade}">
-                                    Brasileira
-                                </option>
-                            </select>
-                            <div class="form-text">
-                                <i class="bi bi-info-circle me-1"></i>
-                                Selecione o país de origem do autor
-                            </div>
-                        </div>
-
-                        <!-- Alerta informativo -->
-                        <div class="alert alert-warning border-start border-warning border-3 mb-0">
-                            <div class="d-flex align-items-start gap-2">
-                                <i class="bi bi-exclamation-triangle-fill"></i>
-                                <div>
-                                    <strong class="d-block mb-1">Atenção:</strong>
-                                    <small class="text-muted">
-                                        As alterações serão aplicadas imediatamente após salvar.
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            <i class="bi bi-x-circle me-1"></i>
-                            Cancelar
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save me-1"></i>
-                            Salvar Alterações
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ====================================== -->
-<!-- MODAIS DE CONFIRMAÇÃO DE REMOÇÃO      -->
-<!-- ====================================== -->
-<div th:each="autor : ${autores}">
-    <div class="modal fade" th:id="'modalRemover' + ${autor.oplid}" tabindex="-1" aria-labelledby="modalRemoverLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="modalRemoverLabel">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
-                        Confirmar Remoção
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="alert alert-warning mb-3">
-                        <i class="bi bi-exclamation-circle me-2"></i>
-                        <strong>Atenção:</strong> Esta ação não pode ser desfeita!
-                    </div>
-
-                    <p class="mb-2">Você tem certeza que deseja remover o autor:</p>
-                    <p class="fw-bold fs-5 text-center my-3" th:text="${autor.nome}">Nome do Autor</p>
-
-                    <div class="text-muted small">
-                        <i class="bi bi-info-circle me-1"></i>
-                        ID: <span th:text="${autor.oplid}">OL1234567890A</span>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle me-1"></i>
-                        Cancelar
-                    </button>
-                    <form th:action="@{/autores/remover/{oplid}(oplid=${autor.oplid})}" method="post" style="display: inline;">
-                        <button type="submit" class="btn btn-danger">
-                            <i class="bi bi-trash me-1"></i>
-                            Confirmar Remoção
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ====================================== -->
-<!-- MODAL: Cadastrar Autor                -->
-<!-- ====================================== -->
-<div class="modal fade" id="modalCadastroAutor" tabindex="-1" aria-labelledby="modalCadastroAutorLabel" aria-hidden="true">
+<div class="modal fade" id="modalCadastroAutor" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <!-- Formulário de Cadastro -->
-            <form th:action="@{/autores}" method="post" th:object="${novoAutorDto}">
 
-                <!-- Cabeçalho do Modal -->
-                <div class="modal-header bg-primary bg-gradient text-white">
-                    <h5 class="modal-title" id="modalCadastroAutorLabel">
-                        <i class="bi bi-person-plus me-2"></i>
-                        Cadastrar Novo Autor
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            <form th:action="@{/autores}" method="post" th:object="${novoAutorDto}">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Cadastrar Autor</h5>
+                    <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
-                <!-- Corpo do Modal -->
                 <div class="modal-body">
-                    <!-- Campo: Nome -->
                     <div class="mb-3">
-                        <label for="nomeAutor" class="form-label fw-semibold">
-                            <i class="bi bi-person me-1 text-primary"></i>
-                            Nome Completo <span class="text-danger">*</span>
-                        </label>
-                        <input type="text"
-                               class="form-control"
-                               id="nomeAutor"
-                               th:field="*{nome}"
-                               placeholder="Ex: Machado de Assis"
-                               required
-                               maxlength="255"
-                               th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid' : ''">
-
-                        <!-- Mensagem de erro de validação -->
+                        <label class="form-label fw-semibold">Nome <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" th:field="*{nome}" maxlength="255" required
+                               th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'">
                         <div th:if="${#fields.hasErrors('nome')}" class="invalid-feedback">
-                            <i class="bi bi-exclamation-circle me-1"></i>
-                            <span th:errors="*{nome}">Erro de validação</span>
-                        </div>
-
-                        <!-- Texto de ajuda -->
-                        <div class="form-text">
-                            <i class="bi bi-info-circle me-1"></i>
-                            Digite o nome completo do autor (máximo 255 caracteres)
+                            <span th:errors="*{nome}">Erro de Nome</span>
                         </div>
                     </div>
 
-                    <!-- Campo: Nacionalidade -->
                     <div class="mb-3">
-                        <label for="nacionalidadeAutor" class="form-label fw-semibold">
-                            <i class="bi bi-flag me-1 text-primary"></i>
-                            Nacionalidade <span class="text-danger">*</span>
-                        </label>
-                        <select class="form-select"
-                                id="nacionalidadeAutor"
-                                th:field="*{nacionalidade}"
-                                required
-                                th:classappend="${#fields.hasErrors('nacionalidade')} ? 'is-invalid' : ''">
-                            <option value="" selected disabled>Selecione a nacionalidade</option>
+                        <label class="form-label fw-semibold">Nacionalidade <span class="text-danger">*</span></label>
+                        <select class="form-select" th:field="*{nacionalidade}" required
+                                th:classappend="${#fields.hasErrors('nacionalidade')} ? 'is-invalid'">
+                            <option disabled selected value="">Selecione...</option>
                             <option th:each="nac : ${nacionalidadesDisponiveis}"
                                     th:value="${nac.name()}"
-                                    th:text="${nac.displayValue}">
-                                Brasileira
-                            </option>
+                                    th:text="${nac.displayValue}"></option>
                         </select>
-
-                        <!-- Mensagem de erro de validação -->
                         <div th:if="${#fields.hasErrors('nacionalidade')}" class="invalid-feedback">
-                            <i class="bi bi-exclamation-circle me-1"></i>
-                            <span th:errors="*{nacionalidade}">Erro de validação</span>
-                        </div>
-
-                        <!-- Texto de ajuda -->
-                        <div class="form-text">
-                            <i class="bi bi-info-circle me-1"></i>
-                            Selecione o país de origem do autor
+                            <span th:errors="*{nacionalidade}">Erro de Nacionalidade</span>
                         </div>
                     </div>
 
-                    <!-- Informação adicional -->
-                    <div class="alert alert-light border-start border-info border-3 mb-0">
-                        <div class="d-flex align-items-start gap-2">
-                            <i class="bi bi-lightbulb-fill text-warning fs-5"></i>
-                            <div>
-                                <strong class="d-block mb-1">Dica:</strong>
-                                <small class="text-muted">
-                                    O sistema gerará automaticamente um código único (OPLID) para identificar o autor.
-                                </small>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- Rodapé do Modal -->
                 <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle me-1"></i>
-                        Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-circle me-1"></i>
-                        Cadastrar Autor
-                    </button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button class="btn btn-dark" type="submit">Salvar</button>
                 </div>
 
             </form>
@@ -454,36 +239,106 @@
     </div>
 </div>
 
-<!-- Scripts -->
+<div th:if="${autores != null}" th:each="autor : ${autores}">
+
+    <div class="modal fade" th:id="'modalEditar' + ${autor.oplid}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <form th:action="@{/autores/editar/{id}(id=${autor.oplid})}" method="post">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Editar Autor</h5>
+                        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Nome</label>
+                            <input class="form-control" name="nome" th:value="${autor.nome}" maxlength="255" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Nacionalidade</label>
+                            <select name="nacionalidade" class="form-select" required>
+                                <option th:each="nac : ${nacionalidadesDisponiveis}"
+                                        th:value="${nac.name()}"
+                                        th:text="${nac.displayValue}"
+                                        th:selected="${nac == autor.nacionalidade}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer bg-light">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button class="btn btn-primary">Salvar Alterações</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" th:id="'modalRemover' + ${autor.oplid}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Confirmar Remoção
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-circle me-2"></i>
+                        <strong>Atenção:</strong> Esta ação não pode ser desfeita!
+                    </div>
+
+                    <p>Deseja realmente remover o autor:</p>
+
+                    <p class="fw-bold fs-5 text-center my-3" th:text="${autor.nome}">Nome</p>
+
+                    <p class="text-muted small">
+                        ID: <span th:text="${autor.oplid}"></span>
+                    </p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <form th:action="@{/autores/remover/{oplid}(oplid=${autor.oplid})}"
+                          method="post">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash me-1"></i>
+                            Confirmar Remoção
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Script para reabrir o modal em caso de erro de validação -->
 <script th:inline="javascript">
-    /*<![CDATA[*/
-    document.addEventListener('DOMContentLoaded', function() {
-        // Verifica se há erro de validação ou mensagem de erro
-        const hasBindingError = /*[[${#vars.containsKey('org.springframework.validation.BindingResult.novoAutorDto')}]]*/ false;
-        const hasErrorMessage = /*[[${errorMessage != null}]]*/ false;
+    /* * O Controller agora usa RedirectAttributes para erro de validação.
+     * Portanto, se houver um BindingResult, o modal DEVE ser exibido.
+     */
+    const hasError = [[${#vars.containsKey('org.springframework.validation.BindingResult.novoAutorDto')
+        or errorMessage != null}]];
 
-        // Se houver erro, reabre o modal automaticamente
-        if (hasBindingError || hasErrorMessage) {
-            const modalElement = document.getElementById('modalCadastroAutor');
-            if (modalElement) {
-                const modal = new bootstrap.Modal(modalElement);
-                modal.show();
-            }
-        }
-
-        // Auto-dismiss dos alertas após 5 segundos
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(function(alert) {
-            setTimeout(function() {
-                const bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            }, 5000);
-        });
-    });
-    /*]]>*/
+    if (hasError) {
+        const modal = new bootstrap.Modal(document.getElementById("modalCadastroAutor"));
+        modal.show();
+    }
 </script>
+
 </body>
 </html>
