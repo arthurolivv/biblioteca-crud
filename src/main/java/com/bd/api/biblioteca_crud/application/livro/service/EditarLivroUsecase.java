@@ -58,7 +58,7 @@ public class EditarLivroUsecase {
     @Transactional
     public Livro execute(EditarLivroDto dto, String isbn) {
 
-        Livro livro = livroRepository.findById(isbn).get();
+        Livro livro = livroRepository.getReferenceById(isbn);
 
         Editora editora = editoraRepository.getReferenceById(dto.editora_cnpj());
         livro.setEditora(editora);

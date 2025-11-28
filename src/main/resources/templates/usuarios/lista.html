@@ -12,7 +12,6 @@
 <body class="bg-light">
 <div class="container py-4">
 
-    <!-- Cabeçalho -->
     <header class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <div class="d-flex align-items-center gap-2 mb-1">
@@ -31,7 +30,6 @@
         </div>
     </header>
 
-    <!-- Cards de Estatísticas -->
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="card shadow-sm">
@@ -61,9 +59,7 @@
         </div>
     </div>
 
-    <!-- Card de Filtros e Tabela -->
     <div class="card shadow-sm">
-        <!-- Cabeçalho de Filtros -->
         <div class="card-header bg-white border-bottom">
             <h6 class="mb-0 d-flex align-items-center gap-2">
                 <i class="bi bi-funnel text-secondary"></i>
@@ -71,12 +67,10 @@
             </h6>
         </div>
 
-        <!-- Formulário de Filtros -->
         <form th:action="@{/templates/usuario}" method="get" id="formFiltros">
             <div class="card-body">
                 <div class="row g-3">
-                    <!-- Busca -->
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label class="form-label small text-muted">Pesquisar</label>
                         <div class="input-group">
                                 <span class="input-group-text bg-light">
@@ -89,7 +83,6 @@
                         </div>
                     </div>
 
-                    <!-- Ordenação -->
                     <div class="col-md-2">
                         <label class="form-label small text-muted">Ordenar por</label>
                         <select class="form-select" name="ordem">
@@ -100,7 +93,6 @@
                         </select>
                     </div>
 
-                    <!-- Categoria (mantido conforme original) -->
                     <div class="col-md-3">
                         <label class="form-label small text-muted">Categoria</label>
                         <select class="form-select" name="categoria">
@@ -112,7 +104,6 @@
                         </select>
                     </div>
 
-                    <!-- Status -->
                     <div class="col-md-2">
                         <label class="form-label small text-muted">Status</label>
                         <select class="form-select" name="status">
@@ -122,7 +113,10 @@
                         </select>
                     </div>
 
-                    <!-- Botão Limpar -->
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button class="btn btn-primary w-100"><i class="bi bi-search"></i></button>
+                    </div>
+
                     <div class="col-md-1 d-flex align-items-end">
                         <button type="reset" class="btn btn-outline-danger w-100" title="Limpar filtros">
                             <i class="bi bi-x-circle"></i>
@@ -132,7 +126,6 @@
             </div>
         </form>
 
-        <!-- Tabela de Usuários -->
         <div class="desktop-table">
             <table class="table table-hover align-middle mb-0">
                 <thead>
