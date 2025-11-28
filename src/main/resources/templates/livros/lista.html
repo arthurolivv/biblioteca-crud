@@ -30,38 +30,20 @@
     </header>
 
     <div class="row g-3 mb-4">
-        <div class="col-md-3">
+        <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Total de Livros</h6>
+                    <h6 class="text-muted mb-2">Total de Livros (Títulos Únicos)</h6>
                     <h2 class="mb-0 fw-bold" th:text="${livros.size()}">0</h2>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Livros Ativos</h6>
-                    <h2 class="mb-0 fw-bold text-success">1</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Em Manutenção</h6>
-                    <h2 class="mb-0 fw-bold text-warning">1</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card shadow-sm">
-                <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Disponíveis</h6>
-                    <h2 class="mb-0 fw-bold text-info">0</h2>
+                    <h6 class="text-muted mb-2">Total de Exemplares</h6>
+                    <h2 class="mb-0 fw-bold text-primary" th:text="${totalExemplares}">0</h2>
                 </div>
             </div>
         </div>
@@ -92,18 +74,6 @@
                                    th:value="${buscaSelecionada}">
                         </div>
                     </div>
-
-<!--                    <div class="col-md-3">-->
-<!--                        <label class="form-label small text-muted">Autor</label>-->
-<!--                        <select class="form-select" name="autorId">-->
-<!--                            <option value="" th:selected="${autorSelecionado == ''}">Todos os Autores</option>-->
-<!--                            <option th:each="autor : ${autores}"-->
-<!--                                    th:value="${autor.oplid}"-->
-<!--                                    th:text="${autor.nome}"-->
-<!--                                    th:selected="${autorSelecionado == autor.oplid}">-->
-<!--                            </option>-->
-<!--                        </select>-->
-<!--                    </div>-->
 
                     <div class="col-md-3">
                         <label class="form-label small text-muted">Categoria</label>

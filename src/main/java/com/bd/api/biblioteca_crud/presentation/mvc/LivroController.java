@@ -3,7 +3,7 @@ package com.bd.api.biblioteca_crud.presentation.mvc;
 import com.bd.api.biblioteca_crud.application.livro.dto.request.CadastrarLivroDto;
 import com.bd.api.biblioteca_crud.application.livro.dto.response.EditarLivroDto;
 import com.bd.api.biblioteca_crud.application.livro.service.*;
-import com.bd.api.biblioteca_crud.infraestructure.specification.LivroSpecification; // Importação da nova classe de Specification
+import com.bd.api.biblioteca_crud.infraestructure.specification.LivroSpecification;
 import com.bd.api.biblioteca_crud.domain.autor.Autor;
 import com.bd.api.biblioteca_crud.domain.categoria.Categoria;
 import com.bd.api.biblioteca_crud.domain.editora.Editora;
@@ -13,15 +13,15 @@ import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort; // Importação para Ordenação
-import org.springframework.data.jpa.domain.Specification; // Importação para Especificação
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional; // Para tratamento de parâmetros opcionais
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -54,9 +54,9 @@ public class LivroController {
             Model model,
             @RequestParam(required = false) String busca,
             @RequestParam(required = false) String autorId,
-            @RequestParam(required = false) Long categoriaId, // Usando Long para IDs de Categoria
+            @RequestParam(required = false) Long categoriaId,
             @RequestParam(required = false) String idioma,
-            @RequestParam(required = false) Optional<Boolean> status, // True = Ativo (deleted=false), False = Inativo
+            @RequestParam(required = false) Optional<Boolean> status,
             @RequestParam(defaultValue = "titulo_asc") String ordem) {
 
         // 1. Construir a Especificação dinâmica (cláusula WHERE)
@@ -76,12 +76,16 @@ public class LivroController {
         List<Categoria> categorias = categoriaRepository.findAll();
         List<Autor> autores = autorRepository.findAll();
 
+        // 5. Adicionar a nova métrica: Total de Exemplares
+        Long totalExemplares = livroRepository.countTotalExemplares();
+
         model.addAttribute("livros", livros);
         model.addAttribute("categorias", categorias);
         model.addAttribute("autores", autores);
         model.addAttribute("idiomas", Idioma.values());
+        model.addAttribute("totalExemplares", totalExemplares != null ? totalExemplares : 0); // Novo atributo
 
-        // 5. Manter valores dos filtros selecionados (para persistência no formulário Thymeleaf)
+        // 6. Manter valores dos filtros selecionados (para persistência no formulário Thymeleaf)
         model.addAttribute("buscaSelecionada", busca != null ? busca : "");
         model.addAttribute("autorSelecionado", autorId != null ? autorId : "");
         model.addAttribute("categoriaSelecionada", categoriaId != null ? categoriaId : "");

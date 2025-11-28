@@ -31,4 +31,7 @@ public interface LivroRepository extends JpaRepository<Livro, String>, JpaSpecif
     List<Livro> findAllByOrderByTituloAsc();
 
     List<Livro> findAllByOrderByTituloDesc();
+
+    @Query("SELECT SUM(l.quantidade) FROM Livro l")
+    Long countTotalExemplares();
 }
