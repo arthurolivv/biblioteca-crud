@@ -32,7 +32,13 @@ public interface LivroRepository extends JpaRepository<Livro, String>, JpaSpecif
 
     List<Livro> findAllByOrderByTituloDesc();
 
+<<<<<<< HEAD
     long countByDeletedFalse();
 
     long countByDeletedTrue();
 }
+=======
+    @Query("SELECT SUM(l.quantidade) FROM Livro l")
+    Long countTotalExemplares();
+}
+>>>>>>> origin/fix-accountants
