@@ -13,7 +13,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Nome {
 
-    private String pri_nome;
+    private String priNome ;
 
-    private String sob_nome;
+    private String sobNome;
+
+    public String toLowerCase(){
+        return "priNome.toLowerCase() " + "sobNome.toLowerCase()";
+    }
 }

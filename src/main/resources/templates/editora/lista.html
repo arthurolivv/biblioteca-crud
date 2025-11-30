@@ -6,8 +6,14 @@
     <title>Editoras - Biblioteca</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" th:href="@{/editoras/lista.css}">
 
+    <style>
+        .action-buttons { display: flex; gap: 0.5rem; justify-content: center; }
+        .table th { font-weight: 600; background-color: #f8f9fa; }
+        .desktop-table { overflow-x: auto; }
+        .card-stat-count { font-size: 1.6rem; font-weight: 700; }
+        .modal.fade .modal-dialog { transition: transform 0.3s ease-out; }
+    </style>
 </head>
 <body class="bg-light">
 <div class="container py-4">
@@ -45,7 +51,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
-    <div class="row g-3 mb-4">
+    <div class="row g-3 mb-4 justify-content-center">
         <div class="col-md-12">
             <div class="card shadow-sm">
                 <div class="card-body text-center">
@@ -76,6 +82,7 @@
                             <input type="text"
                                    class="form-control"
                                    name="busca"
+                                   th:value="${buscaSelecionada != null ? buscaSelecionada : ''}"
                                    placeholder="CNPJ ou Razão Social...">
                         </div>
                     </div>
@@ -83,10 +90,10 @@
                     <div class="col-md-3">
                         <label class="form-label small text-muted">Ordenar por</label>
                         <select class="form-select" name="ordem">
-                            <option value="razao_asc">Razão Social A-Z</option>
-                            <option value="razao_desc">Razão Social Z-A</option>
-                            <option value="cnpj_asc">CNPJ Crescente</option>
-                            <option value="cnpj_desc">CNPJ Decrescente</option>
+                            <option value="razao_asc" th:selected="${ordemSelecionada == 'razao_asc'}">Razão Social A-Z</option>
+                            <option value="razao_desc" th:selected="${ordemSelecionada == 'razao_desc'}">Razão Social Z-A</option>
+                            <option value="livros_desc" th:selected="${ordemSelecionada == 'livros_desc'}">Mais Livros</option>
+                            <option value="livros_asc" th:selected="${ordemSelecionada == 'livros_asc'}">Menos Livros</option>
                         </select>
                     </div>
 
@@ -95,9 +102,9 @@
                     </div>
 
                     <div class="col-md-1 d-flex align-items-end">
-                        <button type="reset" class="btn btn-outline-danger w-100" title="Limpar filtros">
+                        <a href="/editoras" class="btn btn-outline-danger w-100" title="Limpar filtros">
                             <i class="bi bi-x-circle"></i>
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -124,7 +131,7 @@
                         <strong th:text="${editora.cnpj}">00.000.000/0000-00</strong>
                     </td>
                     <td>
-                        <span class="fw-semibold" th:text="${editora.razaoSocial}">Razão Social da Editora</span>
+                        <span class="fw-semibold" th:text="${editora.razao_social}">Razão Social da Editora</span>
                     </td>
                     <td class="text-center">
                         <span class="badge bg-primary" th:text="${editora.totalLivros}">0</span>
@@ -134,7 +141,7 @@
                             <form th:action="@{/editoras/{cnpj}/excluir(cnpj=${editora.cnpj})}"
                                   method="post"
                                   style="display: inline;"
-                                  th:attr="onsubmit='return confirm(\'Tem certeza que deseja excluir a editora: ' + ${editora.razaoSocial} + '? Esta ação não pode ser desfeita.\')'">
+                                  th:attr="onsubmit='return confirm(\'Tem certeza que deseja excluir a editora: ' + ${editora.razao_social} + '? Esta ação não pode ser desfeita.\')'">
                                 <button type="submit"
                                         class="btn btn-sm btn-outline-danger"
                                         title="Deletar">
@@ -156,9 +163,9 @@
         <div class="modal-content">
             <form th:action="@{/editoras}" method="post" th:object="${cadastrarEditoraDto}">
 
-                <div class="modal-header">
+                <div class="modal-header bg-dark text-white">
                     <h5 class="modal-title">
-                        <i class="bi bi-plus-circle text-primary me-2"></i>
+                        <i class="bi bi-plus-circle me-2"></i>
                         Cadastrar Nova Editora
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -168,7 +175,7 @@
                     <div class="mb-3">
                         <label for="cnpjEditora" class="form-label fw-semibold">
                             <i class="bi bi-card-text me-1"></i>
-                            CNPJ
+                            CNPJ <span class="text-danger">*</span>
                         </label>
                         <input type="text"
                                class="form-control"
@@ -190,7 +197,7 @@
                     <div class="mb-3">
                         <label for="razaoSocialEditora" class="form-label fw-semibold">
                             <i class="bi bi-building me-1"></i>
-                            Razão Social
+                            Razão Social <span class="text-danger">*</span>
                         </label>
                         <input type="text"
                                class="form-control"
@@ -210,11 +217,11 @@
                     </div>
                 </div>
 
-                <div class="modal-footer">
+                <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        Fechar
+                        Cancelar
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-dark">
                         <i class="bi bi-check-lg me-1"></i>
                         Cadastrar
                     </button>
@@ -226,6 +233,17 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/editoras/js/editora.js}"></script>
+
+<script th:inline="javascript">
+    /* Reabre o modal de cadastro se houver erro de validação */
+    const hasError = [[${#vars.containsKey('org.springframework.validation.BindingResult.cadastrarEditoraDto')
+        or errorMessage != null}]];
+
+    if (hasError) {
+        const modal = new bootstrap.Modal(document.getElementById("modalCadastro"));
+        modal.show();
+    }
+</script>
+
 </body>
 </html>

@@ -23,9 +23,21 @@ public class EditoraController {
     private final ExcluirEditoraUsecase excluirEditoraUsecase;
 
     @GetMapping
-    public String listar(Model model) {
+    public String listar(
+            @RequestParam(required = false, defaultValue = "razao_asc") String ordem,
+            @RequestParam(required = false, defaultValue = "") String busca,
+            Model model) {
 
-        model.addAttribute("listaDeEditoras", listarEditorasUsecase.execute());
+        try {
+            model.addAttribute("listaDeEditoras", listarEditorasUsecase.execute(ordem, busca));
+        } catch (Exception e) {
+            model.addAttribute("listaDeEditoras", java.util.Collections.emptyList());
+            model.addAttribute("errorMessage", "Erro ao carregar a lista de editoras: " + e.getMessage());
+        }
+
+        // SEMPRE adicionar esses atributos para evitar erros no template
+        model.addAttribute("ordemSelecionada", ordem);
+        model.addAttribute("buscaSelecionada", busca);
 
         if (!model.containsAttribute("cadastrarEditoraDto")) {
             model.addAttribute("cadastrarEditoraDto", new CadastrarEditoraDto(null, null));
@@ -43,6 +55,7 @@ public class EditoraController {
         if (result.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.cadastrarEditoraDto", result);
             redirectAttributes.addFlashAttribute("cadastrarEditoraDto", dto);
+            redirectAttributes.addFlashAttribute("errorMessage", "Erro de validação! Verifique os campos.");
             return "redirect:/editoras";
         }
 
@@ -53,7 +66,7 @@ public class EditoraController {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             redirectAttributes.addFlashAttribute("cadastrarEditoraDto", dto);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao cadastrar editora.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao cadastrar editora: " + e.getMessage());
             redirectAttributes.addFlashAttribute("cadastrarEditoraDto", dto);
         }
 
@@ -68,12 +81,11 @@ public class EditoraController {
         } catch (EntityNotFoundException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         } catch (Exception e) {
-            // Tratamento de ConstraintViolationException, similar a CategoriaController
             String message = e.getMessage();
             if (message != null && message.contains("ConstraintViolationException")) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Não foi possível excluir a editora, pois ela está associada a um ou mais livros.");
             } else {
-                redirectAttributes.addFlashAttribute("errorMessage", "Erro ao excluir editora.");
+                redirectAttributes.addFlashAttribute("errorMessage", "Erro ao excluir editora: " + e.getMessage());
             }
         }
 

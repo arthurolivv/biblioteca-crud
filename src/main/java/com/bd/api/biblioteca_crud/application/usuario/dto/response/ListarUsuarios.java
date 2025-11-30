@@ -2,13 +2,13 @@ package com.bd.api.biblioteca_crud.application.usuario.dto.response;
 
 import com.bd.api.biblioteca_crud.domain.shared.enums.StatusReserva;
 import com.bd.api.biblioteca_crud.domain.usuario.Usuario;
-import jakarta.validation.constraints.NotNull;
+import com.bd.api.biblioteca_crud.domain.shared.bases.Nome;
 
 public record ListarUsuarios(
 
         String cpf,
-        String nome,
-        String sobrenome,
+        String prinome,
+        String sobnome,
         String email,
         Long emprestimos_atvs,
         Long reservas_atvs,
@@ -19,8 +19,8 @@ public record ListarUsuarios(
 
         this(
                 usuario.getCpf(),
-                usuario.getNome().getPri_nome(),
-                usuario.getNome().getSob_nome(),
+                usuario.getNome().getPriNome(),
+                usuario.getNome().getSobNome(),
                 usuario.getEmail(),
                 usuario.getEmprestimos().stream()
                         .filter(e -> e.getData_devolucao() == null)

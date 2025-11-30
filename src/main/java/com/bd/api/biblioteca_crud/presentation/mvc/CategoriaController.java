@@ -1,49 +1,54 @@
 package com.bd.api.biblioteca_crud.presentation.mvc;
 
 import com.bd.api.biblioteca_crud.application.categoria.dto.request.CadastrarCategoriaDto;
-import com.bd.api.biblioteca_crud.application.categoria.dto.response.ListarCategoriaDto; // NOVO IMPORT
+import com.bd.api.biblioteca_crud.application.categoria.dto.response.ListarCategoriaDto;
 import com.bd.api.biblioteca_crud.application.categoria.service.CadastrarCategoriaUsecase;
 import com.bd.api.biblioteca_crud.application.categoria.service.ExcluirCategoriaUsecase;
 import com.bd.api.biblioteca_crud.application.categoria.service.ListarCategoriasUsecase;
-import com.bd.api.biblioteca_crud.domain.categoria.Categoria;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Controller
 @RequestMapping("/categoria")
+@RequiredArgsConstructor
 public class CategoriaController {
 
     private final ListarCategoriasUsecase listarCategoriasUsecase;
     private final CadastrarCategoriaUsecase cadastrarCategoriaUsecase;
     private final ExcluirCategoriaUsecase excluirCategoriaUsecase;
 
-    public CategoriaController(
-            ListarCategoriasUsecase listarCategoriasUsecase,
-            CadastrarCategoriaUsecase cadastrarCategoriaUsecase,
-            ExcluirCategoriaUsecase excluirCategoriaUsecase) {
-        this.listarCategoriasUsecase = listarCategoriasUsecase;
-        this.cadastrarCategoriaUsecase = cadastrarCategoriaUsecase;
-        this.excluirCategoriaUsecase = excluirCategoriaUsecase;
-    }
-
     @GetMapping
-    public String listar(Model model) {
-        List<ListarCategoriaDto> categorias = listarCategoriasUsecase.execute();
+    public String listar(
+            @RequestParam(required = false, defaultValue = "nome_desc") String ordem,
+            @RequestParam(required = false, defaultValue = "") String busca,
+            Model model) {
 
-        long totalLivrosCadastrados = categorias.stream()
-                .mapToLong(ListarCategoriaDto::totalLivros)
-                .sum();
+        try {
+            List<ListarCategoriaDto> categorias = listarCategoriasUsecase.execute(ordem, busca);
 
-        model.addAttribute("categorias", categorias);
-        model.addAttribute("totalLivrosCadastrados", totalLivrosCadastrados); // NOVO ATRIBUTO
+            long totalLivrosCadastrados = categorias.stream()
+                    .mapToLong(ListarCategoriaDto::totalLivros)
+                    .sum();
+
+            model.addAttribute("categorias", categorias);
+            model.addAttribute("totalLivrosCadastrados", totalLivrosCadastrados);
+        } catch (Exception e) {
+            model.addAttribute("categorias", java.util.Collections.emptyList());
+            model.addAttribute("totalLivrosCadastrados", 0L);
+            model.addAttribute("errorMessage", "Erro ao carregar a lista de categorias: " + e.getMessage());
+        }
+
+        // SEMPRE adicionar esses atributos para evitar erros no template
+        model.addAttribute("ordemSelecionada", ordem);
+        model.addAttribute("buscaSelecionada", busca);
 
         if (!model.containsAttribute("cadastrarCategoriaDto")) {
             model.addAttribute("cadastrarCategoriaDto", new CadastrarCategoriaDto(null));
@@ -61,6 +66,7 @@ public class CategoriaController {
         if (result.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.cadastrarCategoriaDto", result);
             redirectAttributes.addFlashAttribute("cadastrarCategoriaDto", dto);
+            redirectAttributes.addFlashAttribute("errorMessage", "Erro de validação! Verifique os campos.");
             return "redirect:/categoria";
         }
 
@@ -71,7 +77,7 @@ public class CategoriaController {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             redirectAttributes.addFlashAttribute("cadastrarCategoriaDto", dto);
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao cadastrar categoria.");
+            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao cadastrar categoria: " + e.getMessage());
             redirectAttributes.addFlashAttribute("cadastrarCategoriaDto", dto);
         }
 
@@ -90,7 +96,7 @@ public class CategoriaController {
             if (message != null && message.contains("ConstraintViolationException")) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Não foi possível excluir a categoria, pois ela está associada a um ou mais livros.");
             } else {
-                redirectAttributes.addFlashAttribute("errorMessage", "Erro ao excluir categoria.");
+                redirectAttributes.addFlashAttribute("errorMessage", "Erro ao excluir categoria: " + e.getMessage());
             }
         }
 

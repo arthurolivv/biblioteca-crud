@@ -3,6 +3,7 @@ package com.bd.api.biblioteca_crud.presentation.mvc;
 import com.bd.api.biblioteca_crud.application.usuario.dto.request.CadastrarUsuarioDto;
 import com.bd.api.biblioteca_crud.application.usuario.dto.response.EditarUsuarioDto;
 import com.bd.api.biblioteca_crud.application.usuario.service.*;
+import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.UsuarioRepository;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +25,21 @@ public class UsuarioController {
     private final ExcluirUsuarioUsecase excluir;
     private final VisualizarUsuarioUsecase visualizar;
     private final CadastrarUsuarioValidationService validar;
+    private final UsuarioRepository UsuarioRepository;
 
     @GetMapping({"", "/"})
-    public String showListarUsuarioPagina(Model model) {
-        return listar.execute(model);
+    public String showListarUsuarioPagina(
+            Model model,
+            @RequestParam(required = false, defaultValue = "nome_asc") String ordem,
+            @RequestParam(required = false, defaultValue = "") String busca,
+            @RequestParam(required = false, defaultValue = "") String status,
+            @RequestParam(required = false, defaultValue = "") String categoria) {
+
+        return listar.execute(model, ordem, busca, status, categoria);
     }
 
     @GetMapping("/cadastro")
     public String showCadastrarUsuarioPagina(Model model) {
-
         cadastrar.show(model);
         return "usuarios/cadastro";
     }
@@ -40,8 +47,7 @@ public class UsuarioController {
     @PostMapping("/cadastro")
     public String cadastrarUsuario(
             @Valid @ModelAttribute CadastrarUsuarioDto dto,
-            BindingResult result
-    ) {
+            BindingResult result) {
 
         validar.execute(dto, result);
 
@@ -55,7 +61,6 @@ public class UsuarioController {
 
     @GetMapping("/editar")
     public String showEditarUsuarioPagina(Model model, @RequestParam String cpf) {
-
         editar.show(model, cpf);
         return "usuarios/editar";
     }
@@ -65,11 +70,9 @@ public class UsuarioController {
             Model model,
             @RequestParam String cpf,
             @Valid @ModelAttribute EditarUsuarioDto dto,
-            @RequestParam(required = false) String senhaAtual
-    ) {
+            @RequestParam(required = false) String senhaAtual) {
         try {
             editar.execute(dto, cpf, senhaAtual, model);
-
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
             model.addAttribute("error", "Erro ao editar usuário");
@@ -81,7 +84,6 @@ public class UsuarioController {
 
     @GetMapping("/visualizar")
     public String showVisualizarUsuarioPagina(Model model, @RequestParam String cpf) {
-
         try {
             visualizar.show(model, cpf);
         } catch (Exception e) {
@@ -92,21 +94,18 @@ public class UsuarioController {
 
     @GetMapping("/excluir")
     public String excluirUsuario(@RequestParam String cpf) {
-
         excluir.execute(cpf);
         return "redirect:/usuarios";
     }
 
     @GetMapping("/desativar")
     public String desativarUsuario(@RequestParam String cpf) {
-
         desativar.execute(cpf);
         return "redirect:/usuarios";
     }
 
     @GetMapping("/ativar")
     public String ativarUsuario(@RequestParam String cpf) {
-
         ativar.execute(cpf);
         return "redirect:/usuarios";
     }

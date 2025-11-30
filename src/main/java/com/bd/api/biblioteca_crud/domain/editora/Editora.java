@@ -33,6 +33,10 @@ public class Editora {
     @OneToMany(mappedBy = "editora", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Livro> livros;
 
+    public int getTotalLivros() {
+        return this.livros != null ? this.livros.size() : 0;
+    }
+
     public void softDelete() {
         this.deleted = true;
     }

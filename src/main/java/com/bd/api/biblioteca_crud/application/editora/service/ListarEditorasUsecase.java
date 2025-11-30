@@ -1,29 +1,55 @@
 package com.bd.api.biblioteca_crud.application.editora.service;
 
-import com.bd.api.biblioteca_crud.application.editora.dto.response.ListarEditoraDto;
+import com.bd.api.biblioteca_crud.domain.editora.Editora;
 import com.bd.api.biblioteca_crud.infraestructure.persistence.jpa.EditoraRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ListarEditorasUsecase {
 
-    private final EditoraRepository repository;
+    private final EditoraRepository editoraRepository;
 
-    @Autowired
-    public ListarEditorasUsecase(EditoraRepository repository) {
-        this.repository = repository;
-    }
+    public List<Editora> execute(String ordem, String busca) {
+        List<Editora> editoras;
 
-    public List<ListarEditoraDto> execute() {
+        // Se a ordenação for por quantidade de livros, usa queries especiais
+        if ("livros_desc".equals(ordem)) {
+            editoras = editoraRepository.findAllOrderByLivroCountDesc();
+        } else if ("livros_asc".equals(ordem)) {
+            editoras = editoraRepository.findAllOrderByLivroCountAsc();
+        } else {
+            // Busca todas as editoras sem ordenação específica
+            editoras = editoraRepository.findAll();
+        }
 
-        List<ListarEditoraDto> editoras = repository.findAllWithLivros().stream().map(ListarEditoraDto::new).toList();
+        // Aplica filtro de busca se fornecido
+        if (busca != null && !busca.trim().isEmpty()) {
+            String buscaLower = busca.toLowerCase().trim();
+            editoras = editoras.stream()
+                    .filter(e -> e.getCnpj().toLowerCase().contains(buscaLower) ||
+                            e.getRazao_social().toLowerCase().contains(buscaLower))
+                    .collect(Collectors.toList());
+        }
 
-        return editoras.stream()
-                .sorted(Comparator.comparing(ListarEditoraDto::razaoSocial))
-                .toList();
+        // Aplica ordenação manual por razão social
+        if ("razao_desc".equals(ordem)) {
+            editoras = editoras.stream()
+                    .sorted(Comparator.comparing(Editora::getRazao_social,
+                            Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)).reversed())
+                    .collect(Collectors.toList());
+        } else if ("razao_asc".equals(ordem) || ordem == null) {
+            editoras = editoras.stream()
+                    .sorted(Comparator.comparing(Editora::getRazao_social,
+                            Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)))
+                    .collect(Collectors.toList());
+        }
+
+        return editoras;
     }
 }

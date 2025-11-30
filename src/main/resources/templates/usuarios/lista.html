@@ -6,8 +6,13 @@
     <title>Usuários - Biblioteca</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" th:href="@{/usuarios/css/lista.css}">
 
+    <style>
+        .action-buttons { display: flex; gap: 0.5rem; justify-content: center; }
+        .table th { font-weight: 600; background-color: #f8f9fa; }
+        .desktop-table { overflow-x: auto; }
+        .card-stat-count { font-size: 1.6rem; font-weight: 700; }
+    </style>
 </head>
 <body class="bg-light">
 <div class="container py-4">
@@ -35,7 +40,7 @@
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                     <h6 class="text-muted mb-2">Total de Usuários</h6>
-                    <h2 class="mb-0 fw-bold" th:text="${usuarios.size()}">2</h2>
+                    <h2 class="mb-0 fw-bold card-stat-count" th:text="${usuarios.size()}">0</h2>
                 </div>
             </div>
         </div>
@@ -44,7 +49,7 @@
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                     <h6 class="text-muted mb-2">Usuários Ativos</h6>
-                    <h2 class="mb-0 fw-bold text-success" th:text="${ativos}"></h2>
+                    <h2 class="mb-0 fw-bold text-success card-stat-count" th:text="${ativos}">0</h2>
                 </div>
             </div>
         </div>
@@ -53,7 +58,7 @@
             <div class="card shadow-sm">
                 <div class="card-body text-center">
                     <h6 class="text-muted mb-2">Usuários Inativos</h6>
-                    <h2 class="mb-0 fw-bold text-danger" th:text="${inativos}">1</h2>
+                    <h2 class="mb-0 fw-bold text-danger card-stat-count" th:text="${inativos}">0</h2>
                 </div>
             </div>
         </div>
@@ -67,49 +72,45 @@
             </h6>
         </div>
 
-        <form th:action="@{/templates/usuario}" method="get" id="formFiltros">
+        <form th:action="@{/usuarios}" method="get" id="formFiltros">
             <div class="card-body">
                 <div class="row g-3">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label class="form-label small text-muted">Pesquisar</label>
                         <div class="input-group">
-                                <span class="input-group-text bg-light">
-                                    <i class="bi bi-search text-muted"></i>
-                                </span>
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
                             <input type="text"
                                    class="form-control"
                                    name="busca"
+                                   th:value="${buscaSelecionada}"
                                    placeholder="Nome, CPF ou E-mail...">
                         </div>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         <label class="form-label small text-muted">Ordenar por</label>
                         <select class="form-select" name="ordem">
-                            <option value="nome_asc">Nome A-Z</option>
-                            <option value="nome_desc">Nome Z-A</option>
-                            <option value="cpf_asc">CPF Crescente</option>
-                            <option value="cpf_desc">CPF Decrescente</option>
+                            <option value="nome_asc" th:selected="${ordemSelecionada == 'nome_asc'}">Nome A-Z</option>
+                            <option value="nome_desc" th:selected="${ordemSelecionada == 'nome_desc'}">Nome Z-A</option>
+                            <option value="cpf_asc" th:selected="${ordemSelecionada == 'cpf_asc'}">CPF Crescente</option>
+                            <option value="cpf_desc" th:selected="${ordemSelecionada == 'cpf_desc'}">CPF Decrescente</option>
+                            <option value="email_asc" th:selected="${ordemSelecionada == 'email_asc'}">E-mail A-Z</option>
+                            <option value="email_desc" th:selected="${ordemSelecionada == 'email_desc'}">E-mail Z-A</option>
+                            <option value="emprestimos_desc" th:selected="${ordemSelecionada == 'emprestimos_desc'}">Mais Empréstimos</option>
+                            <option value="emprestimos_asc" th:selected="${ordemSelecionada == 'emprestimos_asc'}">Menos Empréstimos</option>
+                            <option value="reservas_desc" th:selected="${ordemSelecionada == 'reservas_desc'}">Mais Reservas</option>
+                            <option value="reservas_asc" th:selected="${ordemSelecionada == 'reservas_asc'}">Menos Reservas</option>
                         </select>
                     </div>
 
                     <div class="col-md-3">
-                        <label class="form-label small text-muted">Categoria</label>
-                        <select class="form-select" name="categoria">
-                            <option value="" selected>Todas as Categorias</option>
-                            <option th:each="categoria : ${categorias}"
-                                    th:value="${categoria.id}"
-                                    th:text="${categoria.nome}">
-                            </option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-2">
                         <label class="form-label small text-muted">Status</label>
                         <select class="form-select" name="status">
-                            <option value="" selected>Todos</option>
-                            <option value="true">Ativo</option>
-                            <option value="false">Inativo</option>
+                            <option value="" th:selected="${statusSelecionado == ''}">Todos</option>
+                            <option value="false" th:selected="${statusSelecionado == 'false'}">Ativo</option>
+                            <option value="true" th:selected="${statusSelecionado == 'true'}">Inativo</option>
                         </select>
                     </div>
 
@@ -118,16 +119,21 @@
                     </div>
 
                     <div class="col-md-1 d-flex align-items-end">
-                        <button type="reset" class="btn btn-outline-danger w-100" title="Limpar filtros">
+                        <a href="/usuarios" class="btn btn-outline-danger w-100" title="Limpar filtros">
                             <i class="bi bi-x-circle"></i>
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
         </form>
 
         <div class="desktop-table">
-            <table class="table table-hover align-middle mb-0">
+            <div th:if="${usuarios.isEmpty()}" class="alert alert-info m-3">
+                <i class="bi bi-info-circle me-2"></i>
+                Nenhum usuário encontrado.
+            </div>
+
+            <table th:unless="${usuarios.isEmpty()}" class="table table-hover align-middle mb-0">
                 <thead>
                 <tr>
                     <th class="text-center">CPF</th>
@@ -142,11 +148,11 @@
                 </thead>
                 <tbody>
                 <tr th:each="usuario : ${usuarios}">
-                    <td>
+                    <td class="text-center">
                         <strong th:text="${usuario.cpf}">000.000.000-00</strong>
                     </td>
-                    <td th:text="${usuario.nome}" class="text-center">João</td>
-                    <td th:text="${usuario.sobrenome}" class="text-center">Silva</td>
+                    <td th:text="${usuario.prinome}" class="text-center">João</td>
+                    <td th:text="${usuario.sobnome}" class="text-center">Silva</td>
                     <td th:text="${usuario.email}" class="text-center">email@exemplo.com</td>
                     <td class="text-center">
                         <span class="badge bg-primary" th:text="${usuario.emprestimos_atvs}">0</span>
@@ -160,49 +166,3 @@
                     </td>
                     <td>
                         <div class="action-buttons">
-                            <!-- Botão Editar -->
-                            <a role="button"
-                               class="btn btn-sm btn-outline-secondary"
-                               th:href="@{/usuarios/visualizar(cpf=${usuario.cpf})}"
-                               title="Visualizar">
-                                <i class="bi bi-eye"></i>
-                            </a>
-
-                            <a role="button"
-                               class="btn btn-sm btn-outline-primary"
-                               th:href="@{/usuarios/editar(cpf=${usuario.cpf})}"
-                               title="Editar">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-
-                            <!-- Botão Desativar (se ativo) -->
-                            <a th:if="${!usuario.status}"
-                               role="button"
-                               class="btn btn-sm btn-outline-danger"
-                               onclick="return confirm('Tem certeza que deseja desativar este usuário?')"
-                               th:href="@{/usuarios/desativar(cpf=${usuario.cpf})}"
-                               title="Desativar">
-                                <i class="bi bi-trash"></i>
-                            </a>
-
-                            <!-- Botão Reativar (se inativo) -->
-                            <a th:unless="${!usuario.status}"
-                               role="button"
-                               class="btn btn-sm btn-outline-success"
-                               onclick="return confirm('Tem certeza que deseja reativar este usuário?')"
-                               th:href="@{/usuarios/ativar(cpf=${usuario.cpf})}"
-                               title="Reativar">
-                                <i class="bi bi-arrow-clockwise"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
