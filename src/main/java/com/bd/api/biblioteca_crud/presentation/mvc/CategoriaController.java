@@ -46,7 +46,6 @@ public class CategoriaController {
             model.addAttribute("errorMessage", "Erro ao carregar a lista de categorias: " + e.getMessage());
         }
 
-        // SEMPRE adicionar esses atributos para evitar erros no template
         model.addAttribute("ordemSelecionada", ordem);
         model.addAttribute("buscaSelecionada", busca);
 

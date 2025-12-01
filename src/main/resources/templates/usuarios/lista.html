@@ -166,3 +166,49 @@
                     </td>
                     <td>
                         <div class="action-buttons">
+                            <!-- Botão Visualizar -->
+                            <a role="button"
+                               class="btn btn-sm btn-outline-secondary"
+                               th:href="@{/usuarios/visualizar(cpf=${usuario.cpf})}"
+                               title="Visualizar">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <!-- Botão Editar -->
+                            <a role="button"
+                               class="btn btn-sm btn-outline-primary"
+                               th:href="@{/usuarios/editar(cpf=${usuario.cpf})}"
+                               title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <!-- Botão Desativar (se ativo) -->
+                            <a th:if="${!usuario.status}"
+                               role="button"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('Tem certeza que deseja desativar este usuário?')"
+                               th:href="@{/usuarios/desativar(cpf=${usuario.cpf})}"
+                               title="Desativar">
+                                <i class="bi bi-trash"></i>
+                            </a>
+
+                            <!-- Botão Reativar (se inativo) -->
+                            <a th:unless="${!usuario.status}"
+                               role="button"
+                               class="btn btn-sm btn-outline-success"
+                               onclick="return confirm('Tem certeza que deseja reativar este usuário?')"
+                               th:href="@{/usuarios/ativar(cpf=${usuario.cpf})}"
+                               title="Reativar">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

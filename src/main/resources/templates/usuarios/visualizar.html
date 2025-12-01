@@ -41,7 +41,7 @@
             <div class="d-flex align-items-center mb-3">
                 <i class="bi bi-person-circle text-primary fs-1 me-3"></i>
                 <div>
-                    <h2 class="fw-bold mb-0" th:text="|*{nome.pri_nome} *{nome.sob_nome}|">Nome Usuário</h2>
+                    <h2 class="fw-bold mb-0" th:text="|*{nome.priNome} *{nome.sobNome}|">Nome Usuário</h2>
                     <span class="badge" th:classappend="${usuario.deleted} ? 'bg-danger' : 'bg-success'">
                         <i class="bi"
                            th:classappend="${usuario.deleted} ? 'bi-x-circle me-1' : 'bi-check-circle me-1'"></i>

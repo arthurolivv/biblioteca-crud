@@ -73,15 +73,12 @@ public class AutorController {
         model.addAttribute("autores", autores);
         model.addAttribute("totalNacionalidades", totalNacionalidades);
 
-        // ESSENCIAL: Garante que o DTO de cadastro (para o modal) está no Model.
-        // Se houver erro de validação (POST), ele virá via FlashAttribute.
         if (!model.containsAttribute("novoAutorDto")) {
             model.addAttribute("novoAutorDto", new AutorCadastroDto(null, null));
         }
 
         model.addAttribute("nacionalidadesDisponiveis", Nacionalidade.values());
 
-        // Manter valores dos filtros
         model.addAttribute("buscaSelecionada", busca != null ? busca : "");
         model.addAttribute("nacionalidadeSelecionada", nacionalidade != null ? nacionalidade : "");
         model.addAttribute("ordemSelecionada", ordem);
